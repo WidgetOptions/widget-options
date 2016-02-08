@@ -28,7 +28,8 @@ Change your widget alignment to look better on your site. Comes with <strong>cen
 <h3>View your changes live!</h3>
 This plugin is customizer ready for easier customization. View your changes live before saving it, <strong>not just better control but a time saver plugin!</strong>
 
-<em>Looking for more features?</em> Upgrade to <a href="http://codecanyon.net/item/extended-widget-options-for-wordpress/14024086?ref=phpbits" target="_blank">Extended Widget Options</a> to get the following options:
+<strong><em>Looking for more features?</em></strong> Upgrade to <a href="http://codecanyon.net/item/extended-widget-options-for-wordpress/14024086?ref=phpbits" target="_blank">Extended Widget Options</a> to get the following options:
+
 * Set custom column display for each widgets. No need to create different sidebar for each column!
 * Show or Hide widgets for each user roles. Control which user roles can view each widget or assign different widget for each roles!
 * Show or Hide widgets for specific day
@@ -59,6 +60,9 @@ e.g.
 
 == Screenshots ==
 
+1. Visibility Options
+2. Device Options
+3. Custom Alignment
 
 == Changelog ==
 
