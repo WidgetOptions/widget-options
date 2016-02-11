@@ -107,8 +107,13 @@ class PHPBITS_extendedWidgetsTabs {
                         'search'    =>  __( 'Search', 'widget-options' )
                     );
 
-        //get available pages
-        $pages      = get_posts( array(
+        /*
+         * get available pages
+         * Check for transient. If none, then execute Query
+         */
+        if ( false === ( $pages = get_transient( 'widgetopts_pages' ) ) ) {
+
+            $pages  = get_posts( array(
                                 'post_type'     => 'page', 
                                 'post_status'   => 'publish',
                                 'numberposts'   => -1,
@@ -117,19 +122,45 @@ class PHPBITS_extendedWidgetsTabs {
                                 'fields'        => array('ID', 'name')
                     ));
 
-        //get all post types
-        $types      = get_post_types( array(
+          // Put the results in a transient. Expire after 12 hours.
+          set_transient( 'widgetopts_pages', $pages, 12 * 60 * 60 );
+        }
+
+        
+        /*
+         * get all post types
+         * Check for transient. If none, then execute Query
+         */
+        if ( false === ( $types = get_transient( 'widgetopts_types' ) ) ) {
+
+            $types  = get_post_types( array(
                             'public' => true,
                     ), 'object' );
+
+          // Put the results in a transient. Expire after 12 hours.
+          set_transient( 'widgetopts_types', $types, 12 * 60 * 60 );
+        }
+
         //unset builtin post types
         foreach ( array( 'revision', 'attachment', 'nav_menu_item' ) as $unset ) {
             unset( $types[ $unset ] );
         }
 
-        //get post categories
-        $categories = get_categories( array(
+        /*
+         * get post categories
+         * Check for transient. If none, then execute Query
+         */
+        if ( false === ( $categories = get_transient( 'widgetopts_categories' ) ) ) {
+
+            $categories = get_categories( array(
                         'hide_empty'    => false
                     ) );
+
+          // Put the results in a transient. Expire after 12 hours.
+          set_transient( 'widgetopts_categories', $categories, 12 * 60 * 60 );
+
+        }
+        
 
         $taxonomies = array();
         
@@ -227,8 +258,19 @@ class PHPBITS_extendedWidgetsTabs {
                             <label for="<?php echo $args['id'];?>-opts-types-<?php echo $ptype;?>"><?php echo stripslashes( $type->labels->name );?></label>
                         </p>
                     <?php 
-                        //get post type taxonomies
-                        $post_taxes = get_object_taxonomies( $ptype );
+                        /*
+                         * get post type taxonomies
+                         * Check for transient. If none, then execute Query
+                         */
+                        if ( false === ( $post_taxes = get_transient( 'widgetopts_post_taxes_'. $ptype ) ) ) {
+
+                            $post_taxes = get_object_taxonomies( $ptype );
+
+                          // Put the results in a transient. Expire after 12 hours.
+                          set_transient( 'widgetopts_post_taxes_'. $ptype, $post_taxes, 12 * 60 * 60 );
+                        }
+
+
                         foreach ( $post_taxes as $post_tax) {
                             if ( in_array( $post_tax, array( 'category', 'post_format' ) ) ) {
                                 continue;

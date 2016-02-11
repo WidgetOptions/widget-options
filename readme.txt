@@ -8,7 +8,7 @@ Stable tag: 1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Get Better Control over your Widgets. Easily show or hide WordPress widgets on specified pages and devices. Assign custom alignments to each widgets and display beautifully on any sidebars.
+Get Better Control over your Widgets. Easily show or hide WordPress widgets on specified pages & devices and/or assign custom alignment.
 
 == Description ==
 
@@ -65,6 +65,9 @@ e.g.
 3. Custom Alignment
 
 == Changelog ==
+
+= 1.2 =
+* Set Transient for queries to reduce loading time
 
 = 1.0 =
 * Initial Plugin release
