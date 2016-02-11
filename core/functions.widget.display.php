@@ -158,28 +158,6 @@ class PHPBITS_extendedWidgetsDisplay {
         
         //end wordpress pages
 
-        //add mobble plugin support
-        $devices         = isset( $opts['devices'] ) ? $opts['devices'] : '';
-        $devices_opts    = isset( $devices['options'] ) ? $devices['options'] : 'hide';
-        // print_r( $devices  );
-        if( function_exists( 'is_mobile' ) ){
-            if( is_mobile() ){
-                if( isset( $devices['mobile'] ) && $devices_opts == 'hide' ){
-                    echo $hidden = true; //hide if checked on mobile
-                }elseif( !isset( $devices['mobile'] ) && $devices_opts == 'show' ){
-                    $hidden = true; //hide if not checked on visible pages
-                }
-
-                //do return to bypass other conditions
-                $hidden = apply_filters( 'extended_widget_options_mobile', $hidden );
-                if( $hidden ){
-                    return false;
-                }
-            }
-        }
-
-        //end mobble
-
         return $instance;
     }
 

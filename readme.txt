@@ -66,7 +66,7 @@ e.g.
 
 == Changelog ==
 
-= 1.2 =
+= 1.1 =
 * Set Transient for queries to reduce loading time
 
 = 1.0 =
