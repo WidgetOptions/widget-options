@@ -137,8 +137,8 @@ class PHPBITS_extendedWidgetsTabs {
                             'public' => true,
                     ), 'object' );
 
-          // Put the results in a transient. Expire after 30 minutes.
-          set_transient( 'widgetopts_types', $types, 30 * 60 );
+          // Put the results in a transient. Expire after 10 minutes.
+          set_transient( 'widgetopts_types', $types, 10 * 60 );
         }
 
         //unset builtin post types
