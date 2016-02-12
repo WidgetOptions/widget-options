@@ -122,8 +122,8 @@ class PHPBITS_extendedWidgetsTabs {
                                 'fields'        => array('ID', 'name')
                     ));
 
-          // Put the results in a transient. Expire after 12 hours.
-          set_transient( 'widgetopts_pages', $pages, 12 * 60 * 60 );
+          // Put the results in a transient. Expire after 5 minuts.
+          set_transient( 'widgetopts_pages', $pages, 5 * 60 );
         }
 
         
@@ -137,8 +137,8 @@ class PHPBITS_extendedWidgetsTabs {
                             'public' => true,
                     ), 'object' );
 
-          // Put the results in a transient. Expire after 12 hours.
-          set_transient( 'widgetopts_types', $types, 12 * 60 * 60 );
+          // Put the results in a transient. Expire after 30 minutes.
+          set_transient( 'widgetopts_types', $types, 30 * 60 );
         }
 
         //unset builtin post types
@@ -156,8 +156,8 @@ class PHPBITS_extendedWidgetsTabs {
                         'hide_empty'    => false
                     ) );
 
-          // Put the results in a transient. Expire after 12 hours.
-          set_transient( 'widgetopts_categories', $categories, 12 * 60 * 60 );
+          // Put the results in a transient. Expire after 5 minutes.
+          set_transient( 'widgetopts_categories', $categories, 5 * 60 );
 
         }
         
@@ -266,8 +266,8 @@ class PHPBITS_extendedWidgetsTabs {
 
                             $post_taxes = get_object_taxonomies( $ptype );
 
-                          // Put the results in a transient. Expire after 12 hours.
-                          set_transient( 'widgetopts_post_taxes_'. $ptype, $post_taxes, 12 * 60 * 60 );
+                          // Put the results in a transient. Expire after 5 minutes.
+                          set_transient( 'widgetopts_post_taxes_'. $ptype, $post_taxes, 5 * 60 );
                         }
 
 
