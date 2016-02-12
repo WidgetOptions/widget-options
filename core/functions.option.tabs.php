@@ -137,7 +137,7 @@ class PHPBITS_extendedWidgetsTabs {
                             'public' => true,
                     ), 'object' );
 
-          // Put the results in a transient. Expire after 10 minutes.
+          // Put the results in a transient. Expire after 10minutes.
           set_transient( 'widgetopts_types', $types, 10 * 60 );
         }
 
