@@ -16,6 +16,9 @@ class PHPBITS_extendedWidgetsTabs {
         add_action( 'extended_widget_opts_tabs', array( &$this,'tab_alignment' ) ); 
         add_action( 'extended_widget_opts_tabcontent', array( &$this,'content_alignment' ) ); 
 
+        add_action( 'extended_widget_opts_tabs', array( &$this,'tab_class' ) );
+        add_action( 'extended_widget_opts_tabcontent', array( &$this,'content_class' ) ); 
+
         add_action( 'extended_widget_opts_tabs', array( &$this,'tab_gopro' ) );
         add_action( 'extended_widget_opts_tabcontent', array( &$this,'gopro_alignment' ) ); 
     }
@@ -411,6 +414,54 @@ class PHPBITS_extendedWidgetsTabs {
             </table>
         </div>
     <?php 
+    }
+
+    /**
+     * Called on 'extended_widget_opts_tabs'
+     * create new tab navigation for custom class & ID options
+     */
+    function tab_class( $args ){ ?>
+        <li class="extended-widget-opts-tab-class">
+            <a href="#extended-widget-opts-tab-<?php echo $args['id'];?>-class"><span class="dashicons dashicons-admin-generic"></span> <span class="tabtitle"><?php _e( 'Class & ID', 'widget-options' );?></span></a>
+        </li>
+    <?php 
+    }
+
+    function content_class( $args ){ 
+        $id         = '';
+        $classes    = '';
+        if( isset( $args['params'] ) && isset( $args['params']['class'] ) ){
+            if( isset( $args['params']['class']['id'] ) ){
+                $id = $args['params']['class']['id'];
+            }
+            if( isset( $args['params']['class']['classes'] ) ){
+                $classes = $args['params']['class']['classes'];
+            }
+        }
+        ?>
+        <div id="extended-widget-opts-tab-<?php echo $args['id'];?>-class" class="extended-widget-opts-tabcontent extended-widget-opts-tabcontent-class">
+            <div class="widget-opts-class">
+                <table class="form-table">
+                <tbody>
+                    <tr valign="top">
+                        <td scope="row">
+                            <strong><?php _e( 'Widget CSS ID:', 'widget-options' );?></strong><br />
+                            <input type="text" id="opts-class-id-<?php echo $args['id'];?>" class="widefat" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][id]" value="<?php echo $id;?>" />
+                        </td>
+                    </tr>
+
+                    <tr valign="top">
+                        <td scope="row">
+                            <strong><?php _e( 'Widget CSS Classes:', 'widget-options' );?></strong><br />
+                            <input type="text" id="opts-class-classes-<?php echo $args['id'];?>" class="widefat" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][classes]" value="<?php echo $classes;?>" />
+                            <small><em><?php _e( 'Separate each class with space.', 'widget-options' );?></em></small>
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+            </div>
+        </div>
+    <?php
     }
 
     /**
