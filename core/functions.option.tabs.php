@@ -29,7 +29,7 @@ class PHPBITS_extendedWidgetsTabs {
      */
     function tab_alignment( $args ){ ?>
         <li class="extended-widget-opts-tab-alignment">
-            <a href="#extended-widget-opts-tab-<?php echo $args['id'];?>-alignment"><span class="dashicons dashicons-editor-aligncenter"></span> <span class="tabtitle"><?php _e( 'Alignment', 'widget-options' );?></span></a>
+            <a href="#extended-widget-opts-tab-<?php echo $args['id'];?>-alignment" title="<?php _e( 'Alignment', 'widget-options' );?>" ><span class="dashicons dashicons-editor-aligncenter"></span> <span class="tabtitle"><?php _e( 'Alignment', 'widget-options' );?></span></a>
         </li>
     <?php 
     }
@@ -88,7 +88,7 @@ class PHPBITS_extendedWidgetsTabs {
      */
     function tab_visibility( $args ){ ?>
         <li class="extended-widget-opts-tab-visibility">
-            <a href="#extended-widget-opts-tab-<?php echo $args['id'];?>-visibility"><span class="dashicons dashicons-visibility"></span> <span class="tabtitle"><?php _e( 'Visibility', 'widget-options' );?></span></a>
+            <a href="#extended-widget-opts-tab-<?php echo $args['id'];?>-visibility" title="<?php _e( 'Visibility', 'widget-options' );?>" ><span class="dashicons dashicons-visibility"></span> <span class="tabtitle"><?php _e( 'Visibility', 'widget-options' );?></span></a>
         </li>
     <?php 
     }
@@ -337,7 +337,7 @@ class PHPBITS_extendedWidgetsTabs {
      */
     function tab_devices( $args ){ ?>
         <li class="extended-widget-opts-tab-devices">
-            <a href="#extended-widget-opts-tab-<?php echo $args['id'];?>-devices"><span class="dashicons dashicons-smartphone"></span> <span class="tabtitle"><?php _e( 'Devices', 'widget-options' );?></span></a>
+            <a href="#extended-widget-opts-tab-<?php echo $args['id'];?>-devices" title="<?php _e( 'Devices', 'widget-options' );?>" ><span class="dashicons dashicons-smartphone"></span> <span class="tabtitle"><?php _e( 'Devices', 'widget-options' );?></span></a>
         </li>
     <?php 
     }
@@ -422,7 +422,7 @@ class PHPBITS_extendedWidgetsTabs {
      */
     function tab_class( $args ){ ?>
         <li class="extended-widget-opts-tab-class">
-            <a href="#extended-widget-opts-tab-<?php echo $args['id'];?>-class"><span class="dashicons dashicons-admin-generic"></span> <span class="tabtitle"><?php _e( 'Class & ID', 'widget-options' );?></span></a>
+            <a href="#extended-widget-opts-tab-<?php echo $args['id'];?>-class" title="<?php _e( 'Class & ID', 'widget-options' );?>" ><span class="dashicons dashicons-admin-generic"></span> <span class="tabtitle"><?php _e( 'Class & ID', 'widget-options' );?></span></a>
         </li>
     <?php 
     }
@@ -516,7 +516,17 @@ class PHPBITS_extendedWidgetsTabs {
 
     function gopro_alignment( $args ){ ?>
         <div id="extended-widget-opts-tab-<?php echo $args['id'];?>-gopro" class="extended-widget-opts-tabcontent extended-widget-opts-tabcontent-gopro">
-            <div class="widget-opts-gopro"><small><?php _e( 'Upgrade to <a href="http://codecanyon.net/item/extended-widget-options-for-wordpress/14024086?ref=phpbits" target="_blank">Pro Version</a> for Fully Feature Packed Widget Options.', 'widget-options' );?></small></div>
+        <p><strong><?php _e( 'Get a Fully-Packed Widget Options and maximize your widget control!', 'widget-options' );?></strong></p>
+            <ul>
+                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'Display Widget Columns', 'widget-options' );?></li>
+                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'More Alignment Options', 'widget-options' );?></li>
+                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'User Roles Visibility Options', 'widget-options' );?></li>
+                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'Show or Hide widgets for specific day', 'widget-options' );?></li>
+                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'Show or Hide widgets for date range', 'widget-options' );?></li>
+                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'Show or Hide widgets for specific days on the given date range', 'widget-options' );?></li>
+            </ul>
+            
+            <p><strong><a href="http://codecanyon.net/item/extended-widget-options-for-wordpress/14024086?ref=phpbits" class="widget-opts-learnmore" target="_blank"><?php _e( 'Learn More', 'widget-options' );?> <span class="dashicons dashicons-arrow-right-alt"></span></a></strong></p>
         </div>
     <?php
     }

@@ -120,6 +120,22 @@
 	color: #00a0d2;
 	text-decoration: none;
 }
+.extended-widget-opts-tabcontent-gopro{
+	font-size: 12px;
+}
+.extended-widget-opts-tabcontent-gopro a{
+	color: #0073aa;
+	text-decoration: none;
+}
+.extended-widget-opts-tabcontent-gopro a:hover{
+	color: #00a0d2;
+}
+.extended-widget-opts-tabcontent-gopro a .dashicons{
+	font-size: 12px;
+	height: 12px;
+    line-height: 20px;
+    width: 15px;
+}
 
 /** Settings Page **/
 .opts-classes-setting-table tr strong{
