@@ -18,6 +18,25 @@
 			getid = $(this).attr('id');
 			$('#extended-widget-opts-page-lists .'+ getid).slideToggle(250);
 		} );
+
+		//admin settings
+		$(document).on( 'click', '.opts-add-class-btn',function(e){
+			getVal = $('.opts-add-class-txtfld').val();
+			if( getVal.length > 0 ){
+				$('#opts-predefined-classes ul').append('<li><input type="hidden" name="extwopts_class_settings[classlists][]" value="'+ getVal +'" /><span class"opts-li-value">'+ getVal +'</span> <a href="#" class="opts-remove-class-btn"><span class="dashicons dashicons-dismiss"></span></a></li>');	
+				$('.opts-add-class-txtfld').val('');
+			}
+			
+			e.preventDefault();
+			e.stopPropagation();
+		} );
+		$(document).on( 'click', '.opts-remove-class-btn',function(e){
+			$(this).parent('li').fadeOut('fast',function(){
+				$(this).remove();
+			});
+			e.preventDefault();
+			e.stopPropagation();
+		} );
 	});
 
 	function extended_widget_opts_init( widget, action ){

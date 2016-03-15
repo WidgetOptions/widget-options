@@ -210,12 +210,40 @@ class PHPBITS_extendedWidgetsDisplay {
                 }
             }
         }
-
-        if( is_array( $custom_class ) && isset( $custom_class['id'] ) ){
-            $params[0]['before_widget'] = preg_replace( '/id="[^"]*/', "id=\"{$custom_class['id']}", $params[0]['before_widget'], 1 );
+        //classes & ID
+        $options    = get_option('extwopts_class_settings');
+        $predefined = array();
+        if( isset( $options['classlists'] ) && !empty( $options['classlists'] ) ){
+            $predefined = $options['classlists'];
         }
-        if( is_array( $custom_class ) && isset( $custom_class['classes'] ) && !empty( $custom_class['classes'] ) ){
-            $classe_to_add .= $custom_class['classes'] .' ';
+        //don't add the IDs when the setting is set to NO
+        if( !isset( $options['id_field'] ) || ( isset( $options['id_field'] ) && 'no' != $options['id_field'] ) ){
+            if( is_array( $custom_class ) && isset( $custom_class['id'] ) ){
+                $params[0]['before_widget'] = preg_replace( '/id="[^"]*/', "id=\"{$custom_class['id']}", $params[0]['before_widget'], 1 );
+            }  
+        }
+
+        //don't add any classes when settings is set to predefined or hide
+        if( !isset( $options['class_field'] ) || 
+            ( isset( $options['class_field'] ) && !in_array( $options['class_field'] , array( 'hide', 'predefined' ) ) ) ){
+            if( is_array( $custom_class ) && isset( $custom_class['classes'] ) && !empty( $custom_class['classes'] ) ){
+                $classe_to_add .= $custom_class['classes'] .' ';
+            }
+        }
+
+        //don't add any classes when settings is set to text or hide
+        if( !isset( $options['class_field'] ) || 
+            ( isset( $options['class_field'] ) && !in_array( $options['class_field'] , array( 'hide', 'text' ) ) ) ){
+            if( is_array( $predefined ) && !empty( $predefined ) ){
+                $predefined = array_unique( $predefined );
+                if( isset( $custom_class['predefined'] ) && is_array( $custom_class['predefined'] ) ){
+                    $filtered = array_intersect( $predefined, $custom_class['predefined'] );
+                    if( !empty( $filtered ) ){
+                        $classe_to_add .= implode( ' ', $filtered );
+                        $classe_to_add .= ' ';
+                    }
+                }
+            }
         }
 
         $classes                    = 'class="'.$classe_to_add;

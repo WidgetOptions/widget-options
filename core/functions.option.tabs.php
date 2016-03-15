@@ -438,25 +438,64 @@ class PHPBITS_extendedWidgetsTabs {
                 $classes = $args['params']['class']['classes'];
             }
         }
+
+        $options    = get_option('extwopts_class_settings');
+        $predefined = array();
+        if( isset( $options['classlists'] ) && !empty( $options['classlists'] ) ){
+            $predefined = $options['classlists'];
+        }
         ?>
         <div id="extended-widget-opts-tab-<?php echo $args['id'];?>-class" class="extended-widget-opts-tabcontent extended-widget-opts-tabcontent-class">
             <div class="widget-opts-class">
                 <table class="form-table">
                 <tbody>
-                    <tr valign="top">
-                        <td scope="row">
-                            <strong><?php _e( 'Widget CSS ID:', 'widget-options' );?></strong><br />
-                            <input type="text" id="opts-class-id-<?php echo $args['id'];?>" class="widefat" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][id]" value="<?php echo $id;?>" />
-                        </td>
-                    </tr>
+                    <?php if( !isset( $options['id_field'] ) || ( isset( $options['id_field'] ) && 'no' != $options['id_field'] ) ){?>
+                        <tr valign="top">
+                            <td scope="row">
+                                <strong><?php _e( 'Widget CSS ID:', 'widget-options' );?></strong><br />
+                                <input type="text" id="opts-class-id-<?php echo $args['id'];?>" class="widefat" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][id]" value="<?php echo $id;?>" />
+                            </td>
+                        </tr>
+                    <?php } ?>
 
-                    <tr valign="top">
-                        <td scope="row">
-                            <strong><?php _e( 'Widget CSS Classes:', 'widget-options' );?></strong><br />
-                            <input type="text" id="opts-class-classes-<?php echo $args['id'];?>" class="widefat" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][classes]" value="<?php echo $classes;?>" />
-                            <small><em><?php _e( 'Separate each class with space.', 'widget-options' );?></em></small>
-                        </td>
-                    </tr>
+                    <?php if( !isset( $options['class_field'] ) ||
+                             ( isset( $options['class_field'] ) && !in_array( $options['class_field'] , array( 'hide', 'predefined' ) ) ) ){?>
+                        <tr valign="top">
+                            <td scope="row">
+                                <strong><?php _e( 'Widget CSS Classes:', 'widget-options' );?></strong><br />
+                                <input type="text" id="opts-class-classes-<?php echo $args['id'];?>" class="widefat" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][classes]" value="<?php echo $classes;?>" />
+                                <small><em><?php _e( 'Separate each class with space.', 'widget-options' );?></em></small>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    <?php if( !isset( $options['class_field'] ) ||
+                             ( isset( $options['class_field'] ) && !in_array( $options['class_field'] , array( 'hide', 'text' ) ) ) ){?>
+                        <?php if( is_array( $predefined ) && !empty( $predefined ) ){
+                            $predefined = array_unique( $predefined ); //remove dups
+                            ?>
+                                <tr valign="top">
+                                    <td scope="row">
+                                        <strong><?php _e( 'Available Widget Classes:', 'widget-options' );?></strong><br />
+                                        <div class="extended-widget-opts-class-lists" style="max-height: 230px;padding: 5px;overflow:auto;">
+                                            <?php foreach ($predefined as $key => $value) { 
+                                                if(  isset( $args['params']['class']['predefined'] ) &&
+                                                     is_array( $args['params']['class']['predefined'] ) &&
+                                                     in_array( $value , $args['params']['class']['predefined'] ) ){
+                                                    $checked = 'checked="checked"';
+                                                }else{
+                                                    $checked = '';
+                                                }
+                                                ?>
+                                                <p>
+                                                    <input type="checkbox" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][predefined][]" id="<?php echo $args['id'];?>-opts-class-<?php echo $key;?>" value="<?php echo $value;?>" <?php echo $checked;?> />
+                                                    <label for="<?php echo $args['id'];?>-opts-class-<?php echo $key;?>"><?php echo $value;?></label>
+                                                </p>
+                                            <?php } ?>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                    <?php } ?>
                 </tbody>
                 </table>
             </div>
