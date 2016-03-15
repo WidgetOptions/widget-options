@@ -183,6 +183,7 @@ class PHPBITS_extendedWidgetsDisplay {
 
         $devices        = isset( $opts['devices'] ) ? $opts['devices'] : '';
         $alignment      = isset( $opts['alignment'] ) ? $opts['alignment'] : '';
+        $custom_class   = isset( $opts['class'] ) ? $opts['class'] : '';
         $abbr           = array(
                             'mobile'    =>  'xs',
                             'tablet'    =>  'sm',
@@ -210,6 +211,12 @@ class PHPBITS_extendedWidgetsDisplay {
             }
         }
 
+        if( is_array( $custom_class ) && isset( $custom_class['id'] ) ){
+            $params[0]['before_widget'] = preg_replace( '/id="[^"]*/', "id=\"{$custom_class['id']}", $params[0]['before_widget'], 1 );
+        }
+        if( is_array( $custom_class ) && isset( $custom_class['classes'] ) && !empty( $custom_class['classes'] ) ){
+            $classe_to_add .= $custom_class['classes'] .' ';
+        }
 
         $classes                    = 'class="'.$classe_to_add;
         $params[0]['before_widget'] = str_replace('class="',$classes,$params[0]['before_widget']);
