@@ -123,14 +123,14 @@
 .extended-widget-opts-tabcontent-gopro{
 	font-size: 12px;
 }
-.extended-widget-opts-tabcontent-gopro a{
+.extended-widget-opts-tabcontent-gopro a, .widget-opts-upgrade a{
 	color: #0073aa;
 	text-decoration: none;
 }
-.extended-widget-opts-tabcontent-gopro a:hover{
+.extended-widget-opts-tabcontent-gopro a:hover, .widget-opts-upgrade a:hover{
 	color: #00a0d2;
 }
-.extended-widget-opts-tabcontent-gopro a .dashicons{
+.extended-widget-opts-tabcontent-gopro a .dashicons, .widget-opts-upgrade a .dashicons{
 	font-size: 12px;
 	height: 12px;
     line-height: 20px;

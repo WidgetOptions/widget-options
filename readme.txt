@@ -1,7 +1,7 @@
 === Widget Options ===
 Contributors: phpbits
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FMKC2SLPTULP8
-Tags: widgets, widget, display widgets, display widget, hide widgets, hide widget, sidebar, widget content, widget logic, widget options, widget option, restrict widgets
+Tags: widgets, widget, display widgets, display widget, hide widgets, hide widget, sidebar, widget content, widget logic, widget options, widget option, restrict widgets, widget css, CSS, widget classes
 Requires at least: 4.0
 Tested up to: 4.4.2
 Stable tag: 1.0
@@ -24,6 +24,9 @@ Change your sidebar content for different pages, posts, custom post types, categ
 
 <h3>Custom WordPress widget alignments</h3>
 Change your widget alignment to look better on your site. Comes with <strong>center, left, right and justified alignment</strong> options.
+
+<h3>Custom Widget ID & Classes</h3>
+<em>As of version 1.2</em>, you can add custom class & ID on each widget for CSS, javascript & styling purposes. You can also create a predefined set of classes and it will be displayed as checkboxes on the options tab.
 
 <h3>View your changes live!</h3>
 This plugin is customizer ready for easier customization. View your changes live before saving it, <strong>not just better control but a time saver plugin!</strong>

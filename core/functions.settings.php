@@ -11,6 +11,7 @@ if( !class_exists( 'Settings_API_Extended_Widget_Options' ) ){
 		 * when registering settings
 		 */
 		private $class_settings_key = 'extwopts_class_settings';
+		private $upgrade_settings_key = 'extwopts_upgrade_settings';
 		private $plugin_options_key = 'extwopts_plugin_options';
 		private $plugin_settings_tabs = array();
 
@@ -23,6 +24,7 @@ if( !class_exists( 'Settings_API_Extended_Widget_Options' ) ){
 		function __construct() {
 			add_action( 'init', array( &$this, 'load_settings' ) );
 			add_action( 'admin_init', array( &$this, 'register_class_settings' ) );
+			add_action( 'admin_init', array( &$this, 'register_upgrade_tab' ) );
 			add_action( 'admin_menu', array( &$this, 'add_admin_menus' ) );
 		}
 
@@ -127,6 +129,35 @@ if( !class_exists( 'Settings_API_Extended_Widget_Options' ) ){
             </table>
 			
 		<?php }
+
+		/*
+		 * Registers the pro tabs via the Settings API,
+		 * appends the setting to the tabs array of the object.
+		 */
+		function register_upgrade_tab() {
+			$this->plugin_settings_tabs[$this->upgrade_settings_key] = __( 'Upgrade', 'extended-widget-options' );
+			
+			register_setting( $this->upgrade_settings_key, $this->upgrade_settings_key );
+			add_settings_section( 'general_section', __( 'Upgrade to Extended Widget Options', 'extended-widget-options' ), array( &$this, 'upgrade_options_section' ), $this->upgrade_settings_key );
+		}
+
+		function upgrade_options_section(){ 
+			?>
+			<div class="widget-opts-upgrade">
+				<p><strong><?php _e( 'Get a Fully-Packed Widget Options and maximize your widget control!', 'widget-options' );?></strong></p>
+	            <ul>
+	                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'Display Widget Columns', 'widget-options' );?></li>
+	                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'More Alignment Options', 'widget-options' );?></li>
+	                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'User Roles Visibility Options', 'widget-options' );?></li>
+	                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'Show or Hide widgets for specific day', 'widget-options' );?></li>
+	                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'Show or Hide widgets for date range', 'widget-options' );?></li>
+	                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'Show or Hide widgets for specific days on the given date range', 'widget-options' );?></li>
+	            </ul>
+	            
+	            <p><strong><a href="http://codecanyon.net/item/extended-widget-options-for-wordpress/14024086?ref=phpbits" class="widget-opts-learnmore" target="_blank"><?php _e( 'Learn More', 'widget-options' );?> <span class="dashicons dashicons-arrow-right-alt"></span></a></strong></p>
+			</div>
+			<?php
+		}
 		
 		/*
 		 * Called during admin_menu, adds an options
