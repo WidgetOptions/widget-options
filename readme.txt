@@ -26,7 +26,7 @@ Change your sidebar content for different pages, posts, custom post types, categ
 Change your widget alignment to look better on your site. Comes with <strong>center, left, right and justified alignment</strong> options.
 
 <h3>Custom Widget ID & Classes</h3>
-<em>As of version 1.2</em>, you can add custom class & ID on each widget for CSS, javascript & styling purposes. You can also create a predefined set of classes and it will be displayed as checkboxes on the options tab.
+<em>As of version 1.2</em>, you can add custom class & ID on each widget for CSS, javascript & styling purposes. You can also create a predefined set of classes and it will be displayed as checkboxes on the options tab. <a href="https://phpbits.net/widget-options-improved-control-adding-id-classes-options">Learn more about this update</a>
 
 <h3>View your changes live!</h3>
 This plugin is customizer ready for easier customization. View your changes live before saving it, <strong>not just better control but a time saver plugin!</strong>
@@ -56,7 +56,9 @@ e.g.
 
 1. Upload the full directory into your wp-content/plugins directory
 2. Activate the plugin at the plugin administration page
-3. That's it :)
+3. Go to Settings > Widget Options and add predefined Classes if you need to
+4. When you drag or open any widgets you'll see the Widget Options below
+5. I hope you'll love this plugin :)
 
 == Frequently Asked Questions ==
 
@@ -68,6 +70,9 @@ e.g.
 3. Custom Alignment
 
 == Changelog ==
+
+= 1.2 =
+* Add Widget CSS ID and Classes tab options. <a href="https://phpbits.net/widget-options-improved-control-adding-id-classes-options">Learn more about this update</a>
 
 = 1.1.1 =
 * Reduce Transient to 5 minutes
