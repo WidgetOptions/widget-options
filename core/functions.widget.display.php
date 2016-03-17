@@ -26,7 +26,7 @@ class PHPBITS_extendedWidgetsDisplay {
         //wordpress pages
         $visibility         = isset( $opts['visibility'] ) ? $opts['visibility'] : '';
         $visibility_opts    = isset( $opts['visibility']['options'] ) ? $opts['visibility']['options'] : 'hide';
-        if ( is_home() || is_front_page() ) {
+        if ( ( is_home() && is_front_page() ) || is_front_page() ) {
             if( isset( $visibility['misc']['home'] ) && $visibility_opts == 'hide' ){
                 $hidden = true; //hide if checked on hidden pages
             }elseif( !isset( $visibility['misc']['home'] ) && $visibility_opts == 'show' ){
@@ -38,6 +38,19 @@ class PHPBITS_extendedWidgetsDisplay {
             if( $hidden ){
                 return false;
             }
+        }elseif ( is_home() ) { //filter for blog page
+            if( isset( $visibility['misc']['blog'] ) && $visibility_opts == 'hide' ){
+                $hidden = true; //hide if checked on hidden pages
+            }elseif( !isset( $visibility['misc']['blog'] ) && $visibility_opts == 'show' ){
+                $hidden = true; //hide if not checked on visible pages
+            }
+
+            //do return to bypass other conditions
+            $hidden = apply_filters( 'extended_widget_options_blog', $hidden );
+            if( $hidden ){
+                return false;
+            }
+
         }elseif ( is_category() ) {
             if( !isset( $visibility['categories'] ) ){
                 $visibility['categories'] = array();

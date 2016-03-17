@@ -103,7 +103,7 @@ class PHPBITS_extendedWidgetsTabs {
         //declare miscellaneous pages - wordpress default pages
         $misc       = array(
                         'home'      =>  __( 'Home/Front', 'widget-options' ),
-                        // 'blog'      =>  __( 'Blog', 'widget-options' ),
+                        'blog'      =>  __( 'Blog', 'widget-options' ),
                         'archives'  =>  __( 'Archives', 'widget-options' ),
                         'single'    =>  __( 'Single Post', 'widget-options' ),
                         '404'       =>  __( '404', 'widget-options' ),
