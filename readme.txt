@@ -68,6 +68,7 @@ e.g.
 1. Visibility Options
 2. Device Options
 3. Custom Alignment
+3. Widget CSS ID & Classes
 
 == Changelog ==
 
