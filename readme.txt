@@ -74,6 +74,7 @@ e.g.
 
 = 1.2 =
 * Add Widget CSS ID and Classes tab options. <a href="https://phpbits.net/widget-options-improved-control-adding-id-classes-options">Learn more about this update</a>
+* Add Blog Page Visibility as per @cfabrice & @fljdave request
 
 = 1.1.1 =
 * Reduce Transient to 5 minutes
