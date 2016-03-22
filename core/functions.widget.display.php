@@ -136,6 +136,32 @@ class PHPBITS_extendedWidgetsDisplay {
 
             // do return to bypass other conditions
             $hidden = apply_filters( 'extended_widget_options_types', $hidden );
+
+
+            //hide posts assign on category
+            if( !isset( $visibility['categories'] ) ){
+                $visibility['categories'] = array();
+            }
+            if( isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'hide' ){
+                $hidden = true; //hide to all categories
+            }elseif( isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'show' ){
+                $hidden = false; //hide to all categories
+            }elseif( !isset( $visibility['categories']['all_categories'] ) && !empty( $visibility['categories'] ) ) {
+                $cats           = wp_get_post_categories( get_the_ID() );
+                if( is_array( $cats ) && !empty( $cats ) ){
+                    $checked_cats   = array_keys( $visibility['categories'] ); 
+                    $intersect      = array_intersect( $cats , $checked_cats );
+                    if( !empty( $intersect ) && $visibility_opts == 'hide' ){
+                        $hidden = true;
+                    }elseif( !empty( $intersect ) && $visibility_opts == 'show' ){
+                        $hidden = false;
+                    }
+                }
+            }
+
+            // do return to bypass other conditions
+            $hidden = apply_filters( 'extended_widget_options_post_category', $hidden );
+
             if( $hidden ){
                 return false;
             }
