@@ -1,4 +1,4 @@
-<h2>Widget Options</h2>
+<h2>Widget Options for WordPress</h2>
 <p><a href="https://wordpress.org/plugins/widget-options/" target="_blank">Free on WordPress Repository</a></p>
 <p><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FMKC2SLPTULP8" target="_blank">Donate</a></p>
 
