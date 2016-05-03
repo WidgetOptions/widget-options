@@ -3,7 +3,7 @@ Contributors: phpbits
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FMKC2SLPTULP8
 Tags: widgets, widget, display widgets, display widget, hide widgets, hide widget, sidebar, widget content, widget logic, widget options, widget option, restrict widgets, widget css, CSS, widget classes
 Requires at least: 4.0
-Tested up to: 4.4.2
+Tested up to: 4.5.1
 Stable tag: 1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -31,13 +31,20 @@ Change your widget alignment to look better on your site. Comes with <strong>cen
 <h3>View your changes live!</h3>
 This plugin is customizer ready for easier customization. View your changes live before saving it, <strong>not just better control but a time saver plugin!</strong>
 
-<strong><em>Looking for more features?</em></strong> Upgrade to <a href="http://codecanyon.net/item/extended-widget-options-for-wordpress/14024086?ref=phpbits" target="_blank">Extended Widget Options</a> to get the following options:
-
-* Set custom column display for each widgets. No need to create different sidebar for each column!
-* Show or Hide widgets for each user roles. Control which user roles can view each widget or assign different widget for each roles!
-* Show or Hide widgets for specific day
-* Show or Hide widgets for date range
-* Show or Hide widgets for specific days on the given date range
+<blockquote>
+<p><strong><em>Looking for more features?</em></strong> Upgrade to <a href="http://codecanyon.net/item/extended-widget-options-for-wordpress/14024086?ref=phpbits" target="_blank">Extended Widget Options</a> to get the following options:</p>
+<ul>
+<li>More device alignment options</li>
+<li>Set custom column display for each widgets. No need to create different sidebar for each column!</li>
+<li>Show or Hide widgets for each user roles. Control which user roles can view each widget or assign different widget for each roles!</li>
+<li>Show or Hide widgets for specific day</li>
+<li>Show or Hide widgets for date range</li>
+<li>Show or Hide widgets for specific days on the given date range</li>
+<li>Posts, Tags and Custom Taxonomy Terms Extended Visibility</li>
+<li>Custom Widget <strong>Styling</strong> Options</li>
+<li>Display Widget Logic</li>
+</ul>
+</blockquote> 
 
 Days, dates and date range is the best option if you are running deals, promotions and ads on your site. Now you can automatically hide it anytime you want without logging in!
 
@@ -71,6 +78,10 @@ e.g.
 3. Widget CSS ID & Classes
 
 == Changelog ==
+
+= 1.3 =
+Apply Category Visibility Selection to associated posts
+Update pro tabs with additional features added on Extended Widget Options 2.0
 
 = 1.2 =
 * Add Widget CSS ID and Classes tab options. <a href="https://phpbits.net/widget-options-improved-control-adding-id-classes-options">Learn more about this update</a>
