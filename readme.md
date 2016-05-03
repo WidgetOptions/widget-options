@@ -1,16 +1,8 @@
-=== Widget Options ===
-Contributors: phpbits
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FMKC2SLPTULP8
-Tags: widgets, widget, display widgets, display widget, hide widgets, hide widget, sidebar, widget content, widget logic, widget options, widget option, restrict widgets, widget css, CSS, widget classes
-Requires at least: 4.0
-Tested up to: 4.5.1
-Stable tag: 1.0
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+<h2>Widget Options</h2>
+<p><a href="https://wordpress.org/plugins/widget-options/" target="_blank">Free on WordPress Repository</a></p>
+<p><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FMKC2SLPTULP8" target="_blank">Donate</a></p>
 
-Get Better Control over your Widgets. Easily show or hide WordPress widgets on specified pages & devices and/or assign custom alignment.
-
-== Description ==
+<p><em>Get Better Control over your Widgets. Easily show or hide WordPress widgets on specified pages & devices and/or assign custom alignment.</em></p>
 
 <strong>Control your sidebar widgets more!</strong> Assign different contents on your sidebars, footer and any sidebar widgets.
 
@@ -55,48 +47,4 @@ If you like to contribute, report issue or have suggestions, you can find the de
 * Follow the developer <a href="https://twitter.com/phpbits" target="_blank">@Twitter</a>
 * Other <a href="https://profiles.wordpress.org/phpbits/#content-plugins">WordPress plugins</a>
 
-== Installation ==
-
-This section describes how to install the plugin and get it working.
-
-e.g.
-
-1. Upload the full directory into your wp-content/plugins directory
-2. Activate the plugin at the plugin administration page
-3. Go to Settings > Widget Options and add predefined Classes if you need to
-4. When you drag or open any widgets you'll see the Widget Options below
-5. I hope you'll love this plugin :)
-
-== Frequently Asked Questions ==
-
-
-== Screenshots ==
-
-1. Visibility Options
-2. Device Options
-3. Custom Alignment
-3. Widget CSS ID & Classes
-
-== Changelog ==
-
-= 1.3 =
-Apply Category Visibility Selection to associated posts
-Update pro tabs with additional features added on Extended Widget Options 2.0
-
-= 1.2 =
-* Add Widget CSS ID and Classes tab options. <a href="https://phpbits.net/widget-options-improved-control-adding-id-classes-options">Learn more about this update</a>
-* Add Blog Page Visibility as per @cfabrice & @fljdave request
-
-= 1.1.1 =
-* Reduce Transient to 5 minutes
-
-= 1.1 =
-* Set Transient for queries to reduce loading time
-
-= 1.0 =
-* Initial Plugin release
-
-== Upgrade Notice ==
-
-= 1.0 =
-* Initial Plugin release
+<p><em>widgets, widget, display widgets, display widget, hide widgets, hide widget, sidebar, widget content, widget logic, widget options, widget option, restrict widgets, widget css, CSS, widget classes</em></p>
