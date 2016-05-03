@@ -24,7 +24,7 @@ Change your widget alignment to look better on your site. Comes with <strong>cen
 This plugin is customizer ready for easier customization. View your changes live before saving it, <strong>not just better control but a time saver plugin!</strong>
 
 <blockquote>
-<p><strong><em>Looking for more features?</em></strong> Upgrade to <a href="http://codecanyon.net/item/extended-widget-options-for-wordpress/14024086?ref=phpbits" target="_blank">Extended Widget Options</a> to get the following options:</p>
+<p><strong><em>Looking for more features?</em></strong> Upgrade to <a href="https://phpbits.net/plugin/extended-widget-options/" target="_blank">Extended Widget Options</a> to get the following options:</p>
 <ul>
 <li>More device alignment options</li>
 <li>Set custom column display for each widgets. No need to create different sidebar for each column!</li>
