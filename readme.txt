@@ -80,8 +80,8 @@ e.g.
 == Changelog ==
 
 = 1.3 =
-Apply Category Visibility Selection to associated posts
-Update pro tabs with additional features added on Extended Widget Options 2.0
+* Apply Category Visibility Selection to associated posts
+* Update pro tabs with additional features added on Extended Widget Options 2.0
 
 = 1.2 =
 * Add Widget CSS ID and Classes tab options. <a href="https://phpbits.net/widget-options-improved-control-adding-id-classes-options">Learn more about this update</a>
