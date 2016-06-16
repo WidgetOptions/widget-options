@@ -134,6 +134,9 @@
 	font-size: 11px;
 	color: #0073aa !important;
 }
+.widget-opts-learnmore{
+	text-decoration: none;
+}
 
 /* customizer fix */
 #customize-theme-controls .ui-tabs .ui-tabs-panel.extended-widget-opts-tabcontent{
