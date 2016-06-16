@@ -11,7 +11,7 @@
 .extended-widget-opts-form.extended-widget-opts-form-small .tabtitle{
 	display: none;
 }
-.extended-widget-opts-tabs.ui-widget{
+.extended-widget-opts-tabs.ui-widget, .extended-widget-opts-inside-tabs.ui-widget{
 	border: 0px !important;
 	background: transparent !important;
 	border-radius: 0px !important;
@@ -26,22 +26,29 @@
 }
 .extended-widget-opts-tabs .ui-tabs-nav li{
 	float: left !important;
-	margin-left: 2px !important;
+	margin-left: 1px !important;
 	margin-bottom: 0px !important;
+	margin-right: 2px !important;
 
 	border: 0px !important;
 	background: transparent !important;
 	border-radius: 0px !important;
 }
 .extended-widget-opts-tabs .ui-tabs-nav li:first-child{
-	margin-left: 15px !important;
+	margin-left: 5px !important;
+}
+.extended-widget-opts-tabs .ui-tabs-nav li:last-child{
+	margin-right: 0px !important;
+}
+.extended-widget-opts-tabs .ui-tabs-nav li:last-of-type{
+	margin-right: 0px !important;
 }
 .extended-widget-opts-tabs .ui-tabs-nav li.ui-tabs-active{
 	margin-bottom: -1px !important;
 }
 .extended-widget-opts-tabs .ui-tabs-nav li a{
 	display: block !important;
-	padding: 8px !important;
+	padding: 7px 4px 8px !important;
 	font-size: 12px !important;
 	background: #fafafa !important;
 	color: #444 !important;
@@ -51,6 +58,9 @@
 	border-top-left-radius: 2px !important;
 	border-top-right-radius: 2px !important;
 	font-weight: normal !important;
+}
+.extended-widget-opts-form-large .extended-widget-opts-tabs .ui-tabs-nav li a{
+	padding: 7px 8px 8px !important;
 }
 .extended-widget-opts-tabs .ui-tabs-nav li.ui-tabs-active a{
 	margin-bottom: -1px !important;
@@ -69,27 +79,60 @@
 	padding: 5px;
 	/*text-align: center;*/
 }
-#extended-widget-opts-page-lists, .extended-widget-opts-class-lists{
+.extended-widget-opts-inner-lists, .extended-widget-opts-class-lists, .extended-widget-opts-inner-roles{
 	display: block;
 	width: 100%;
 	height: 230px !important;
-	padding: 5px !important;
+	padding: 5px 8px !important;
 	overflow: auto;
     border: 1px solid #dfdfdf;
     margin-bottom: 5px;
+    box-sizing: border-box;
 }
-.extended-widget-opts-class-lists{
+.extended-widget-opts-class-lists, .extended-widget-opts-inner-roles{
 	height: auto !important;
 	max-height: 230px !important;
 }
-#extended-widget-opts-page-lists h4, #extended-widget-opts-page-lists h4:hover{
+.extended-widget-opts-inner-lists h4, .extended-widget-opts-inner-lists h4:hover{
 	cursor: pointer;
 }
-#extended-widget-opts-page-lists small{
+.extended-widget-opts-inner-lists small{
 	opacity: 0.5;
+	font-weight: normal;
+    font-size: 11px;
 }
 .extended-widget-opts-clearfix{
 	clear: both;
+}
+.extended-widget-opts-tabcontent.extended-widget-opts-inside-tabcontent{
+	padding: 10px 5px !important;
+}
+.extended-widget-opts-inside-tabcontent .extended-widget-opts-inner-tabcontent{
+	border: 1px solid #dddddd !important;
+	border-top: 0px !important;
+	padding: 10px !important;
+}
+.extended-widget-opts-inside-tabcontent .extended-widget-opts-styling-tabcontent tr td:last-child{
+	min-width: 117px;
+}
+.extended-widget-opts-inside-tabcontent .extended-widget-opts-styling-tabcontent p{
+	text-align: center;
+}
+.extended-widget-opts-inner-tabcontent.extended-widget-opts-visibility-tabcontent{
+	text-align: left;
+}
+.extended-widget-opts-inside-tabs .ui-tabs-nav li:first-child{
+	margin-left: 0px !important;
+}
+.extended-widget-opts-inside-tabs .ui-tabs-nav li a{
+	padding: 8px !important;
+}
+.widget-opts-toggle-note{
+	display: none;
+}
+.widget-opts-toggler-note{
+	font-size: 11px;
+	color: #0073aa !important;
 }
 
 /* customizer fix */
@@ -106,35 +149,8 @@
 #customize-theme-controls .extended-widget-opts-form .ui-tabs .ui-tabs-nav li a{
 	line-height: 16px !important;
 }
-.widget-opts-gopro{
-	background: #fff;
-    border-left: 4px solid #fff;
-    -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-    margin: 5px 15px 2px;
-    padding: 8px 12px;
-	border-left-color: #46b450;
-	margin: 5px 0 15px;
-}
-.widget-opts-gopro a{
-	color: #00a0d2;
-	text-decoration: none;
-}
-.extended-widget-opts-tabcontent-gopro{
-	font-size: 12px;
-}
-.extended-widget-opts-tabcontent-gopro a, .widget-opts-upgrade a{
-	color: #0073aa;
-	text-decoration: none;
-}
-.extended-widget-opts-tabcontent-gopro a:hover, .widget-opts-upgrade a:hover{
-	color: #00a0d2;
-}
-.extended-widget-opts-tabcontent-gopro a .dashicons, .widget-opts-upgrade a .dashicons{
-	font-size: 12px;
-	height: 12px;
-    line-height: 20px;
-    width: 15px;
+#customize-theme-controls .extended-widget-opts-form .extended-widget-opts-tabcontent-styling .inputsize5{
+	max-width: 50px;
 }
 
 /** Settings Page **/
