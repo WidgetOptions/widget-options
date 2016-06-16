@@ -4,7 +4,7 @@
 Plugin Name: Widget Options
 Plugin URI: https://wordpress.org/plugins/widget-options
 Description: Additional Widget options for better widget control. Get <strong><a href="http://codecanyon.net/item/extended-widget-options-for-wordpress/14024086?ref=phpbits">Extended Widget Options for WordPress</a></strong> for complete widget controls. Thanks!
-Version: 1.3
+Version: 2.0
 Author: phpbits
 Author URI: http://codecanyon.net/user/phpbits/portfolio?ref=phpbits
 Text Domain: widget-options
