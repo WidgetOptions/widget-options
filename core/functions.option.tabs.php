@@ -456,7 +456,7 @@ class PHPBITS_extendedWidgetsTabs {
      */
     function tab_class( $args ){ ?>
         <li class="extended-widget-opts-tab-class">
-            <a href="#extended-widget-opts-tab-<?php echo $args['id'];?>-class" title="<?php _e( 'Class & ID', 'widget-options' );?>" ><span class="dashicons dashicons-admin-generic"></span> <span class="tabtitle"><?php _e( 'Class & ID', 'widget-options' );?></span></a>
+            <a href="#extended-widget-opts-tab-<?php echo $args['id'];?>-class" title="<?php _e( 'Class,ID & Display Logic', 'widget-options' );?>" ><span class="dashicons dashicons-admin-generic"></span> <span class="tabtitle"><?php _e( 'Class & ID', 'widget-options' );?></span></a>
         </li>
     <?php 
     }

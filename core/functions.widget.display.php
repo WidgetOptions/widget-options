@@ -197,6 +197,24 @@ class PHPBITS_extendedWidgetsDisplay {
         
         //end wordpress pages
 
+        // display widget logic
+        if( isset( $opts['class'] ) && isset( $opts['class']['logic'] ) && !empty( $opts['class']['logic'] ) ){
+            $display_logic = stripslashes( trim( $opts['class']['logic'] ) );
+            $display_logic = apply_filters( 'widget_options_logic_override', $display_logic );
+            if ( $display_logic === false ){
+                return false;
+            }
+            if ( $display_logic === true ){
+                return true;
+            }
+            if ( stristr($display_logic,"return")===false ){
+                $display_logic="return (" . $display_logic . ");";
+            }
+            if ( !eval( $display_logic ) ){
+                return false;
+            }
+        }
+
         return $instance;
     }
 

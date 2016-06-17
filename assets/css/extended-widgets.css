@@ -17,6 +17,10 @@
 	border-radius: 0px !important;
 	font-family: "Open Sans",sans-serif;
 }
+.extended-widget-opts-tabs.ui-tabs{
+	padding-left: 0px;
+	padding-right: 0px;
+}
 .extended-widget-opts-tabs .ui-tabs-nav{
 	border: 0px !important;
 	border-bottom: 1px solid #e5e5e5 !important;
@@ -35,7 +39,7 @@
 	border-radius: 0px !important;
 }
 .extended-widget-opts-tabs .ui-tabs-nav li:first-child{
-	margin-left: 5px !important;
+	margin-left: 15px !important;
 }
 .extended-widget-opts-tabs .ui-tabs-nav li:last-child{
 	margin-right: 0px !important;
@@ -48,7 +52,7 @@
 }
 .extended-widget-opts-tabs .ui-tabs-nav li a{
 	display: block !important;
-	padding: 7px 4px 8px !important;
+	padding: 8px 7px 8px !important;
 	font-size: 12px !important;
 	background: #fafafa !important;
 	color: #444 !important;
@@ -105,7 +109,7 @@
 	clear: both;
 }
 .extended-widget-opts-tabcontent.extended-widget-opts-inside-tabcontent{
-	padding: 10px 5px !important;
+	padding: 10px 15px !important;
 }
 .extended-widget-opts-inside-tabcontent .extended-widget-opts-inner-tabcontent{
 	border: 1px solid #dddddd !important;
@@ -136,6 +140,10 @@
 }
 .widget-opts-learnmore{
 	text-decoration: none;
+}
+
+.extended-widget-opts-tabcontent-gopro ui-tabs-panel li{
+	font-size: 12px;
 }
 
 /* customizer fix */
