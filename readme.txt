@@ -80,6 +80,11 @@ e.g.
 
 == Changelog ==
 
+= 2.0 =
+* Add Widget Display Logic Options
+* Improve Tab UI for better navigation
+* other minor improvements
+
 = 1.3 =
 * Apply Category Visibility Selection to associated posts
 * Update pro tabs with additional features added on Extended Widget Options 2.0
