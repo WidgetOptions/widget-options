@@ -1,9 +1,9 @@
 === Widget Options ===
 Contributors: phpbits
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FMKC2SLPTULP8
-Tags: widgets, widget, display widgets, display widget, hide widgets, hide widget, sidebar, widget content, widget logic, widget options, widget option, restrict widgets, widget css, CSS, widget classes
+Tags: widgets, widget, display widgets, display widget, hide widgets, hide widget, sidebar, widget content, widget logic, widget options, widget option, restrict widgets, widget css, CSS, widget classes, widget styling, widget ID, widget custom class, widget visibility, widget ninja, jetpack visibility
 Requires at least: 4.0
-Tested up to: 4.5.1
+Tested up to: 4.5.2
 Stable tag: 1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html

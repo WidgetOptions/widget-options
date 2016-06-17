@@ -74,7 +74,7 @@ class PHPBITS_extendedWidgetsTabs {
                         </td>
                     </tr>
                     <tr valign="top" class="widgetopts-topro">
-                        <td colspan="2"><small><?php _e( '<em>Upgrade to <a href="http://codecanyon.net/item/extended-widget-options-for-wordpress/14024086?ref=phpbits" target="_blank">Pro Version</a> for Multiple Devices Alignment and Additional Widget Options.</em>', 'widget-options' );?></small></td>
+                        <td colspan="2"><small><?php _e( '<em>Upgrade to <a href="https://phpbits.net/plugin/extended-widget-options/" target="_blank">Pro Version</a> for Multiple Devices Alignment and Additional Widget Options.</em>', 'widget-options' );?></small></td>
                     </tr>
                 </tbody>
             </table>
