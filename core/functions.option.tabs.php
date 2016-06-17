@@ -219,13 +219,13 @@ class PHPBITS_extendedWidgetsTabs {
                 <!--  start tab nav -->
                 <ul class="extended-widget-opts-visibility-tabnav-ul">
                     <li class="extended-widget-opts-visibility-tab-visibility">
-                        <a href="#extended-widget-opts-visibility-tab-<?php echo $args['id'];?>-misc" title="<?php _e( 'Home, Blog, Search, etc..', 'extended-widget-options' );?>" ><?php _e( 'Misc', 'extended-widget-options' );?></a>
+                        <a href="#extended-widget-opts-visibility-tab-<?php echo $args['id'];?>-misc" title="<?php _e( 'Home, Blog, Search, etc..', 'widget-options' );?>" ><?php _e( 'Misc', 'widget-options' );?></a>
                     </li>
                     <li class="extended-widget-opts-visibility-tab-visibility">
-                        <a href="#extended-widget-opts-visibility-tab-<?php echo $args['id'];?>-types" title="<?php _e( 'Pages & Custom Post Types', 'extended-widget-options' );?>" ><?php _e( 'Post Types', 'extended-widget-options' );?></a>
+                        <a href="#extended-widget-opts-visibility-tab-<?php echo $args['id'];?>-types" title="<?php _e( 'Pages & Custom Post Types', 'widget-options' );?>" ><?php _e( 'Post Types', 'widget-options' );?></a>
                     </li>
                     <li class="extended-widget-opts-visibility-tab-visibility">
-                        <a href="#extended-widget-opts-visibility-tab-<?php echo $args['id'];?>-tax" title="<?php _e( 'Categories, Tags & Taxonomies', 'extended-widget-options' );?>" ><?php _e( 'Taxonomies', 'extended-widget-options' );?></a>
+                        <a href="#extended-widget-opts-visibility-tab-<?php echo $args['id'];?>-tax" title="<?php _e( 'Categories, Tags & Taxonomies', 'widget-options' );?>" ><?php _e( 'Taxonomies', 'widget-options' );?></a>
                     </li>
                     <div class="extended-widget-opts-clearfix"></div>
                 </ul><!--  end tab nav -->
@@ -494,10 +494,10 @@ class PHPBITS_extendedWidgetsTabs {
                 <!--  start tab nav -->
                 <ul class="extended-widget-opts-settings-tabnav-ul">
                     <li class="extended-widget-opts-settings-tab-class">
-                        <a href="#extended-widget-opts-settings-tab-<?php echo $args['id'];?>-class" title="<?php _e( 'Class & ID', 'extended-widget-options' );?>" ><?php _e( 'Class & ID', 'extended-widget-options' );?></a>
+                        <a href="#extended-widget-opts-settings-tab-<?php echo $args['id'];?>-class" title="<?php _e( 'Class & ID', 'widget-options' );?>" ><?php _e( 'Class & ID', 'widget-options' );?></a>
                     </li>
                     <li class="extended-widget-opts-settings-tab-logic">
-                        <a href="#extended-widget-opts-settings-tab-<?php echo $args['id'];?>-logic" title="<?php _e( 'Display Logic', 'extended-widget-options' );?>" ><?php _e( 'Display Logic', 'extended-widget-options' );?></a>
+                        <a href="#extended-widget-opts-settings-tab-<?php echo $args['id'];?>-logic" title="<?php _e( 'Display Logic', 'widget-options' );?>" ><?php _e( 'Display Logic', 'widget-options' );?></a>
                     </li>
                     <div class="extended-widget-opts-clearfix"></div>
                 </ul><!--  end tab nav -->
@@ -562,10 +562,10 @@ class PHPBITS_extendedWidgetsTabs {
                 <!--  start logiv tab content -->
                 <div id="extended-widget-opts-settings-tab-<?php echo $args['id'];?>-logic" class="extended-widget-opts-settings-tabcontent extended-widget-opts-inner-tabcontent">
                     <div class="widget-opts-logic">
-                        <p><small><?php _e( 'The text field lets you use <a href="http://codex.wordpress.org/Conditional_Tags" target="_blank">WP Conditional Tags</a>, or any general PHP code.', 'extended-widget-options' );?></small></p>
+                        <p><small><?php _e( 'The text field lets you use <a href="http://codex.wordpress.org/Conditional_Tags" target="_blank">WP Conditional Tags</a>, or any general PHP code.', 'widget-options' );?></small></p>
                         <textarea class="widefat" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][logic]"><?php echo $logic;?></textarea>
-                        <p><a href="#" class="widget-opts-toggler-note"><?php _e( 'Click to Toggle Note', 'extended-widget-options' );?></a></p>
-                        <p class="widget-opts-toggle-note"><small><?php _e( 'PLEASE NOTE that the display logic you introduce is EVAL\'d directly. Anyone who has access to edit widget appearance will have the right to add any code, including malicious and possibly destructive functions. There is an optional filter <em>"widget_options_logic_override"</em> which you can use to bypass the EVAL with your own code if needed.', 'extended-widget-options' );?></small></p>
+                        <p><a href="#" class="widget-opts-toggler-note"><?php _e( 'Click to Toggle Note', 'widget-options' );?></a></p>
+                        <p class="widget-opts-toggle-note"><small><?php _e( 'PLEASE NOTE that the display logic you introduce is EVAL\'d directly. Anyone who has access to edit widget appearance will have the right to add any code, including malicious and possibly destructive functions. There is an optional filter <em>"widget_options_logic_override"</em> which you can use to bypass the EVAL with your own code if needed.', 'widget-options' );?></small></p>
                     </div>
                 </div><!--  end logiv tab content -->
 
