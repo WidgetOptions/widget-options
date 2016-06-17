@@ -73,9 +73,10 @@ e.g.
 == Screenshots ==
 
 1. Visibility Options
-2. Device Options
+2. Device Visibility Options
 3. Custom Alignment
-3. Widget CSS ID & Classes
+4. Widget CSS ID & Classes
+5. Display Widget Logic
 
 == Changelog ==
 
