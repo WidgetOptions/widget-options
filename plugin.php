@@ -25,6 +25,7 @@ require_once( dirname( __FILE__ ) . '/core/functions.option.tabs.php');
 require_once( dirname( __FILE__ ) . '/core/functions.widget.display.php');
 require_once( dirname( __FILE__ ) . '/core/functions.notices.php');
 require_once( dirname( __FILE__ ) . '/core/functions.settings.php');
+require_once( dirname( __FILE__ ) . '/core/function.transient.php');
 
 /**
  * Install
