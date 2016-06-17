@@ -456,7 +456,7 @@ class PHPBITS_extendedWidgetsTabs {
      */
     function tab_class( $args ){ ?>
         <li class="extended-widget-opts-tab-class">
-            <a href="#extended-widget-opts-tab-<?php echo $args['id'];?>-class" title="<?php _e( 'Class,ID & Display Logic', 'widget-options' );?>" ><span class="dashicons dashicons-admin-generic"></span> <span class="tabtitle"><?php _e( 'Class & ID', 'widget-options' );?></span></a>
+            <a href="#extended-widget-opts-tab-<?php echo $args['id'];?>-class" title="<?php _e( 'Class,ID & Display Logic', 'widget-options' );?>" ><span class="dashicons dashicons-admin-generic"></span> <span class="tabtitle"><?php _e( 'Class,ID & Logic', 'widget-options' );?></span></a>
         </li>
     <?php 
     }
@@ -563,7 +563,7 @@ class PHPBITS_extendedWidgetsTabs {
                 <div id="extended-widget-opts-settings-tab-<?php echo $args['id'];?>-logic" class="extended-widget-opts-settings-tabcontent extended-widget-opts-inner-tabcontent">
                     <div class="widget-opts-logic">
                         <p><small><?php _e( 'The text field lets you use <a href="http://codex.wordpress.org/Conditional_Tags" target="_blank">WP Conditional Tags</a>, or any general PHP code.', 'widget-options' );?></small></p>
-                        <textarea class="widefat" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][logic]"><?php echo $logic;?></textarea>
+                        <textarea class="widefat" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][logic]"><?php echo stripslashes( $logic );?></textarea>
                         <p><a href="#" class="widget-opts-toggler-note"><?php _e( 'Click to Toggle Note', 'widget-options' );?></a></p>
                         <p class="widget-opts-toggle-note"><small><?php _e( 'PLEASE NOTE that the display logic you introduce is EVAL\'d directly. Anyone who has access to edit widget appearance will have the right to add any code, including malicious and possibly destructive functions. There is an optional filter <em>"widget_options_logic_override"</em> which you can use to bypass the EVAL with your own code if needed.', 'widget-options' );?></small></p>
                     </div>

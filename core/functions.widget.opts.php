@@ -43,7 +43,7 @@ class PHPBITS_extendedWidgets {
         }
         ?>
         <input type="hidden" name="extended_widget_opts_name" value="extended_widget_opts-<?php echo $widget->id;?>">
-        <div class="extended-widget-opts-form <?php if( $width < 490 && $width > 370 ){ echo 'extended-widget-opts-form-large'; }else if( $width < 370 ){ echo 'extended-widget-opts-form-small'; }?>">
+        <div class="extended-widget-opts-form <?php if( $width < 490 && $width > 440 ){ echo 'extended-widget-opts-form-large'; }else if( $width < 440 ){ echo 'extended-widget-opts-form-small'; }?>">
             <div class="extended-widget-opts-tabs">
                 <ul class="extended-widget-opts-tabnav-ul">
                     <?php do_action( 'extended_widget_opts_tabs', $args );?>

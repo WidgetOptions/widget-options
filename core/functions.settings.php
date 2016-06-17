@@ -181,6 +181,8 @@ if( !class_exists( 'Settings_API_Extended_Widget_Options' ) ){
 	                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'Display Widget Logic', 'widget-options' );?></li>
 	                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'and other improvements...', 'widget-options' );?></li>
 	            </ul>
+
+	            <p><span class="dashicons dashicons-plus"></span> <strong><?php _e( 'PLUGIN LIFETIME UPDATES', 'widget-options' );?></strong></p>
 	            
 	            <p><strong><a href="https://phpbits.net/plugin/extended-widget-options/" class="widget-opts-learnmore" target="_blank"><?php _e( 'Learn More', 'widget-options' );?> <span class="dashicons dashicons-arrow-right-alt"></span></a></strong></p>
 			</div>
