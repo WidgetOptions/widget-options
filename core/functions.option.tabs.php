@@ -464,12 +464,20 @@ class PHPBITS_extendedWidgetsTabs {
     function content_class( $args ){ 
         $id         = '';
         $classes    = '';
+        $logic      = '';
+        $selected   = 0;
         if( isset( $args['params'] ) && isset( $args['params']['class'] ) ){
             if( isset( $args['params']['class']['id'] ) ){
                 $id = $args['params']['class']['id'];
             }
             if( isset( $args['params']['class']['classes'] ) ){
                 $classes = $args['params']['class']['classes'];
+            }
+            if( isset( $args['params']['class']['selected'] ) ){
+                $selected = $args['params']['class']['selected'];
+            }
+            if( isset( $args['params']['class']['logic'] ) ){
+                $logic = $args['params']['class']['logic'];
             }
         }
 
@@ -479,60 +487,90 @@ class PHPBITS_extendedWidgetsTabs {
             $predefined = $options['classlists'];
         }
         ?>
-        <div id="extended-widget-opts-tab-<?php echo $args['id'];?>-class" class="extended-widget-opts-tabcontent extended-widget-opts-tabcontent-class">
-            <div class="widget-opts-class">
-                <table class="form-table">
-                <tbody>
-                    <?php if( !isset( $options['id_field'] ) || ( isset( $options['id_field'] ) && 'no' != $options['id_field'] ) ){?>
-                        <tr valign="top">
-                            <td scope="row">
-                                <strong><?php _e( 'Widget CSS ID:', 'widget-options' );?></strong><br />
-                                <input type="text" id="opts-class-id-<?php echo $args['id'];?>" class="widefat" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][id]" value="<?php echo $id;?>" />
-                            </td>
-                        </tr>
-                    <?php } ?>
-
-                    <?php if( !isset( $options['class_field'] ) ||
-                             ( isset( $options['class_field'] ) && !in_array( $options['class_field'] , array( 'hide', 'predefined' ) ) ) ){?>
-                        <tr valign="top">
-                            <td scope="row">
-                                <strong><?php _e( 'Widget CSS Classes:', 'widget-options' );?></strong><br />
-                                <input type="text" id="opts-class-classes-<?php echo $args['id'];?>" class="widefat" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][classes]" value="<?php echo $classes;?>" />
-                                <small><em><?php _e( 'Separate each class with space.', 'widget-options' );?></em></small>
-                            </td>
-                        </tr>
-                    <?php } ?>
-                    <?php if( !isset( $options['class_field'] ) ||
-                             ( isset( $options['class_field'] ) && !in_array( $options['class_field'] , array( 'hide', 'text' ) ) ) ){?>
-                        <?php if( is_array( $predefined ) && !empty( $predefined ) ){
-                            $predefined = array_unique( $predefined ); //remove dups
-                            ?>
+        <div id="extended-widget-opts-tab-<?php echo $args['id'];?>-class" class="extended-widget-opts-tabcontent extended-widget-opts-inside-tabcontent extended-widget-opts-tabcontent-class">
+            
+            <div class="extended-widget-opts-settings-tabs extended-widget-opts-inside-tabs">
+                <input type="hidden" id="extended-widget-opts-settings-selectedtab" value="<?php echo $selected;?>" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][selected]" />
+                <!--  start tab nav -->
+                <ul class="extended-widget-opts-settings-tabnav-ul">
+                    <li class="extended-widget-opts-settings-tab-class">
+                        <a href="#extended-widget-opts-settings-tab-<?php echo $args['id'];?>-class" title="<?php _e( 'Class & ID', 'extended-widget-options' );?>" ><?php _e( 'Class & ID', 'extended-widget-options' );?></a>
+                    </li>
+                    <li class="extended-widget-opts-settings-tab-logic">
+                        <a href="#extended-widget-opts-settings-tab-<?php echo $args['id'];?>-logic" title="<?php _e( 'Display Logic', 'extended-widget-options' );?>" ><?php _e( 'Display Logic', 'extended-widget-options' );?></a>
+                    </li>
+                    <div class="extended-widget-opts-clearfix"></div>
+                </ul><!--  end tab nav -->
+                <div class="extended-widget-opts-clearfix"></div>
+                <!--  start class tab content -->
+                <div id="extended-widget-opts-settings-tab-<?php echo $args['id'];?>-class" class="extended-widget-opts-settings-tabcontent extended-widget-opts-inner-tabcontent">
+                    <div class="widget-opts-class">
+                        <table class="form-table">
+                        <tbody>
+                            <?php if( !isset( $options['id_field'] ) || ( isset( $options['id_field'] ) && 'no' != $options['id_field'] ) ){?>
                                 <tr valign="top">
                                     <td scope="row">
-                                        <strong><?php _e( 'Available Widget Classes:', 'widget-options' );?></strong><br />
-                                        <div class="extended-widget-opts-class-lists" style="max-height: 230px;padding: 5px;overflow:auto;">
-                                            <?php foreach ($predefined as $key => $value) { 
-                                                if(  isset( $args['params']['class']['predefined'] ) &&
-                                                     is_array( $args['params']['class']['predefined'] ) &&
-                                                     in_array( $value , $args['params']['class']['predefined'] ) ){
-                                                    $checked = 'checked="checked"';
-                                                }else{
-                                                    $checked = '';
-                                                }
-                                                ?>
-                                                <p>
-                                                    <input type="checkbox" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][predefined][]" id="<?php echo $args['id'];?>-opts-class-<?php echo $key;?>" value="<?php echo $value;?>" <?php echo $checked;?> />
-                                                    <label for="<?php echo $args['id'];?>-opts-class-<?php echo $key;?>"><?php echo $value;?></label>
-                                                </p>
-                                            <?php } ?>
-                                        </div>
+                                        <strong><?php _e( 'Widget CSS ID:', 'widget-options' );?></strong><br />
+                                        <input type="text" id="opts-class-id-<?php echo $args['id'];?>" class="widefat" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][id]" value="<?php echo $id;?>" />
                                     </td>
                                 </tr>
                             <?php } ?>
-                    <?php } ?>
-                </tbody>
-                </table>
-            </div>
+
+                            <?php if( !isset( $options['class_field'] ) ||
+                                     ( isset( $options['class_field'] ) && !in_array( $options['class_field'] , array( 'hide', 'predefined' ) ) ) ){?>
+                                <tr valign="top">
+                                    <td scope="row">
+                                        <strong><?php _e( 'Widget CSS Classes:', 'widget-options' );?></strong><br />
+                                        <input type="text" id="opts-class-classes-<?php echo $args['id'];?>" class="widefat" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][classes]" value="<?php echo $classes;?>" />
+                                        <small><em><?php _e( 'Separate each class with space.', 'widget-options' );?></em></small>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                            <?php if( !isset( $options['class_field'] ) ||
+                                     ( isset( $options['class_field'] ) && !in_array( $options['class_field'] , array( 'hide', 'text' ) ) ) ){?>
+                                <?php if( is_array( $predefined ) && !empty( $predefined ) ){
+                                    $predefined = array_unique( $predefined ); //remove dups
+                                    ?>
+                                        <tr valign="top">
+                                            <td scope="row">
+                                                <strong><?php _e( 'Available Widget Classes:', 'widget-options' );?></strong><br />
+                                                <div class="extended-widget-opts-class-lists" style="max-height: 230px;padding: 5px;overflow:auto;">
+                                                    <?php foreach ($predefined as $key => $value) { 
+                                                        if(  isset( $args['params']['class']['predefined'] ) &&
+                                                             is_array( $args['params']['class']['predefined'] ) &&
+                                                             in_array( $value , $args['params']['class']['predefined'] ) ){
+                                                            $checked = 'checked="checked"';
+                                                        }else{
+                                                            $checked = '';
+                                                        }
+                                                        ?>
+                                                        <p>
+                                                            <input type="checkbox" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][predefined][]" id="<?php echo $args['id'];?>-opts-class-<?php echo $key;?>" value="<?php echo $value;?>" <?php echo $checked;?> />
+                                                            <label for="<?php echo $args['id'];?>-opts-class-<?php echo $key;?>"><?php echo $value;?></label>
+                                                        </p>
+                                                    <?php } ?>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+                            <?php } ?>
+                        </tbody>
+                        </table>
+                    </div>
+                </div><!--  end class tab content -->
+
+                <!--  start logiv tab content -->
+                <div id="extended-widget-opts-settings-tab-<?php echo $args['id'];?>-logic" class="extended-widget-opts-settings-tabcontent extended-widget-opts-inner-tabcontent">
+                    <div class="widget-opts-logic">
+                        <p><small><?php _e( 'The text field lets you use <a href="http://codex.wordpress.org/Conditional_Tags" target="_blank">WP Conditional Tags</a>, or any general PHP code.', 'extended-widget-options' );?></small></p>
+                        <textarea class="widefat" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][logic]"><?php echo $logic;?></textarea>
+                        <p><a href="#" class="widget-opts-toggler-note"><?php _e( 'Click to Toggle Note', 'extended-widget-options' );?></a></p>
+                        <p class="widget-opts-toggle-note"><small><?php _e( 'PLEASE NOTE that the display logic you introduce is EVAL\'d directly. Anyone who has access to edit widget appearance will have the right to add any code, including malicious and possibly destructive functions. There is an optional filter <em>"widget_options_logic_override"</em> which you can use to bypass the EVAL with your own code if needed.', 'extended-widget-options' );?></small></p>
+                    </div>
+                </div><!--  end logiv tab content -->
+
+            </div><!-- end .extended-widget-opts-settings-tabs -->
+
         </div>
     <?php
     }
