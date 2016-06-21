@@ -53,7 +53,7 @@ If you like to contribute, report issue or have suggestions, you can find the de
 <strong>More information</strong>
 
 * Follow the developer <a href="https://twitter.com/phpbits" target="_blank">@Twitter</a>
-* Other <a href="https://profiles.wordpress.org/phpbits/#content-plugins">WordPress plugins</a>
+* Other <a href="https://phpbits.net/plugins/">WordPress plugins</a>
 
 == Installation ==
 
