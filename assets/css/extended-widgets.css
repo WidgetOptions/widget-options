@@ -4,6 +4,9 @@
 	padding-top: 5px; 
 	clear: both;
 }
+.so-content.panel-dialog .extended-widget-opts-form{
+	display: none;
+}
 .extended-widget-opts-form.extended-widget-opts-form-large .ui-tabs-nav .dashicons{
 	display: none;
 }
