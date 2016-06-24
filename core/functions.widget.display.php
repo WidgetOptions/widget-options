@@ -18,7 +18,6 @@ class PHPBITS_extendedWidgetsDisplay {
     function widget_display( $instance, $widget, $args ){
         global $current_user;
 
-        $return     = $instance;
         $hidden     = false;
         $opts       = ( isset( $instance[ 'extended_widget_opts-'. $widget->id ] ) ) ? $instance[ 'extended_widget_opts-'. $widget->id ] : array();
         $visibility = array( 'show' => array(), 'hide' => array() );
@@ -37,7 +36,7 @@ class PHPBITS_extendedWidgetsDisplay {
             //do return to bypass other conditions
             $hidden = apply_filters( 'extended_widget_options_home', $hidden );
             if( $hidden ){
-                $return = false;
+                return false;
             }
         }elseif ( is_home() ) { //filter for blog page
             if( isset( $visibility['misc']['blog'] ) && $visibility_opts == 'hide' ){
@@ -49,7 +48,7 @@ class PHPBITS_extendedWidgetsDisplay {
             //do return to bypass other conditions
             $hidden = apply_filters( 'extended_widget_options_blog', $hidden );
             if( $hidden ){
-                $return = false;
+                return false;
             }
 
         }elseif ( is_category() ) {
@@ -69,7 +68,7 @@ class PHPBITS_extendedWidgetsDisplay {
             //do return to bypass other conditions
             $hidden = apply_filters( 'extended_widget_options_categories', $hidden );
             if( $hidden ){
-                $return = false;
+                return false;
             }
         }elseif ( is_tax() ) {
             $term = get_queried_object();
@@ -86,7 +85,7 @@ class PHPBITS_extendedWidgetsDisplay {
             //do return to bypass other conditions
             $hidden = apply_filters( 'extended_widget_options_taxonomies', $hidden );
             if( $hidden ){
-                $return = false;
+                return false;
             }
         }elseif ( is_archive() ) {
             if( isset( $visibility['misc']['archives'] ) && $visibility_opts == 'hide' ){
@@ -98,7 +97,7 @@ class PHPBITS_extendedWidgetsDisplay {
             //do return to bypass other conditions
             $hidden = apply_filters( 'extended_widget_options_archives', $hidden );
             if( $hidden ){
-                $return = false;
+                return false;
             }
         }elseif ( is_404() ) {
             if( isset( $visibility['misc']['404'] ) && $visibility_opts == 'hide' ){
@@ -110,7 +109,7 @@ class PHPBITS_extendedWidgetsDisplay {
             //do return to bypass other conditions
             $hidden = apply_filters( 'extended_widget_options_404', $hidden );
             if( $hidden ){
-                $return = false;
+                return false;
             }
         }elseif ( is_search() ) {
             if( isset( $visibility['misc']['search'] ) && $visibility_opts == 'hide' ){
@@ -122,7 +121,7 @@ class PHPBITS_extendedWidgetsDisplay {
             //do return to bypass other conditions
             $hidden = apply_filters( 'extended_widget_options_search', $hidden );
             if( $hidden ){
-                $return = false;
+                return false;
             }
         }elseif ( is_single() && !is_page() ) {
             $type = get_post_type();
@@ -164,7 +163,7 @@ class PHPBITS_extendedWidgetsDisplay {
             $hidden = apply_filters( 'extended_widget_options_post_category', $hidden );
 
             if( $hidden ){
-                $return = false;
+                return false;
             }
             // echo $type;
         }elseif ( is_page() ) {
@@ -192,7 +191,7 @@ class PHPBITS_extendedWidgetsDisplay {
             //do return to bypass other conditions
             $hidden = apply_filters( 'extended_widget_options_page', $hidden );
             if( $hidden ){
-                $return = false;
+                return false;
             }
         }
         
@@ -203,20 +202,20 @@ class PHPBITS_extendedWidgetsDisplay {
             $display_logic = stripslashes( trim( $opts['class']['logic'] ) );
             $display_logic = apply_filters( 'widget_options_logic_override', $display_logic );
             if ( $display_logic === false ){
-                $return = false;
+                return false;
             }
             if ( $display_logic === true ){
-                $return = $instance;
+                return true;
             }
             if ( stristr($display_logic,"return")===false ){
                 $display_logic="return (" . $display_logic . ");";
             }
             if ( !eval( $display_logic ) ){
-                $return = false;
+                return false;
             }
         }
-        
-        return $return;
+
+        return $instance;
     }
 
     //add custom widget classes
