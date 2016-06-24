@@ -211,11 +211,11 @@ class PHPBITS_extendedWidgetsDisplay {
             if ( stristr($display_logic,"return")===false ){
                 $display_logic="return (" . $display_logic . ");";
             }
-            if ( eval( $display_logic ) ){
-                $return = $instance;
+            if ( !eval( $display_logic ) ){
+                $return = false;
             }
         }
-
+        
         return $return;
     }
 
