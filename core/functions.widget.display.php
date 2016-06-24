@@ -206,7 +206,7 @@ class PHPBITS_extendedWidgetsDisplay {
                 $return = false;
             }
             if ( $display_logic === true ){
-                $return = true;
+                $return = $instance;
             }
             if ( stristr($display_logic,"return")===false ){
                 $display_logic="return (" . $display_logic . ");";
