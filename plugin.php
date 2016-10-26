@@ -4,8 +4,8 @@
 Plugin Name: Widget Options
 Plugin URI: https://wordpress.org/plugins/widget-options
 Description: Additional Widget options for better widget control. Get <strong><a href="https://phpbits.net/plugin/extended-widget-options/" target="_blank" >Extended Widget Options for WordPress</a></strong> for complete widget controls. Thanks!
-Version: 2.0.1
-Author: phpbits
+Version: 3.0
+Author: Phpbits Creative Studio
 Author URI: https://phpbits.net/
 Text Domain: widget-options
 */
@@ -25,6 +25,7 @@ require_once( dirname( __FILE__ ) . '/core/functions.option.tabs.php');
 require_once( dirname( __FILE__ ) . '/core/functions.widget.display.php');
 require_once( dirname( __FILE__ ) . '/core/functions.notices.php');
 require_once( dirname( __FILE__ ) . '/core/functions.settings.php');
+require_once( dirname( __FILE__ ) . '/core/functions.new.settings.php');
 require_once( dirname( __FILE__ ) . '/core/function.transient.php');
 
 /**
