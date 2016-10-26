@@ -2,14 +2,14 @@
 	if( $('.extended-widget-opts-tabs').length > 0 ){
 		extended_widget_opts_init( '', 'loaded' );
 	}
-	
+
 	$(document).ready(function(){
 		$(".widget-liquid-right .widget, .inactive-sidebar .widget, #accordion-panel-widgets .customize-control-widget_form").each(function (i, widget) {
 	    	extended_widget_opts_init( '', 'loaded' );
 	  	});
 	  	$(document).on('widget-added', function(event, widget) {
 		    extended_widget_opts_init( widget, 'added' );
-			
+
 		});
 		$(document).on('widget-updated', function(event, widget) {
 			extended_widget_opts_init( widget, 'updated' );
@@ -29,11 +29,15 @@
 		//admin settings
 		$(document).on( 'click', '.opts-add-class-btn',function(e){
 			getVal = $('.opts-add-class-txtfld').val();
+			var fname = 'extwopts_class_settings[classlists][]';
+			if( $(this).hasClass('widgetopts-add-class-btn') ){
+				fname = 'classes[classlists][]';
+			}
 			if( getVal.length > 0 ){
-				$('#opts-predefined-classes ul').append('<li><input type="hidden" name="extwopts_class_settings[classlists][]" value="'+ getVal +'" /><span class"opts-li-value">'+ getVal +'</span> <a href="#" class="opts-remove-class-btn"><span class="dashicons dashicons-dismiss"></span></a></li>');	
+				$('#opts-predefined-classes ul').append('<li><input type="hidden" name="'+ fname +'" value="'+ getVal +'" /><span class"opts-li-value">'+ getVal +'</span> <a href="#" class="opts-remove-class-btn"><span class="dashicons dashicons-dismiss"></span></a></li>');
 				$('.opts-add-class-txtfld').val('');
 			}
-			
+
 			e.preventDefault();
 			e.stopPropagation();
 		} );
@@ -71,7 +75,7 @@
 			selected_visibility = 0;
 			selected_settings   = 0;
 		}
-	    
+
 	    if( '' != widget ){
 	    	if( $( '#' + widget.attr('id') ).find('.extended-widget-opts-tabs').length > 0 ){
 	    		$( '#' + widget.attr('id') ).find('.extended-widget-opts-tabs').tabs({ active: selected });
@@ -117,4 +121,3 @@
 		});
 	}
 })( jQuery, window, document );
-

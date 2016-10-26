@@ -506,7 +506,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 						<?php _e( 'Display Widget Logic will let you control where you want the widgets to appear using WordPress conditional tags.', 'extended-widget-options' );?>
 					</p>
 					<p>
-						<strong>Please note</strong> that the display logic you introduce is EVAL'd directly. Anyone who has access to edit widget appearance will have the right to add any code, including malicious and possibly destructive functions. There is an optional filter <code>extended_widget_options_logic_override</code> which you can use to bypass the EVAL with your own code if needed.
+						<?php _e( '<strong>Please note</strong> that the display logic you introduce is EVAL\'d directly. Anyone who has access to edit widget appearance will have the right to add any code, including malicious and possibly destructive functions. There is an optional filter <code>widget_options_logic_override</code> which you can use to bypass the EVAL with your own code if needed.', 'extended-widget-options' );?>
 					</p>
 					<table class="form-table widgetopts-settings-section">
 						<tr>
