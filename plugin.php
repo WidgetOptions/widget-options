@@ -40,5 +40,50 @@ if( !function_exists( 'widgetopts_install' ) ){
 		if( !get_option( 'widgetopts_installDate' ) ){
 			add_option( 'widgetopts_installDate', date( 'Y-m-d h:i:s' ) );
 		}
+
+		if( !get_option( '_widgetopts_default_registered_' ) ){
+			//activate free version modules
+			add_option( 'widgetopts_tabmodule-visibility', 'activate' );
+			add_option( 'widgetopts_tabmodule-devices', 'activate' );
+			add_option( 'widgetopts_tabmodule-alignment', 'activate' );
+			add_option( 'widgetopts_tabmodule-hide_title', 'activate' );
+			add_option( 'widgetopts_tabmodule-classes', 'activate' );
+			add_option( 'widgetopts_tabmodule-logic', 'activate' );
+
+			//add free version settings
+			$defaults = array(
+					'visibility' 	=> 	array(
+						'post_type'		=> '1',
+						'taxonomies'	=> '1',
+						'misc'			=> '1'
+					),
+					'classes' 		=> 	array(
+						'id'			=> '1',
+						'type'			=> 'both'
+					),
+			);
+
+			//upgraded settings from previous version
+			$options    = get_option('extwopts_class_settings');
+			if( isset( $options['class_field'] ) ){
+				$defaults['classes']['type'] = $options['class_field'];
+			}
+			if( isset( $options['classlists'] ) ){
+				$defaults['classes']['classlists'] = $options['classlists'];
+			}
+
+			add_option( 'widgetopts_tabmodule-settings', serialize( $defaults ) );
+
+			add_option( '_widgetopts_default_registered_', '1' );
+		}
 	}
+}
+
+//add settings link on plugin page
+if( !function_exists( 'extended_widget_opts_filter_plugin_actions' ) ){
+  add_action( 'plugin_action_links_' . plugin_basename(__FILE__) , 'extended_widget_opts_filter_plugin_actions' );
+  function extended_widget_opts_filter_plugin_actions($links){
+    $links[]  = '<a href="'. esc_url( admin_url( 'options-general.php?page=widgetopts_plugin_settings' ) ) .'">' . __( 'Settings', 'extended-widget-options' ) . '</a>';
+    return $links;
+  }
 }
