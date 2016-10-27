@@ -9,8 +9,8 @@ class PHPBITS_extendedWidgets {
         add_action( 'admin_enqueue_scripts', array( &$this,'enqueue_scripts') );
         add_action( 'customize_controls_enqueue_scripts', array( &$this,'enqueue_scripts') );
         if ( is_admin() ){
-            add_filter( 'widget_update_callback', array( &$this,'ajax_update_callback'), 10, 3);  
-            add_action( 'in_widget_form', array( &$this, 'widget_options'), 10, 3 ); 
+            add_filter( 'widget_update_callback', array( &$this,'ajax_update_callback'), 10, 3);
+            add_action( 'in_widget_form', array( &$this, 'widget_options'), 10, 3 );
         }
     }
 
@@ -25,6 +25,8 @@ class PHPBITS_extendedWidgets {
             '',
             true
         );
+
+        wp_localize_script( 'jquery-extended-widgets-options', 'widgetopts10n', array( 'opts_page' => esc_url( admin_url( 'options-general.php?page=widgetopts_plugin_settings' ) ), 'translation' => array( 'manage_settings' => __( 'Manage Widget Options', 'extended-widget-options' ) )) );
     }
 
     function widget_options( $widget, $return, $instance ){
@@ -57,16 +59,16 @@ class PHPBITS_extendedWidgets {
         </div><!-- end .extended-widget-opts-form -->
         <?php
     }
-    
+
     /*
      * Update Options
      */
-    function ajax_update_callback($instance, $new_instance, $this_widget){  
+    function ajax_update_callback($instance, $new_instance, $this_widget){
         if( isset($_POST['extended_widget_opts_name']) ){
             $name 		= sanitize_text_field( $_POST['extended_widget_opts_name'] );
             $options 	= $_POST[ $name ];
             $options    = $this->sanitize( $options );
-            
+
             if( isset( $options['extended_widget_opts'] ) ){
             	// update_option( $name , $options['extended_widget_opts'] );
                 $instance[ $name ] = $options['extended_widget_opts'];

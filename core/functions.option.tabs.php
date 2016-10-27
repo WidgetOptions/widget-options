@@ -632,6 +632,12 @@ class PHPBITS_extendedWidgetsTabs {
                                                     </div>
                                                 </td>
                                             </tr>
+                                        <?php }else{ ?>
+                                            <tr valign="top">
+                                                <td scope="row">
+                                                    <small><a href="<?php echo esc_url( admin_url( 'options-general.php?page=widgetopts_plugin_settings&module=classes' ) );?>" target="_blank"><?php _e( 'Click here to create predefined classes.', 'extended-widget-options' );?></a></small>
+                                                </td>
+                                            </tr>
                                         <?php } ?>
                                 <?php } ?>
                             </tbody>

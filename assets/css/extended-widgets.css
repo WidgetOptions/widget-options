@@ -150,6 +150,11 @@
 .extended-widget-opts-tabcontent-gopro li{
 	font-size: 12px;
 }
+body .extended-widget-opts-tabs .extended-widget-gopro-tab-alignment a{
+	font-weight: bold !important;
+	padding-left: 9px !important;
+	padding-right: 9px !important;
+}
 
 /* customizer fix */
 #customize-theme-controls .ui-tabs .ui-tabs-panel.extended-widget-opts-tabcontent{
@@ -170,6 +175,29 @@
 }
 
 /** Settings Page **/
+.widgetopts-settings-desc{
+	margin: 20px 200px 20px 0;
+	min-height: 50px;
+	color: #555d66;
+	font-size: 15px;
+	line-height: 22px;
+}
+.widgetopts-mascot{
+	display: block;
+	text-align: center;
+	height: 150px;
+	width: 150px;
+	background: url('../images/logo-mascot.png');
+	-webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+.widgetopts-badge-settings{
+	position: absolute;
+	top: 10px;
+	right: 10px;
+}
 .opts-classes-setting-table tr strong{
 	display: inline-block;
 	min-width: 150px;
@@ -413,7 +441,7 @@ p.widgetopts-settings-section{
     text-decoration: none;
 }
 .widgetopts-pro-label{
-	padding: 2px 5px;
+	padding: 2px 4px;
     position: absolute;
     right: 6px;
     top: 5px;
@@ -425,6 +453,9 @@ p.widgetopts-settings-section{
     color: #5e5018;
     text-transform: uppercase;
 }
+.widgetopts-pro-label .dashicons{
+	font-size: 18px;
+}
 .grid .widgetopts-list-content-footer, .grid #widgetopts-save {
     display: none;
 }
@@ -432,5 +463,48 @@ p.widgetopts-settings-section{
 @media ( max-width: 1400px ) {
 	.widgetopts-module-card {
 		max-width: 49%;
+	}
+}
+@media ( max-width: 782px ) {
+	.grid .widgetopts-module-settings-container {
+		margin-left: 0px;
+		top: 0px;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 100000; /* to get above wp admin bar */
+	}
+	.grid .widgetopts-module-settings-content-container {
+		padding: 15px 30px;
+	}
+	.widgetopts-module-settings-content .widgetopts-dashicons{
+		display: none;
+	}
+}
+@media (max-width: 500px){
+	.widgetopts-module-card {
+	    max-width: 100%;
+	    padding-right: 0;
+	    padding-bottom: 10px;
+	}
+	.widgetopts-settings-desc{
+		margin-right: 70px;
+	}
+	.widgetopts-badge-settings{
+		top: 115px;
+	}
+	.widgetopts-mascot{
+		height: 69px;
+		width: 69px;
+	}
+	.widgetopts-poststuff #post-body #postbox-container-2{
+		padding-right: 0px;
+		border-right: 0px;
+	}
+	.widgetopts-poststuff #post-body #postbox-container-1{
+		padding-left: 0px;
+	}
+	.grid .widgetopts-module-settings-container{
+		margin-left: 0px;
 	}
 }

@@ -41,6 +41,7 @@
 			e.preventDefault();
 			e.stopPropagation();
 		} );
+		
 		$(document).on( 'click', '.opts-remove-class-btn',function(e){
 			$(this).parent('li').fadeOut('fast',function(){
 				$(this).remove();
@@ -48,6 +49,10 @@
 			e.preventDefault();
 			e.stopPropagation();
 		} );
+
+		if( $('.wp-admin.widgets-php .wrap a.page-title-action').length > 0 ){
+			$('.wp-admin.widgets-php .wrap a.page-title-action').after('<a href="'+ widgetopts10n.opts_page +'" class="page-title-action hide-if-no-customize">'+ widgetopts10n.translation.manage_settings +'</a>');
+		}
 	});
 
 	function extended_widget_opts_init( widget, action ){

@@ -136,10 +136,17 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 			<div class="wrap">
 				<h1>
 					<?php _e( 'Widget Options', 'extended-widget-options' ); ?>
-					<a href="<?php echo esc_url( apply_filters( 'widget_options_support_url', 'https://phpbits.net/support/' ) ); ?>" target="_blank" class="page-title-action"><?php _e( 'Support', 'extended-widget-options' ); ?></a>
+					<a href="<?php echo esc_url( apply_filters( 'widget_options_support_url', 'https://wordpress.org/support/plugin/widget-options/' ) ); ?>" target="_blank" class="page-title-action"><?php _e( 'Support', 'extended-widget-options' ); ?></a>
 				</h1>
 
 				<div id="widgetopts-settings-messages-container"></div>
+
+				<div class="widgetopts-settings-desc">
+					<?php _e( 'Enable or disable any widget options tabs using this option. Some features has settings configuration that you can take advantage of to get the most out of Extended Widget Options on fully managing your widgets.', 'extended-widget-options' );?>
+				</div>
+				<div class="widgetopts-badge widgetopts-badge-settings">
+					<span class="widgetopts-mascot"></span>
+				</div>
 
 				<div id="poststuff" class="widgetopts-poststuff">
 					<div id="post-body" class="metabox-holder columns-2 hide-if-no-js">
@@ -532,7 +539,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 				<div class="widgetopts-module-card-content">
 					<a href="http://widget-options.com/" target="_blank" class="widgetopts-pro-upsell"></a>
 					<h2><?php _e( 'Link Widget', 'extended-widget-options' );?></h2>
-					<div class="widgetopts-pro-label"><?php _e( 'Pro', 'extended-widget-options' );?></div>
+					<div class="widgetopts-pro-label"><span class="dashicons dashicons-lock"></span></div>
 					<p class="widgetopts-module-desc">
 						<?php _e( 'Add custom links to any widgets to redirect users on click action.', 'extended-widget-options' );?>
 					</p>
@@ -545,7 +552,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 				<div class="widgetopts-module-card-content">
 					<a href="http://widget-options.com/" target="_blank" class="widgetopts-pro-upsell"></a>
 					<h2><?php _e( 'Fixed Widget', 'extended-widget-options' );?></h2>
-					<div class="widgetopts-pro-label"><?php _e( 'Pro', 'extended-widget-options' );?></div>
+					<div class="widgetopts-pro-label"><span class="dashicons dashicons-lock"></span></div>
 					<p class="widgetopts-module-desc">
 						<?php _e( 'Add fixed positioning to each widget when the page is scrolled.', 'extended-widget-options' );?>
 					</p>
@@ -558,7 +565,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 				<div class="widgetopts-module-card-content">
 					<a href="http://widget-options.com/features/responsive-wordpress-widget-columns/" target="_blank" class="widgetopts-pro-upsell"></a>
 					<h2><?php _e( 'Column Display', 'extended-widget-options' );?></h2>
-					<div class="widgetopts-pro-label"><?php _e( 'Pro', 'extended-widget-options' );?></div>
+					<div class="widgetopts-pro-label"><span class="dashicons dashicons-lock"></span></div>
 					<p class="widgetopts-module-desc">
 						<?php _e( 'Manage your widgets display as columns, set different columns for specific devices.', 'extended-widget-options' );?>
 					</p>
@@ -571,7 +578,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 				<div class="widgetopts-module-card-content">
 					<a href="http://widget-options.com/features/restrict-wordpress-widgets-per-user-roles/" target="_blank" class="widgetopts-pro-upsell"></a>
 					<h2><?php _e( 'User Roles Restriction', 'extended-widget-options' );?></h2>
-					<div class="widgetopts-pro-label"><?php _e( 'Pro', 'extended-widget-options' );?></div>
+					<div class="widgetopts-pro-label"><span class="dashicons dashicons-lock"></span></div>
 					<p class="widgetopts-module-desc">
 						<?php _e( 'Restrict each widgets visibility for each user roles at ease via checkboxes.', 'extended-widget-options' );?>
 					</p>
@@ -584,7 +591,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 				<div class="widgetopts-module-card-content">
 					<a href="http://widget-options.com/features/restrict-wordpress-widgets-per-days-date-range/" target="_blank" class="widgetopts-pro-upsell"></a>
 					<h2><?php _e( 'Days & Date Range', 'extended-widget-options' );?></h2>
-					<div class="widgetopts-pro-label"><?php _e( 'Pro', 'extended-widget-options' );?></div>
+					<div class="widgetopts-pro-label"><span class="dashicons dashicons-lock"></span></div>
 					<p class="widgetopts-module-desc">
 						<?php _e( 'Restrict widget visibility in any day of the week and/or specific date range.', 'extended-widget-options' );?>
 					</p>
@@ -597,7 +604,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 				<div class="widgetopts-module-card-content">
 					<a href="http://widget-options.com/features/wordpress-widgets-styling/" target="_blank" class="widgetopts-pro-upsell"></a>
 					<h2><?php _e( 'Custom Styling', 'extended-widget-options' );?></h2>
-					<div class="widgetopts-pro-label"><?php _e( 'Pro', 'extended-widget-options' );?></div>
+					<div class="widgetopts-pro-label"><span class="dashicons dashicons-lock"></span></div>
 					<p class="widgetopts-module-desc">
 						<?php _e( 'Set custom widget colors and styling to make your widget stand-out more.', 'extended-widget-options' );?>
 					</p>
@@ -610,7 +617,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 				<div class="widgetopts-module-card-content">
 					<a href="http://widget-options.com/" target="_blank" class="widgetopts-pro-upsell"></a>
 					<h2><?php _e( 'Animation', 'extended-widget-options' );?></h2>
-					<div class="widgetopts-pro-label"><?php _e( 'Pro', 'extended-widget-options' );?></div>
+					<div class="widgetopts-pro-label"><span class="dashicons dashicons-lock"></span></div>
 					<p class="widgetopts-module-desc">
 						<?php _e( 'Add CSS animation effect to your widgets on page load or page scroll.', 'extended-widget-options' );?>
 					</p>
@@ -623,7 +630,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 				<div class="widgetopts-module-card-content">
 					<a href="http://widget-options.com/features/post-types-taxonomies-widget-visibility/" target="_blank" class="widgetopts-pro-upsell"></a>
 					<h2><?php _e( 'Extended Taxonomy Terms', 'extended-widget-options' );?></h2>
-					<div class="widgetopts-pro-label"><?php _e( 'Pro', 'extended-widget-options' );?></div>
+					<div class="widgetopts-pro-label"><span class="dashicons dashicons-lock"></span></div>
 					<p class="widgetopts-module-desc">
 						<?php _e( 'Extend each widget visibility for custom post types taxonomies and terms.', 'extended-widget-options' );?>
 					</p>
@@ -636,7 +643,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 				<div class="widgetopts-module-card-content">
 					<a href="http://widget-options.com/" target="_blank" class="widgetopts-pro-upsell"></a>
 					<h2><?php _e( 'Disable Widgets', 'extended-widget-options' );?></h2>
-					<div class="widgetopts-pro-label"><?php _e( 'Pro', 'extended-widget-options' );?></div>
+					<div class="widgetopts-pro-label"><span class="dashicons dashicons-lock"></span></div>
 					<p class="widgetopts-module-desc">
 						<?php _e( 'Disable several widgets that you won\'t be using to lessen widget dashboard space.', 'extended-widget-options' );?>
 					</p>
@@ -649,7 +656,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 				<div class="widgetopts-module-card-content">
 					<a href="http://widget-options.com/" target="_blank" class="widgetopts-pro-upsell"></a>
 					<h2><?php _e( 'Permission', 'extended-widget-options' );?></h2>
-					<div class="widgetopts-pro-label"><?php _e( 'Pro', 'extended-widget-options' );?></div>
+					<div class="widgetopts-pro-label"><span class="dashicons dashicons-lock"></span></div>
 					<p class="widgetopts-module-desc">
 						<?php _e( 'Hide widget options tabs below each widgets to selected user roles.', 'extended-widget-options' );?>
 					</p>
@@ -662,7 +669,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 				<div class="widgetopts-module-card-content">
 					<a href="http://widget-options.com/" target="_blank" class="widgetopts-pro-upsell"></a>
 					<h2><?php _e( 'Shortcodes', 'extended-widget-options' );?></h2>
-					<div class="widgetopts-pro-label"><?php _e( 'Pro', 'extended-widget-options' );?></div>
+					<div class="widgetopts-pro-label"><span class="dashicons dashicons-lock"></span></div>
 					<p class="widgetopts-module-desc">
 						<?php _e( 'Display any sidebars and widgets anywhere using shortcodes.', 'extended-widget-options' );?>
 					</p>
@@ -675,7 +682,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 				<div class="widgetopts-module-card-content">
 					<a href="http://widget-options.com/" target="_blank" class="widgetopts-pro-upsell"></a>
 					<h2><?php _e( 'SiteOrigin Pagebuilder Support', 'extended-widget-options' );?></h2>
-					<div class="widgetopts-pro-label"><?php _e( 'Pro', 'extended-widget-options' );?></div>
+					<div class="widgetopts-pro-label"><span class="dashicons dashicons-lock"></span></div>
 					<p class="widgetopts-module-desc">
 						<?php _e( 'Extends widget options functionality to SiteOrigin Pagebuilder Plugin.', 'extended-widget-options' );?>
 					</p>
@@ -714,7 +721,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 				<h3 class="hndle ui-sortable-handle"><span><?php _e( 'Get Extended Widget Options', 'extended-widget-options' );?></span></h3>
 				<div class="inside">
 					<p>
-						<?php _e( 'Get the world\'s most complete widget management and get best out of your widgets with <a href="" target="_blank">Extended Widget Options</a> including: ', 'extended-widget-options' );?>
+						<?php _e( '<strong>Unlock all features!</strong> Get the world\'s most complete widget management and get best out of your widgets with <a href="" target="_blank">Extended Widget Options</a> including: ', 'extended-widget-options' );?>
 					</p>
 					<ul style="list-style: outside; padding-left: 15px;">
 						<li>
