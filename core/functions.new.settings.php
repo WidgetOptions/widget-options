@@ -36,7 +36,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 			add_action( 'widgetopts_module_sidebar', array( $this, 'upgrade_pro' ) );
 			add_action( 'widgetopts_module_sidebar', array( $this, 'optin' ) );
 			add_action( 'widgetopts_module_sidebar', array( $this, 'support_box' ) );
-			// add_action( 'widgetopts_module_sidebar', array( $this, 'shortcode' ) );
+			add_action( 'widgetopts_module_sidebar', array( $this, 'more_plugins' ) );
 			// add_action( 'widgetopts_module_cards', array( $this, 'upsell_pro' ) );
 			add_action( 'wp_ajax_widgetopts_ajax_settings',  array( $this, 'ajax_request' ) );
 			// add_action( 'admin_init' , array(&$this,'on_load_page' ));
@@ -754,7 +754,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 			<div id="widgetopts-sidebar-widget-optin" class="postbox widgetopts-sidebar-widget">
 				<h3 class="hndle ui-sortable-handle"><span><?php _e( 'Get Widget Management Tips', 'extended-widget-options' );?></span></h3>
 				<div class="inside">
-					<form target="_blank" method="post">
+					<form action="https://phpbits.us12.list-manage.com/subscribe/post?u=5597485458f20da5305e44c55&amp;id=65b77b0af4" method="post" class="validate" target="_blank" novalidate>
 						<p>
 							<?php _e( 'Get additional tips and resources on how to manage your widgets better + latest news and release updates of Widget Options plugin.', 'extended-widget-options' );?>
 						</p>
@@ -763,7 +763,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 							<input name="EMAIL" class="required email widefat" placeholder="<?php _e( 'email@domain.com', 'extended-widget-options' );?>" />
 						</p>
 						<p>
-							<a class="button-secondary" href="" target="_blank"><?php _e( 'Subscribe', 'extended-widget-options' );?></a>
+							<button class="button-secondary"><?php _e( 'Subscribe', 'extended-widget-options' );?></button>
 						</p>
 					</form>
 				</div>
@@ -785,6 +785,49 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 					</p>
 					<p>
 						<a class="button-secondary" href="http://widget-options.com/?utm_source=wordpressadmin&amp;utm_medium=widget&amp;utm_campaign=widgetoptsprocta" target="_blank"><?php _e( 'Get Extended Widget Options', 'extended-widget-options' );?></a>
+					</p>
+				</div>
+			</div>
+		<?php }
+
+		function more_plugins(){ ?>
+			<div id="widgetopts-sidebar-widget-more_plugins" class="postbox widgetopts-sidebar-widget">
+				<h3 class="hndle ui-sortable-handle"><span><?php _e( 'More Free Plugins', 'extended-widget-options' );?></span></h3>
+				<div class="inside">
+					<table class="form-table">
+						<tbody>
+							<tr valign="top">
+								<td scope="row">
+									<a href="https://wordpress.org/plugins/forty-four/" target="_blank">
+										<span class="dashicons dashicons-editor-unlink"></span><br />
+										<?php _e( 'Forty Four - 404 Page and 301 SEO Redirection Plugin', 'extended-widget-options' );?>
+									</a>
+								</td>
+								<td scope="row">
+									<a href="https://wordpress.org/plugins/easy-profile-widget/" target="_blank">
+										<span class="dashicons dashicons-admin-users"></span><br />
+										<?php _e( 'Easy Profile Info Widget Plugin', 'extended-widget-options' );?>
+									</a>
+								</td>
+							</tr>
+							<tr valign="top">
+								<td scope="row">
+									<a href="https://wordpress.org/plugins/wp-image-hover-lite/" target="_blank">
+										<span class="dashicons dashicons-share"></span><br />
+										<?php _e( 'Social Icons Image Hover', 'extended-widget-options' );?>
+									</a>
+								</td>
+								<td scope="row">
+									<a href="https://wordpress.org/plugins/wp-author-box-lite/" target="_blank">
+										<span class="dashicons dashicons-nametag"></span><br />
+										<?php _e( 'Author Box Plugin', 'extended-widget-options' );?>
+									</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<p>
+						<a class="button-secondary" href="https://profiles.wordpress.org/phpbits/#content-plugins" target="_blank"><?php _e( 'View all Free Plugins', 'extended-widget-options' );?></a>
 					</p>
 				</div>
 			</div>

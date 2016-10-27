@@ -147,13 +147,31 @@
 	text-decoration: none;
 }
 
+.extended-widget-opts-tabs .ui-tabs-nav li.ui-tabs-active.extended-widget-gopro-tab-alignment a{
+	background-color: #FFF1B8 !important;
+}
+.extended-widget-opts-tabcontent-gopro{
+	background-color: #FFF1B8 !important;
+	color: #444;
+	margin-bottom: 15px;
+}
 .extended-widget-opts-tabcontent-gopro li{
 	font-size: 12px;
+	line-height: 24px;
 }
 body .extended-widget-opts-tabs .extended-widget-gopro-tab-alignment a{
 	font-weight: bold !important;
 	padding-left: 9px !important;
 	padding-right: 9px !important;
+}
+.widgetopts-unlock-features{
+	text-align: center;
+	font-size: 16px;
+    font-weight: bold;
+}
+.widgetopts-unlock-features .dashicons{
+	font-size: 25px;
+	margin-right: 4px;
 }
 
 /* customizer fix */
@@ -225,6 +243,32 @@ body .extended-widget-opts-tabs .extended-widget-gopro-tab-alignment a{
 }
 .fortyfourwp-banners img {
     max-width: 100%;
+}
+.widgetopts-sidebar-widget .email{
+	border: 1px solid #ddd;
+}
+#widgetopts-sidebar-widget-more_plugins table td{
+	width: 50%;
+	vertical-align: top;
+	text-align: center;
+}
+#widgetopts-sidebar-widget-more_plugins .dashicons{
+	font-size: 30px;
+	height: 30px;
+	width: 30px;
+	margin-bottom: 5px;
+}
+#widgetopts-sidebar-widget-more_plugins td a{
+	text-decoration: none;
+	color: #444;
+	background: #f3f3f3;
+	display: block;
+	padding: 8px 5px;
+	border-radius: 3px;
+	font-size: 13px;
+}
+#widgetopts-sidebar-widget-more_plugins td a:hover{
+	background: #ddd;
 }
 
 /** Modular Settings Page **/

@@ -680,26 +680,48 @@ class PHPBITS_extendedWidgetsTabs {
 
     function gopro_alignment( $args ){ ?>
         <div id="extended-widget-opts-tab-<?php echo $args['id'];?>-gopro" class="extended-widget-opts-tabcontent extended-widget-opts-tabcontent-gopro">
-            <p><strong><?php _e( 'Get a Fully-Packed Widget Options and maximize your widget control!', 'widget-options' );?></strong></p>
-            <p><em><?php _e( 'Aside from the free features already available, you will get the following features. ', 'widget-options' );?></em></p>
+            <p class="widgetopts-unlock-features">
+                <span class="dashicons dashicons-lock"></span><?php _e( 'Unlock all Options', 'widget-options' );?>
+            </p>
+            <p>
+                <?php _e( 'Get the world\'s most complete widget management and get the best out of your widgets! Upgrade to extended version to get:', 'widget-options' );?>
+            </p>
             <ul>
-                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'Display Widget Columns', 'widget-options' );?></li>
-                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'More Alignment Options', 'widget-options' );?></li>
-                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'User Roles Visibility Options', 'widget-options' );?></li>
-                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'Show or Hide widgets for specific day', 'widget-options' );?></li>
-                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'Show or Hide widgets for date range', 'widget-options' );?></li>
-                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'Show or Hide widgets for specific days on the given date range', 'widget-options' );?></li>
+                <li>
+                    <span class="dashicons dashicons-lock"></span> <?php _e( 'Animation Options', 'widget-options' );?>
+                </li>
+                <li>
+                    <span class="dashicons dashicons-lock"></span> <?php _e( 'Custom Styling Options', 'widget-options' );?>
+                </li>
+                <li>
+                    <span class="dashicons dashicons-lock"></span> <?php _e( 'Column Display', 'widget-options' );?>
+                </li>
+                <li>
+                    <span class="dashicons dashicons-lock"></span> <?php _e( 'User Roles Visibility Restriction', 'widget-options' );?>
+                </li>
+                <li>
+                    <span class="dashicons dashicons-lock"></span> <?php _e( 'Fixed/Sticky Widget Options', 'widget-options' );?>
+                </li>
+                <li>
+                    <span class="dashicons dashicons-lock"></span> <?php _e( 'Days and Date Range Restriction', 'widget-options' );?>
+                </li>
+                <li>
+                    <span class="dashicons dashicons-lock"></span> <?php _e( 'Link Widget Options', 'widget-options' );?>
+                </li>
+                <li>
+                    <span class="dashicons dashicons-lock"></span> <?php _e( 'Shortcodes Options', 'widget-options' );?>
+                </li>
+                <li>
+                    <span class="dashicons dashicons-lock"></span> <?php _e( 'Extended Taxonomy and Post Types Support', 'widget-options' );?>
+                </li>
+                <li>
+                    <span class="dashicons dashicons-lock"></span> <?php _e( 'Disable Widgets and Permissions', 'widget-options' );?>
+                </li>
+                <li>
+                    <span class="dashicons dashicons-lock"></span> <?php _e( 'Pagebuilder by SiteOrigin Support', 'widget-options' );?>
+                </li>
             </ul>
-            <p><strong><?php _e( 'Brand New Features added on version 2.0', 'widget-options' );?></strong></p>
-            <ul>
-                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'Widget Styling', 'widget-options' );?></li>
-                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'Post & Post Types Extended Terms Support', 'widget-options' );?></li>
-                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'Display Widget Logic', 'widget-options' );?></li>
-                <li><span class="dashicons dashicons-yes"></span> <?php _e( 'and other improvements...', 'widget-options' );?></li>
-            </ul>
-            <p><span class="dashicons dashicons-plus"></span> <strong><?php _e( 'PLUGIN LIFETIME UPDATES', 'widget-options' );?></strong></p>
-
-            <p><strong><a href="https://phpbits.net/plugin/extended-widget-options/" class="widget-opts-learnmore" target="_blank"><?php _e( 'Learn More', 'widget-options' );?> <span class="dashicons dashicons-arrow-right-alt"></span></a></strong></p>
+            <p><strong><a href="http://widget-options.com/?utm_source=wordpressadmin&utm_medium=widgettabs&utm_campaign=widgetoptsprotab" class="button-primary" target="_blank"><?php _e( 'Learn More', 'widget-options' );?></a></strong></p>
         </div>
     <?php
     }
