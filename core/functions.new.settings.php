@@ -312,7 +312,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 				<div class="widgetopts-module-card-content">
 					<h2><?php _e( 'Custom Alignment', 'extended-widget-options' );?></h2>
 					<p class="widgetopts-module-desc">
-						<?php _e( 'Assign custom alignments on each widgets for desktop, table and/or mobile devices.', 'extended-widget-options' );?>
+						<?php _e( 'Easily assign custom alignments on each widgets which will be relected on all devices.', 'extended-widget-options' );?>
 					</p>
 					<?php //print_r( $visibility );?>
 					<div class="widgetopts-module-actions hide-if-no-js">
@@ -331,7 +331,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 					<span class="dashicons widgetopts-dashicons widgetopts-no-top dashicons-editor-aligncenter"></span>
 					<h3 class="widgetopts-modal-header"><?php _e( 'Custom Alignment', 'extended-widget-options' );?></h3>
 					<p>
-						<?php _e( 'Custom alignment widget options will allow you to assign different content alignments for each widgets on specific devices. You can choose whether you want them to be left, right, justify or centered aligned on desktop, tablet or mobile devices.', 'extended-widget-options' );?>
+						<?php _e( 'Custom alignment widget options will allow you to assign different content alignments for each widgets. You can choose whether you want them to be left, right, justify or centered aligned.', 'extended-widget-options' );?>
 					</p>
 					<p class="widgetopts-settings-section">
 						<?php _e( 'No additional settings available.', 'extended-widget-options' );?>

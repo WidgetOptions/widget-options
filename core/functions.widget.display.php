@@ -32,11 +32,33 @@ class PHPBITS_extendedWidgetsDisplay {
 
         add_filter( 'widget_display_callback', array( &$this, 'widget_display' ), 50, 3 );
         add_filter( 'dynamic_sidebar_params', array( &$this,'add_classes_to_widget' ) );
+        add_filter( 'widget_title', array( &$this,'remove_widget_title' ), 10, 4 );
         add_action( 'wp_enqueue_scripts', array( &$this,'enqueue' ) );
     }
 
     function enqueue(){
         wp_enqueue_style( 'ext-widget-opts', plugins_url( 'assets/css/extended-widget-options.css' , dirname(__FILE__) ) , array(), null );
+    }
+
+    function remove_widget_title( $widget_title, $instance, $widget_id ) {
+        // print_r( $instance );
+    	if ( 'activate' == $this->widgetopts_tabs['hide_title'] ){
+            foreach ( $instance as $key => $value) {
+                if( substr( $key, 0, 20 ) == 'extended_widget_opts' ){
+                    $opts       = ( isset( $instance[ $key ] ) ) ? $instance[ $key ] : array();
+
+                    if( isset( $opts['class'] ) && isset( $opts['class']['title'] ) && '1' == $opts['class']['title'] ){
+                        return;
+                    }
+
+                    break;
+                }
+            }
+            return $widget_title;
+        }else{
+            return ( $widget_title );
+        }
+
     }
 
     function widget_display( $instance, $widget, $args ){
