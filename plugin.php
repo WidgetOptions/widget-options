@@ -3,7 +3,7 @@
 /*
 Plugin Name: Widget Options
 Plugin URI: https://wordpress.org/plugins/widget-options
-Description: Additional Widget options for better widget control. Get <strong><a href="https://phpbits.net/plugin/extended-widget-options/" target="_blank" >Extended Widget Options for WordPress</a></strong> for complete widget controls. Thanks!
+Description: Additional Widget options for better widget control. Get <strong><a href="http://widget-options.com/" target="_blank" >Extended Widget Options for WordPress</a></strong> for complete widget controls. Thanks!
 Version: 3.0
 Author: Phpbits Creative Studio
 Author URI: https://phpbits.net/
@@ -36,6 +36,7 @@ require_once( dirname( __FILE__ ) . '/core/function.transient.php');
  */
 if( !function_exists( 'widgetopts_install' ) ){
 	register_activation_hook( __FILE__, 'widgetopts_install' );
+	add_action( 'plugins_loaded', 'widgetopts_install' );
 	function widgetopts_install() {
 		if( !get_option( 'widgetopts_installDate' ) ){
 			add_option( 'widgetopts_installDate', date( 'Y-m-d h:i:s' ) );
@@ -75,6 +76,7 @@ if( !function_exists( 'widgetopts_install' ) ){
 			add_option( 'widgetopts_tabmodule-settings', serialize( $defaults ) );
 
 			add_option( '_widgetopts_default_registered_', '1' );
+			delete_transient( 'widgetopts_tabs_transient' ); //remove transient for settings
 		}
 	}
 }

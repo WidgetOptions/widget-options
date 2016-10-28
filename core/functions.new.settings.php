@@ -142,7 +142,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 				<div id="widgetopts-settings-messages-container"></div>
 
 				<div class="widgetopts-settings-desc">
-					<?php _e( 'Enable or disable any widget options tabs using this option. Some features has settings configuration that you can take advantage of to get the most out of Extended Widget Options on fully managing your widgets.', 'extended-widget-options' );?>
+					<?php _e( 'Enable or disable any widget options tabs using this option. Some features has settings configuration that you can take advantage of to get the most out of Widget Options on fully managing your widgets.', 'extended-widget-options' );?>
 				</div>
 				<div class="widgetopts-badge widgetopts-badge-settings">
 					<span class="widgetopts-mascot"></span>
@@ -721,7 +721,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 				<h3 class="hndle ui-sortable-handle"><span><?php _e( 'Get Extended Widget Options', 'extended-widget-options' );?></span></h3>
 				<div class="inside">
 					<p>
-						<?php _e( '<strong>Unlock all features!</strong> Get the world\'s most complete widget management and get best out of your widgets with <a href="" target="_blank">Extended Widget Options</a> including: ', 'extended-widget-options' );?>
+						<?php _e( '<strong>Unlock all features!</strong> Get the world\'s most complete widget management and get best out of your widgets with <a href="http://widget-options.com/" target="_blank">Extended Widget Options</a> including: ', 'extended-widget-options' );?>
 					</p>
 					<ul style="list-style: outside; padding-left: 15px;">
 						<li>
