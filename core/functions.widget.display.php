@@ -40,9 +40,9 @@ class PHPBITS_extendedWidgetsDisplay {
         wp_enqueue_style( 'ext-widget-opts', plugins_url( 'assets/css/extended-widget-options.css' , dirname(__FILE__) ) , array(), null );
     }
 
-    function remove_widget_title( $widget_title, $instance, $widget_id ) {
+    function remove_widget_title( $widget_title, $instance = array(), $widget_id = '' ) {
         // print_r( $instance );
-    	if ( 'activate' == $this->widgetopts_tabs['hide_title'] && is_array( $instance ) ){
+    	if ( 'activate' == $this->widgetopts_tabs['hide_title'] && is_array( $instance ) && !empty( $instance ) ){
             foreach ( $instance as $key => $value) {
                 if( substr( $key, 0, 20 ) == 'extended_widget_opts' ){
                     $opts       = ( isset( $instance[ $key ] ) ) ? $instance[ $key ] : array();
