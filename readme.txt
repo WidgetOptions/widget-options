@@ -45,8 +45,8 @@ Use only the features you want and disable any other widget options easily using
 This plugin is customizer ready for easier customization. View your changes live before saving it, <strong>not just better control but a time saver plugin!</strong>
 
 <blockquote>
-<strong>Upgrade to Extended Widget Options</strong><br />
-For more widgets management and restriction options, upgrade to <a href="http://widget-options.com/pricing/">Extended Widget Options today!</a>
+<p><strong>Upgrade to Extended Widget Options</strong><br />
+For more widgets management and restriction options, upgrade to <a href="http://widget-options.com/pricing/">Extended Widget Options today!</a></p>
 </blockquote>
 
 <h4>Premium Features</h4>
