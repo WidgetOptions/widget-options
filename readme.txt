@@ -99,6 +99,9 @@ e.g.
 
 == Changelog ==
 
+= 3.1 =
+* Fix reported issue : https://github.com/phpbits/widget-options/issues/4
+
 = 3.0 =
 * Improve settings page and add modular options inspired by iThemes Security Plugin
 * Add user selection for features
