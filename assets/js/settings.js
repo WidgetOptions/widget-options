@@ -2,55 +2,39 @@
 
 var widgetoptsSettingsModule = {
 	init: function() {
+		var self 	= this;
         jQuery( '.widgetopts-module-settings-container' ).hide();
 
-		this.bindEvents();
+		self.bindEvents();
     },
 
 	bindEvents: function() {
-		var $container = jQuery( '#wpcontent' );
+		var self 	= this;
+		var $wpcontent = jQuery( '#wpcontent' );
 
-		$container.on( 'click', '.widgetopts-settings-view-toggle a', this.toggleView );
-		$container.on( 'click', '.list .widgetopts-module-card:not(.itsec-module-pro-upsell) .widgetopts-module-card-content, .widgetopts-toggle-settings, .widgetopts-module-settings-cancel', this.toggleSettings );
-		$container.on( 'click', '.widgetopts-close-modal, .widgetopts-modal-background', this.closeGridSettingsModal );
-		$container.on( 'keyup', this.closeGridSettingsModal );
-		$container.on( 'click', '.widgetopts-toggle-activation', this.toggleModuleActivation );
-		$container.on( 'click', '.widgetopts-module-settings-save', this.saveSettings );
+		$wpcontent.on( 'click', '.widgetopts-toggle-settings, .widgetopts-module-settings-cancel', self.openModal );
+		$wpcontent.on( 'click', '.widgetopts-close-modal, .widgetopts-modal-background', self.closeModal );
+		$wpcontent.on( 'keyup', self.closeModal );
+		$wpcontent.on( 'click', '.widgetopts-toggle-activation', self.moduleToggle );
+		$wpcontent.on( 'click', '.widgetopts-module-settings-save', self.saveSettings );
+		$wpcontent.on( 'click', '.widgetopts-license-button', self.licenseHandler );
 
 	},
 
-	toggleSettings: function( e ) {
-		e.stopPropagation();
-
-		var $listClassElement = jQuery(e.currentTarget).parents( '.widgetopts-module-cards-container' );
-
-		if ( $listClassElement.hasClass( 'list') ) {
-			widgetoptsSettingsModule.toggleListSettingsCard.call( this, e );
-		} else {
-			widgetoptsSettingsModule.showGridSettingsModal.call( this, e );
-		}
-
-		// We use this to avoid pushing a new state when we're trying to handle a popstate
-		if ( 'widgetopts-popstate' !== e.type ) {
-			var module_id = jQuery(this).closest('.widgetopts-module-card').data( 'module-id' );
-			window.history.pushState( {'module':module_id}, module_id, '?page=widgetopts_plugin_settings&module=' + module_id );
-		}
-	},
-
-	showGridSettingsModal: function( e ) {
+	openModal: function( e ) {
 		e.preventDefault();
 
-		var $settingsContainer = jQuery(this).parents( '.widgetopts-module-card' ).find( '.widgetopts-module-settings-container' ),
-			$modalBackground = jQuery( '.widgetopts-modal-background' );
+		var $container = jQuery(this).parents( '.widgetopts-module-card' ).find( '.widgetopts-module-settings-container' ),
+			$modalBg = jQuery( '.widgetopts-modal-background' );
 
-		$modalBackground.show();
-		$settingsContainer
+		$modalBg.show();
+		$container
 			.show();
 
 		jQuery( 'body' ).addClass( 'widgetopts-modal-open' );
 	},
 
-	closeGridSettingsModal: function( e ) {
+	closeModal: function( e ) {
 		if ( 'undefined' !== typeof e ) {
 			e.preventDefault();
 
@@ -65,7 +49,7 @@ var widgetoptsSettingsModule = {
 		jQuery( 'body' ).removeClass( 'widgetopts-modal-open' );
 	},
 
-	toggleModuleActivation: function( e ) {
+	moduleToggle: function( e ) {
 		e.preventDefault();
 		e.stopPropagation();
 
@@ -82,10 +66,10 @@ var widgetoptsSettingsModule = {
 			var method = 'deactivate';
 		}
 
-		widgetoptsSettingsModule.sendAJAXRequest( module, method, {}, widgetoptsSettingsModule.toggleModuleActivationCallback );
+		widgetoptsSettingsModule.ajaxRequest( module, method, {}, widgetoptsSettingsModule.moduleCallback );
 	},
 
-	toggleModuleActivationCallback: function( results ) {
+	moduleCallback: function( results ) {
 		var module = results.module;
 		var method = results.method;
 
@@ -104,8 +88,6 @@ var widgetoptsSettingsModule = {
 
 			return;
 		}
-
-		// console.log( method );
 
 		if ( 'activate' === method ) {
 			$buttons
@@ -155,10 +137,10 @@ var widgetoptsSettingsModule = {
 			'--widgetopts-form-serialized-data': jQuery( '#widgetopts-module-settings-form' ).serialize()
 		};
 
-		widgetoptsSettingsModule.sendAJAXRequest( module, 'save', data, widgetoptsSettingsModule.saveSettingsCallback );
+		widgetoptsSettingsModule.ajaxRequest( module, 'save', data, widgetoptsSettingsModule.savingCallback );
 	},
 
-	saveSettingsCallback: function( results ) {
+	savingCallback: function( results ) {
 		if ( '' === results.module ) {
 			jQuery( '#widgetopts-save' ).prop( 'disabled', false );
 		} else {
@@ -166,32 +148,18 @@ var widgetoptsSettingsModule = {
 		}
 
 		var $container = jQuery( '.widgetopts-module-cards-container' );
+		var view = 'grid';
 
-		if ( !$container.hasClass( 'list' ) ) {
-			var view = 'grid';
-		} else {
-			var view = 'list';
-		}
 		// console.log( results );
 		widgetoptsSettingsModule.clearMessages();
 		if ( results.errors.length > 0 || ! results.closeModal ) {
-			// widgetoptsSettingsModule.showErrors( results.errors, results.module, 'open' );
 			widgetoptsSettingsModule.showMessages( results.messages, results.module, 'open' );
+			$container.find( '.widgetopts-module-settings-content-container:visible' ).animate( {'scrollTop': 0}, 'fast' );
 
-			if ( 'grid' === view ) {
-				$container.find( '.widgetopts-module-settings-content-container:visible' ).animate( {'scrollTop': 0}, 'fast' );
-			}
-
-			if ( 'list' === view ) {
-				jQuery(document).scrollTop( 0 );
-			}
 		} else {
 			widgetoptsSettingsModule.showMessages( results.messages, results.module, 'closed' );
-
-			if ( 'grid' === view ) {
-				$container.find( '.widgetopts-module-settings-content-container:visible' ).scrollTop( 0 );
-				widgetoptsSettingsModule.closeGridSettingsModal();
-			}
+			$container.find( '.widgetopts-module-settings-content-container:visible' ).scrollTop( 0 );
+			widgetoptsSettingsModule.closeModal();
 		}
 	},
 
@@ -206,11 +174,7 @@ var widgetoptsSettingsModule = {
 	},
 
 	showMessage: function( message, module, containerStatus ) {
-		if ( !jQuery( '.widgetopts-module-cards-container' ).hasClass( 'list' ) ) {
-			var view = 'grid';
-		} else {
-			var view = 'list';
-		}
+		var view = 'grid';
 
 		if ( 'closed' !== containerStatus && 'open' !== containerStatus ) {
 			containerStatus = 'closed';
@@ -237,7 +201,7 @@ var widgetoptsSettingsModule = {
 	},
 
 
-	sendAJAXRequest: function( module, method, data, callback ) {
+	ajaxRequest: function( module, method, data, callback ) {
 		var postData = {
 			'action': widgetopts.ajax_action,
 			'nonce':  widgetopts.ajax_nonce,
@@ -294,26 +258,6 @@ var widgetoptsSettingsModule = {
 			console.log( 'ERROR: Unable to handle settings AJAX request due to an invalid callback:', callback, {'data': postData, 'results': results} );
 		}
 
-	},
-
-	getUrlParameter: function( name ) {
-		var pageURL = decodeURIComponent( window.location.search.substring( 1 ) ),
-			URLParameters = pageURL.split( '&' ),
-			parameterName,
-			i;
-
-		// Loop through all parameters
-		for ( i = 0; i < URLParameters.length; i++ ) {
-			parameterName = URLParameters[i].split( '=' );
-
-			// If this is the parameter we're looking for
-			if ( parameterName[0] === name ) {
-				// Return the value or true if there is no value
-				return parameterName[1] === undefined ? true : parameterName[1];
-			}
-		}
-		// If the requested parameter doesn't exist, return false
-		return false;
 	}
 }
 

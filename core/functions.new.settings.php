@@ -537,7 +537,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 		function links(){ ?>
 			<li class="widgetopts-module-card widgetopts-module-type-pro" data-module-id="links">
 				<div class="widgetopts-module-card-content">
-					<a href="http://widget-options.com/" target="_blank" class="widgetopts-pro-upsell"></a>
+					<a href="http://widget-options.com/features/link-wordpress-widgets/" target="_blank" class="widgetopts-pro-upsell"></a>
 					<h2><?php _e( 'Link Widget', 'extended-widget-options' );?></h2>
 					<div class="widgetopts-pro-label"><span class="dashicons dashicons-lock"></span></div>
 					<p class="widgetopts-module-desc">
@@ -550,7 +550,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 		function fixed(){?>
 			<li class="widgetopts-module-card widgetopts-module-type-pro" data-module-id="fixed">
 				<div class="widgetopts-module-card-content">
-					<a href="http://widget-options.com/" target="_blank" class="widgetopts-pro-upsell"></a>
+					<a href="http://widget-options.com/features/sticky-fixed-wordpress-widgets/" target="_blank" class="widgetopts-pro-upsell"></a>
 					<h2><?php _e( 'Fixed Widget', 'extended-widget-options' );?></h2>
 					<div class="widgetopts-pro-label"><span class="dashicons dashicons-lock"></span></div>
 					<p class="widgetopts-module-desc">
@@ -615,7 +615,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 		function animation(){ ?>
 			<li class="widgetopts-module-card widgetopts-module-type-pro" data-module-id="animation">
 				<div class="widgetopts-module-card-content">
-					<a href="http://widget-options.com/" target="_blank" class="widgetopts-pro-upsell"></a>
+					<a href="http://widget-options.com/features/wordpress-widget-animations/" target="_blank" class="widgetopts-pro-upsell"></a>
 					<h2><?php _e( 'Animation', 'extended-widget-options' );?></h2>
 					<div class="widgetopts-pro-label"><span class="dashicons dashicons-lock"></span></div>
 					<p class="widgetopts-module-desc">
@@ -641,7 +641,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 		function disable_widgets(){?>
 			<li class="widgetopts-module-card widgetopts-module-type-pro" data-module-id="disable_widgets">
 				<div class="widgetopts-module-card-content">
-					<a href="http://widget-options.com/" target="_blank" class="widgetopts-pro-upsell"></a>
+					<a href="http://widget-options.com/features/" target="_blank" class="widgetopts-pro-upsell"></a>
 					<h2><?php _e( 'Disable Widgets', 'extended-widget-options' );?></h2>
 					<div class="widgetopts-pro-label"><span class="dashicons dashicons-lock"></span></div>
 					<p class="widgetopts-module-desc">
@@ -654,7 +654,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 		function permission(){ ?>
 			<li class="widgetopts-module-card widgetopts-module-type-pro" data-module-id="permission">
 				<div class="widgetopts-module-card-content">
-					<a href="http://widget-options.com/" target="_blank" class="widgetopts-pro-upsell"></a>
+					<a href="http://widget-options.com/features/" target="_blank" class="widgetopts-pro-upsell"></a>
 					<h2><?php _e( 'Permission', 'extended-widget-options' );?></h2>
 					<div class="widgetopts-pro-label"><span class="dashicons dashicons-lock"></span></div>
 					<p class="widgetopts-module-desc">
@@ -667,7 +667,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 		function shortcodes(){ ?>
 			<li class="widgetopts-module-card widgetopts-module-type-pro" data-module-id="shortcodes">
 				<div class="widgetopts-module-card-content">
-					<a href="http://widget-options.com/" target="_blank" class="widgetopts-pro-upsell"></a>
+					<a href="http://widget-options.com/features/sidebar-widgets-shortcodes/" target="_blank" class="widgetopts-pro-upsell"></a>
 					<h2><?php _e( 'Shortcodes', 'extended-widget-options' );?></h2>
 					<div class="widgetopts-pro-label"><span class="dashicons dashicons-lock"></span></div>
 					<p class="widgetopts-module-desc">
@@ -680,7 +680,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 		function siteorigin(){ ?>
 			<li class="widgetopts-module-card widgetopts-module-type-pro" data-module-id="siteorigin">
 				<div class="widgetopts-module-card-content">
-					<a href="http://widget-options.com/" target="_blank" class="widgetopts-pro-upsell"></a>
+					<a href="http://widget-options.com/features/pagebuilder-siteorigin-extensive-widget-options/" target="_blank" class="widgetopts-pro-upsell"></a>
 					<h2><?php _e( 'SiteOrigin Pagebuilder Support', 'extended-widget-options' );?></h2>
 					<div class="widgetopts-pro-label"><span class="dashicons dashicons-lock"></span></div>
 					<p class="widgetopts-module-desc">
