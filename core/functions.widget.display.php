@@ -42,7 +42,7 @@ class PHPBITS_extendedWidgetsDisplay {
 
     function remove_widget_title( $widget_title, $instance, $widget_id ) {
         // print_r( $instance );
-    	if ( 'activate' == $this->widgetopts_tabs['hide_title'] ){
+    	if ( 'activate' == $this->widgetopts_tabs['hide_title'] && is_array( $instance ) ){
             foreach ( $instance as $key => $value) {
                 if( substr( $key, 0, 20 ) == 'extended_widget_opts' ){
                     $opts       = ( isset( $instance[ $key ] ) ) ? $instance[ $key ] : array();
