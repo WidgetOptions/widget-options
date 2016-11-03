@@ -18,6 +18,8 @@ Get Better Control over your Widgets. Easily show or hide WordPress widgets on s
 
 Built with seamlessly integration with WordPress, Widget Options is the world's most complete widget management plugin solution yet.
 
+[vimeo https://vimeo.com/190057410]
+
 <h4>Show or hide widgets on specific WordPress pages</h4>
 With Widget Options Plugin, you can easily assign pages visibility and restrict each widgets on different pages, posts, custom post types, categories, tags and custom taxonomies.
 
