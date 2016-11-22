@@ -27,7 +27,14 @@ class PHPBITS_extendedWidgetsTabs {
           // Put the results in a transient. Expire after 4 weeks.
           set_transient( 'widgetopts_tabs_transient', $widgetopts_tabs, 4 * WEEK_IN_SECONDS );
         }
-        $this->widgetopts_tabs = unserialize( $widgetopts_tabs );
+
+        //fix for https://github.com/phpbits/widget-options/issues/7
+        if( is_serialized( $widgetopts_tabs ) ){
+        	$this->widgetopts_tabs = unserialize( $widgetopts_tabs );
+        }elseif( is_array( $widgetopts_tabs ) ){
+        	$this->widgetopts_tabs = $widgetopts_tabs;
+        }
+
         $this->settings = unserialize( get_option( 'widgetopts_tabmodule-settings' ) );
 
         if( 'activate' == $this->widgetopts_tabs['visibility'] ){
