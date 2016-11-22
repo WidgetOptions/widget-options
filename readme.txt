@@ -99,7 +99,11 @@ e.g.
 
 == Changelog ==
 
-= 3.1 =
+= 3.0.2 =
+* Fix reported issue : https://github.com/phpbits/widget-options/issues/7
+* Fix DIVI jQuery UI styling issues
+
+= 3.0.1 =
 * Fix reported issue : https://github.com/phpbits/widget-options/issues/4
 
 = 3.0 =

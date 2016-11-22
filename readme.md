@@ -36,7 +36,7 @@ This plugin is customizer ready for easier customization. View your changes live
 <li>Custom Widget <strong>Styling</strong> Options</li>
 <li>Display Widget Logic</li>
 </ul>
-</blockquote> 
+</blockquote>
 
 Days, dates and date range is the best option if you are running deals, promotions and ads on your site. Now you can automatically hide it anytime you want without logging in!
 
