@@ -23,16 +23,11 @@ class PHPBITS_extendedWidgetsDisplay {
                 'classes'       => get_option( 'widgetopts_tabmodule-classes' ),
                 'logic'         => get_option( 'widgetopts_tabmodule-logic' )
             );
-            $widgetopts_tabs = maybe_serialize( $widgetopts_tabs );
+            $widgetopts_tabs = maybe_serialize($widgetopts_tabs);
           // Put the results in a transient. Expire after 4 weeks.
           set_transient( 'widgetopts_tabs_transient', $widgetopts_tabs, 4 * WEEK_IN_SECONDS );
         }
-
-        //fix unserialized issue reported on https://github.com/phpbits/widget-options/issues/5
-        if( is_serialized( $widgetopts_tabs ) ){
-            $this->widgetopts_tabs = unserialize( $widgetopts_tabs );
-        }
-
+        $this->widgetopts_tabs = unserialize( $widgetopts_tabs );
         $this->settings = unserialize( get_option( 'widgetopts_tabmodule-settings' ) );
 
         add_filter( 'widget_display_callback', array( &$this, 'widget_display' ), 50, 3 );
@@ -47,7 +42,7 @@ class PHPBITS_extendedWidgetsDisplay {
 
     function remove_widget_title( $widget_title, $instance = array(), $widget_id = '' ) {
         // print_r( $instance );
-    	if ( isset( $this->widgetopts_tabs['hide_title'] ) && 'activate' == $this->widgetopts_tabs['hide_title'] && is_array( $instance ) && !empty( $instance ) ){
+    	if ( 'activate' == $this->widgetopts_tabs['hide_title'] && is_array( $instance ) && !empty( $instance ) ){
             foreach ( $instance as $key => $value) {
                 if( substr( $key, 0, 20 ) == 'extended_widget_opts' ){
                     $opts       = ( isset( $instance[ $key ] ) ) ? $instance[ $key ] : array();
@@ -78,9 +73,9 @@ class PHPBITS_extendedWidgetsDisplay {
         $visibility         = isset( $opts['visibility'] ) ? $opts['visibility'] : '';
         $visibility_opts    = isset( $opts['visibility']['options'] ) ? $opts['visibility']['options'] : 'hide';
 
-        $is_misc    = ( isset( $this->widgetopts_tabs['visibility'] ) && 'activate' == $this->widgetopts_tabs['visibility'] && isset( $this->settings['visibility'] ) && isset( $this->settings['visibility']['misc'] ) ) ? true : false;
-        $is_types   = ( isset( $this->widgetopts_tabs['visibility'] ) && 'activate' == $this->widgetopts_tabs['visibility'] && isset( $this->settings['visibility'] ) && isset( $this->settings['visibility']['post_type'] ) ) ? true : false;
-        $is_tax     = ( isset( $this->widgetopts_tabs['visibility'] ) && 'activate' == $this->widgetopts_tabs['visibility'] && isset( $this->settings['visibility'] ) && isset( $this->settings['visibility']['taxonomies'] ) ) ? true : false;
+        $is_misc = ( 'activate' == $this->widgetopts_tabs['visibility'] && isset( $this->settings['visibility'] ) && isset( $this->settings['visibility']['misc'] ) ) ? true : false;
+        $is_types = ( 'activate' == $this->widgetopts_tabs['visibility'] && isset( $this->settings['visibility'] ) && isset( $this->settings['visibility']['post_type'] ) ) ? true : false;
+        $is_tax = ( 'activate' == $this->widgetopts_tabs['visibility'] && isset( $this->settings['visibility'] ) && isset( $this->settings['visibility']['taxonomies'] ) ) ? true : false;
 
         if ( $is_misc && ( ( is_home() && is_front_page() ) || is_front_page() ) ) {
             if( isset( $visibility['misc']['home'] ) && $visibility_opts == 'hide' ){
@@ -181,7 +176,7 @@ class PHPBITS_extendedWidgetsDisplay {
             }
         }elseif ( is_single() && !is_page() ) {
             $type = get_post_type();
-            if( ( $is_types && !isset( $visibility['types'] ) ) || !isset( $visibility['types'] ) ){
+            if( $is_types && !isset( $visibility['types'] ) ){
                 $visibility['types'] = array();
             }
             if( $visibility_opts == 'hide' && array_key_exists( $type , $visibility['types']) ){
@@ -252,7 +247,7 @@ class PHPBITS_extendedWidgetsDisplay {
         }
 
         //end wordpress pages
-        if( isset( $this->widgetopts_tabs['logic'] ) && 'activate' == $this->widgetopts_tabs['logic'] ){
+        if( 'activate' == $this->widgetopts_tabs['logic'] ){
             // display widget logic
             if( isset( $opts['class'] ) && isset( $opts['class']['logic'] ) && !empty( $opts['class']['logic'] ) ){
                 $display_logic = stripslashes( trim( $opts['class']['logic'] ) );
@@ -272,7 +267,7 @@ class PHPBITS_extendedWidgetsDisplay {
             }
         }
 
-        if( isset( $this->widgetopts_tabs['hide_title'] ) && 'activate' == $this->widgetopts_tabs['hide_title'] ){
+        if( 'activate' == $this->widgetopts_tabs['hide_title'] ){
             //hide widget title
             if( isset( $instance['title'] ) && isset( $opts['class'] ) && isset( $opts['class']['title'] ) && '1' == $opts['class']['title'] ){
                 $instance['title'] = '';
@@ -314,7 +309,7 @@ class PHPBITS_extendedWidgetsDisplay {
             unset( $devices['options'] );
         }
 
-        if( isset( $this->widgetopts_tabs['devices'] ) && 'activate' == $this->widgetopts_tabs['devices'] ){
+        if( 'activate' == $this->widgetopts_tabs['devices'] ){
             if( !empty( $devices ) ){
                 $device_opts    = ( isset( $opts['devices']['options'] ) ) ? $opts['devices']['options'] : 'hide';
                 $classe_to_add .= 'extendedwopts-' . $device_opts . ' ';
@@ -325,7 +320,7 @@ class PHPBITS_extendedWidgetsDisplay {
             }
         }
 
-        if( isset( $this->widgetopts_tabs['alignment'] ) && 'activate' == $this->widgetopts_tabs['alignment'] ){
+        if( 'activate' == $this->widgetopts_tabs['alignment'] ){
             //alignment
             if( !empty( $alignment ) ){
                 foreach ($alignment as $k => $v) {
@@ -336,7 +331,7 @@ class PHPBITS_extendedWidgetsDisplay {
             }
         }
 
-        if( isset( $this->widgetopts_tabs['classes'] ) && 'activate' == $this->widgetopts_tabs['classes'] && isset( $this->settings['classes'] ) ){
+        if( 'activate' == $this->widgetopts_tabs['classes'] && isset( $this->settings['classes'] ) ){
             //don't add the IDs when the setting is set to NO
             if( isset( $this->settings['classes']['id'] ) ){
                 if( is_array( $custom_class ) && isset( $custom_class['id'] ) ){
@@ -345,7 +340,7 @@ class PHPBITS_extendedWidgetsDisplay {
             }
         }
 
-        if( isset( $this->widgetopts_tabs['classes'] ) && 'activate' == $this->widgetopts_tabs['classes'] && isset( $this->settings['classes'] ) ){
+        if( 'activate' == $this->widgetopts_tabs['classes'] && isset( $this->settings['classes'] ) ){
             //classes & ID
             $options    = get_option('extwopts_class_settings');
             $predefined = array();

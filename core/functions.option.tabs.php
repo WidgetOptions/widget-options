@@ -27,29 +27,22 @@ class PHPBITS_extendedWidgetsTabs {
           // Put the results in a transient. Expire after 4 weeks.
           set_transient( 'widgetopts_tabs_transient', $widgetopts_tabs, 4 * WEEK_IN_SECONDS );
         }
-
-        //fix unserialized issue reported on https://github.com/phpbits/widget-options/issues/5
-        if( is_serialized( $widgetopts_tabs ) ){
-            $this->widgetopts_tabs = unserialize( $widgetopts_tabs );
-        }
-
+        $this->widgetopts_tabs = unserialize( $widgetopts_tabs );
         $this->settings = unserialize( get_option( 'widgetopts_tabmodule-settings' ) );
 
-        if( isset( $this->widgetopts_tabs['visibility'] ) && 'activate' == $this->widgetopts_tabs['visibility'] ){
+        if( 'activate' == $this->widgetopts_tabs['visibility'] ){
             add_action( 'extended_widget_opts_tabs', array( &$this,'tab_visibility' ) );
             add_action( 'extended_widget_opts_tabcontent', array( &$this,'content_visibility' ) );
         }
-        if( isset( $this->widgetopts_tabs['devices'] ) && 'activate' == $this->widgetopts_tabs['devices'] ){
+        if( 'activate' == $this->widgetopts_tabs['devices'] ){
             add_action( 'extended_widget_opts_tabs', array( &$this,'tab_devices' ) );
             add_action( 'extended_widget_opts_tabcontent', array( &$this,'content_devices' ) );
         }
-        if( isset( $this->widgetopts_tabs['alignment'] ) && 'activate' == $this->widgetopts_tabs['alignment'] ){
+        if( 'activate' == $this->widgetopts_tabs['alignment'] ){
             add_action( 'extended_widget_opts_tabs', array( &$this,'tab_alignment' ) );
             add_action( 'extended_widget_opts_tabcontent', array( &$this,'content_alignment' ) );
         }
-        if( ( isset( $this->widgetopts_tabs['classes'] ) && 'activate' == $this->widgetopts_tabs['classes'] ) ||
-            ( isset( $this->widgetopts_tabs['hide_title'] ) &&  'activate' == $this->widgetopts_tabs['hide_title'] )
-        ){
+        if( 'activate' == $this->widgetopts_tabs['classes'] || 'activate' == $this->widgetopts_tabs['hide_title'] ){
             add_action( 'extended_widget_opts_tabs', array( &$this,'tab_class' ) );
             add_action( 'extended_widget_opts_tabcontent', array( &$this,'content_class' ) );
         }
@@ -555,17 +548,17 @@ class PHPBITS_extendedWidgetsTabs {
                 <input type="hidden" id="extended-widget-opts-settings-selectedtab" value="<?php echo $selected;?>" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][selected]" />
                 <!--  start tab nav -->
                 <ul class="extended-widget-opts-settings-tabnav-ul">
-                    <?php if( isset( $this->widgetopts_tabs['hide_title'] ) && 'activate' == $this->widgetopts_tabs['hide_title'] ){ ?>
+                    <?php if( 'activate' == $this->widgetopts_tabs['hide_title'] ){ ?>
                         <li class="extended-widget-opts-settings-tab-title">
                             <a href="#extended-widget-opts-settings-tab-<?php echo $args['id'];?>-title" title="<?php _e( 'Misc', 'extended-widget-options' );?>" ><?php _e( 'Misc', 'extended-widget-options' );?></a>
                         </li>
                     <?php } ?>
-                    <?php if( isset( $this->widgetopts_tabs['classes'] ) && 'activate' == $this->widgetopts_tabs['classes'] ){ ?>
+                    <?php if( 'activate' == $this->widgetopts_tabs['classes'] ){ ?>
                         <li class="extended-widget-opts-settings-tab-class">
                             <a href="#extended-widget-opts-settings-tab-<?php echo $args['id'];?>-class" title="<?php _e( 'Class & ID', 'widget-options' );?>" ><?php _e( 'Class & ID', 'widget-options' );?></a>
                         </li>
                     <?php } ?>
-                    <?php if( isset( $this->widgetopts_tabs['logic'] ) && 'activate' == $this->widgetopts_tabs['logic'] ){ ?>
+                    <?php if( 'activate' == $this->widgetopts_tabs['logic'] ){ ?>
                         <li class="extended-widget-opts-settings-tab-logic">
                             <a href="#extended-widget-opts-settings-tab-<?php echo $args['id'];?>-logic" title="<?php _e( 'Display Logic', 'widget-options' );?>" ><?php _e( 'Display Logic', 'widget-options' );?></a>
                         </li>
@@ -574,11 +567,11 @@ class PHPBITS_extendedWidgetsTabs {
                 </ul><!--  end tab nav -->
                 <div class="extended-widget-opts-clearfix"></div>
 
-                <?php if( isset( $this->widgetopts_tabs['hide_title'] ) && 'activate' == $this->widgetopts_tabs['hide_title'] ){ ?>
+                <?php if( 'activate' == $this->widgetopts_tabs['hide_title'] ){ ?>
                     <!--  start title tab content -->
                     <div id="extended-widget-opts-settings-tab-<?php echo $args['id'];?>-title" class="extended-widget-opts-settings-tabcontent extended-widget-opts-inner-tabcontent">
                         <div class="widget-opts-title">
-                            <?php if( isset( $this->widgetopts_tabs['hide_title'] ) && 'activate' == $this->widgetopts_tabs['hide_title'] ){ ?>
+                            <?php if( 'activate' == $this->widgetopts_tabs['hide_title'] ){ ?>
                                 <p>
                                     <input type="checkbox" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][title]" id="opts-class-title-<?php echo $args['id'];?>" value="1" <?php echo $check;?> />
                                     <label for="opts-class-title-<?php echo $args['id'];?>"><?php _e( 'Check to hide widget title', 'extended-widget-options' );?></label>
@@ -588,7 +581,7 @@ class PHPBITS_extendedWidgetsTabs {
                     </div><!--  end title tab content -->
                 <?php } ?>
 
-                <?php if( isset( $this->widgetopts_tabs['classes'] ) && 'activate' == $this->widgetopts_tabs['classes'] ){ ?>
+                <?php if( 'activate' == $this->widgetopts_tabs['classes'] ){ ?>
                     <!--  start class tab content -->
                     <div id="extended-widget-opts-settings-tab-<?php echo $args['id'];?>-class" class="extended-widget-opts-settings-tabcontent extended-widget-opts-inner-tabcontent">
                         <div class="widget-opts-class">
@@ -653,7 +646,7 @@ class PHPBITS_extendedWidgetsTabs {
                     </div><!--  end class tab content -->
                 <?php } ?>
 
-                <?php if( isset( $this->widgetopts_tabs['logic'] ) && 'activate' == $this->widgetopts_tabs['logic'] ){ ?>
+                <?php if( 'activate' == $this->widgetopts_tabs['logic'] ){ ?>
                     <!--  start logiv tab content -->
                     <div id="extended-widget-opts-settings-tab-<?php echo $args['id'];?>-logic" class="extended-widget-opts-settings-tabcontent extended-widget-opts-inner-tabcontent">
                         <div class="widget-opts-logic">
