@@ -98,7 +98,7 @@ class PHPBITS_extendedWidgetsTabs {
                     <tr valign="top">
                         <td scope="row"><span class="dashicons dashicons-desktop"></span> <?php _e( 'All Devices', 'widget-options' );?></td>
                         <td>
-                            <select class="widefat" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][alignment][desktop]">
+                            <select class="widefat" name="<?php echo $args['namespace'];?>[extended_widget_opts][alignment][desktop]">
                                 <option value="default"><?php _e( 'Default', 'widget-options' );?></option>
                                 <option value="center" <?php if( $desktop == 'center' ){ echo 'selected="selected"'; }?> ><?php _e( 'Center', 'widget-options' );?></option>
                                 <option value="left" <?php if( $desktop == 'left' ){ echo 'selected="selected"'; }?>><?php _e( 'Left', 'widget-options' );?></option>
@@ -242,14 +242,14 @@ class PHPBITS_extendedWidgetsTabs {
         ?>
         <div id="extended-widget-opts-tab-<?php echo $args['id'];?>-visibility" class="extended-widget-opts-tabcontent extended-widget-opts-inside-tabcontent extended-widget-opts-tabcontent-visibility">
             <p><strong><?php _e( 'Hide/Show', 'widget-options' );?></strong>
-            <select class="widefat" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][visibility][options]">
+            <select class="widefat" name="<?php echo $args['namespace'];?>[extended_widget_opts][visibility][options]">
                 <option value="hide" <?php if( $options_values == 'hide' ){ echo 'selected="selected"'; }?> ><?php _e( 'Hide on checked pages', 'widget-options' );?></option>
                 <option value="show" <?php if( $options_values == 'show' ){ echo 'selected="selected"'; }?>><?php _e( 'Show on checked pages', 'widget-options' );?></option>
             </select>
             </p>
 
             <div class="extended-widget-opts-visibility-tabs extended-widget-opts-inside-tabs">
-                <input type="hidden" id="extended-widget-opts-visibility-selectedtab" value="<?php echo $selected;?>" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][visibility][selected]" />
+                <input type="hidden" id="extended-widget-opts-visibility-selectedtab" value="<?php echo $selected;?>" name="<?php echo $args['namespace'];?>[extended_widget_opts][visibility][selected]" />
                 <!--  start tab nav -->
                 <ul class="extended-widget-opts-visibility-tabnav-ul">
                     <?php if( isset( $this->settings['visibility'] ) &&
@@ -291,7 +291,7 @@ class PHPBITS_extendedWidgetsTabs {
                                 }
                                 ?>
                                 <p>
-                                    <input type="checkbox" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][visibility][misc][<?php echo $key;?>]" id="<?php echo $args['id'];?>-opts-misc-<?php echo $key;?>" value="1" <?php echo $checked;?> />
+                                    <input type="checkbox" name="<?php echo $args['namespace'];?>[extended_widget_opts][visibility][misc][<?php echo $key;?>]" id="<?php echo $args['id'];?>-opts-misc-<?php echo $key;?>" value="1" <?php echo $checked;?> />
                                     <label for="<?php echo $args['id'];?>-opts-misc-<?php echo $key;?>"><?php echo $value;?></label>
                                 </p>
                             <?php } ?>
@@ -315,7 +315,7 @@ class PHPBITS_extendedWidgetsTabs {
                                         }
                                     ?>
                                     <p>
-                                        <input type="checkbox" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][visibility][pages][<?php echo $page->ID;?>]" id="<?php echo $args['id'];?>-opts-pages-<?php echo $page->ID;?>" value="1" <?php echo $checked;?> />
+                                        <input type="checkbox" name="<?php echo $args['namespace'];?>[extended_widget_opts][visibility][pages][<?php echo $page->ID;?>]" id="<?php echo $args['id'];?>-opts-pages-<?php echo $page->ID;?>" value="1" <?php echo $checked;?> />
                                         <label for="<?php echo $args['id'];?>-opts-pages-<?php echo $page->ID;?>"><?php echo $page->post_title;?></label>
                                     </p>
                                 <?php } ?>
@@ -336,7 +336,7 @@ class PHPBITS_extendedWidgetsTabs {
                                         }
                                     ?>
                                     <p>
-                                        <input type="checkbox" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][visibility][types][<?php echo $ptype;?>]" id="<?php echo $args['id'];?>-opts-types-<?php echo $ptype;?>" value="1" <?php echo $checked;?> />
+                                        <input type="checkbox" name="<?php echo $args['namespace'];?>[extended_widget_opts][visibility][types][<?php echo $ptype;?>]" id="<?php echo $args['id'];?>-opts-types-<?php echo $ptype;?>" value="1" <?php echo $checked;?> />
                                         <label for="<?php echo $args['id'];?>-opts-types-<?php echo $ptype;?>"><?php echo stripslashes( $type->labels->name );?></label>
                                     </p>
                                 <?php
@@ -382,7 +382,7 @@ class PHPBITS_extendedWidgetsTabs {
                             <h4 id="extended-widget-opts-categories"><?php _e( 'Categories', 'widget-options' );?> +/-</h4>
                             <div class="extended-widget-opts-categories">
                                 <p>
-                                    <input type="checkbox" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][visibility][categories][all_categories]" id="<?php echo $args['id'];?>-opts-categories-all" value="1" <?php if( isset( $cat_values['all_categories'] ) ){ echo 'checked="checked"'; };?> />
+                                    <input type="checkbox" name="<?php echo $args['namespace'];?>[extended_widget_opts][visibility][categories][all_categories]" id="<?php echo $args['id'];?>-opts-categories-all" value="1" <?php if( isset( $cat_values['all_categories'] ) ){ echo 'checked="checked"'; };?> />
                                     <label for="<?php echo $args['id'];?>-opts-categories-all"><?php _e( 'All Categories', 'widget-options' );?></label>
                                 </p>
                                 <?php foreach ($categories as $cat) {
@@ -393,7 +393,7 @@ class PHPBITS_extendedWidgetsTabs {
                                         }
                                     ?>
                                     <p>
-                                        <input type="checkbox" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][visibility][categories][<?php echo $cat->cat_ID;?>]" id="<?php echo $args['id'];?>-opts-categories-<?php echo $cat->cat_ID;?>" value="1" <?php echo $checked;?> />
+                                        <input type="checkbox" name="<?php echo $args['namespace'];?>[extended_widget_opts][visibility][categories][<?php echo $cat->cat_ID;?>]" id="<?php echo $args['id'];?>-opts-categories-<?php echo $cat->cat_ID;?>" value="1" <?php echo $checked;?> />
                                         <label for="<?php echo $args['id'];?>-opts-categories-<?php echo $cat->cat_ID;?>"><?php echo $cat->cat_name;?></label>
                                     </p>
                                 <?php } ?>
@@ -409,7 +409,7 @@ class PHPBITS_extendedWidgetsTabs {
                                         }
                                     ?>
                                     <p>
-                                        <input type="checkbox" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][visibility][taxonomies][<?php echo $tax_key;?>]" id="<?php echo $args['id'];?>-opts-taxonomies-<?php echo $tax_key;?>" value="1" <?php echo $checked;?> />
+                                        <input type="checkbox" name="<?php echo $args['namespace'];?>[extended_widget_opts][visibility][taxonomies][<?php echo $tax_key;?>]" id="<?php echo $args['id'];?>-opts-taxonomies-<?php echo $tax_key;?>" value="1" <?php echo $checked;?> />
                                         <label for="<?php echo $args['id'];?>-opts-taxonomies-<?php echo $tax_key;?>"><?php echo $tax_label;?></label>
                                     </p>
                                 <?php } ?>
@@ -461,7 +461,7 @@ class PHPBITS_extendedWidgetsTabs {
         <div id="extended-widget-opts-tab-<?php echo $args['id'];?>-devices" class="extended-widget-opts-tabcontent extended-widget-opts-tabcontent-devices">
             <p>
                 <strong><?php _e( 'Hide/Show', 'widget-options' );?></strong>
-                <select class="widefat" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][devices][options]">
+                <select class="widefat" name="<?php echo $args['namespace'];?>[extended_widget_opts][devices][options]">
                     <option value="hide" <?php if( $options_role == 'hide' ){ echo 'selected="selected"'; }?> ><?php _e( 'Hide on checked devices', 'widget-options' );?></option>
                     <option value="show" <?php if( $options_role == 'show' ){ echo 'selected="selected"'; }?>><?php _e( 'Show on checked devices', 'widget-options' );?></option>
                 </select>
@@ -479,7 +479,7 @@ class PHPBITS_extendedWidgetsTabs {
                             </label>
                             </td>
                         <td>
-                            <input type="checkbox" id="opts-devices-desktop-<?php echo $args['id'];?>" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][devices][desktop]" value="1" <?php  if( !empty( $desktop ) ){ echo 'checked="checked"'; }?> />
+                            <input type="checkbox" id="opts-devices-desktop-<?php echo $args['id'];?>" name="<?php echo $args['namespace'];?>[extended_widget_opts][devices][desktop]" value="1" <?php  if( !empty( $desktop ) ){ echo 'checked="checked"'; }?> />
                         </td>
                     </tr>
                     <tr valign="top">
@@ -489,7 +489,7 @@ class PHPBITS_extendedWidgetsTabs {
                             </label>
                         </td>
                         <td>
-                            <input type="checkbox" id="opts-devices-tablet-<?php echo $args['id'];?>" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][devices][tablet]" value="1" <?php  if( !empty( $tablet ) ){ echo 'checked="checked"'; }?> />
+                            <input type="checkbox" id="opts-devices-tablet-<?php echo $args['id'];?>" name="<?php echo $args['namespace'];?>[extended_widget_opts][devices][tablet]" value="1" <?php  if( !empty( $tablet ) ){ echo 'checked="checked"'; }?> />
                         </td>
                     </tr>
                     <tr valign="top">
@@ -499,7 +499,7 @@ class PHPBITS_extendedWidgetsTabs {
                             </label>
                         </td>
                         <td>
-                            <input type="checkbox" id="opts-devices-mobile-<?php echo $args['id'];?>" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][devices][mobile]" value="1" <?php  if( !empty( $mobile ) ){ echo 'checked="checked"'; }?> />
+                            <input type="checkbox" id="opts-devices-mobile-<?php echo $args['id'];?>" name="<?php echo $args['namespace'];?>[extended_widget_opts][devices][mobile]" value="1" <?php  if( !empty( $mobile ) ){ echo 'checked="checked"'; }?> />
                         </td>
                     </tr>
                 </tbody>
@@ -552,7 +552,7 @@ class PHPBITS_extendedWidgetsTabs {
         <div id="extended-widget-opts-tab-<?php echo $args['id'];?>-class" class="extended-widget-opts-tabcontent extended-widget-opts-inside-tabcontent extended-widget-opts-tabcontent-class">
 
             <div class="extended-widget-opts-settings-tabs extended-widget-opts-inside-tabs">
-                <input type="hidden" id="extended-widget-opts-settings-selectedtab" value="<?php echo $selected;?>" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][selected]" />
+                <input type="hidden" id="extended-widget-opts-settings-selectedtab" value="<?php echo $selected;?>" name="<?php echo $args['namespace'];?>[extended_widget_opts][class][selected]" />
                 <!--  start tab nav -->
                 <ul class="extended-widget-opts-settings-tabnav-ul">
                     <?php if( 'activate' == $this->widgetopts_tabs['hide_title'] ){ ?>
@@ -580,7 +580,7 @@ class PHPBITS_extendedWidgetsTabs {
                         <div class="widget-opts-title">
                             <?php if( 'activate' == $this->widgetopts_tabs['hide_title'] ){ ?>
                                 <p>
-                                    <input type="checkbox" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][title]" id="opts-class-title-<?php echo $args['id'];?>" value="1" <?php echo $check;?> />
+                                    <input type="checkbox" name="<?php echo $args['namespace'];?>[extended_widget_opts][class][title]" id="opts-class-title-<?php echo $args['id'];?>" value="1" <?php echo $check;?> />
                                     <label for="opts-class-title-<?php echo $args['id'];?>"><?php _e( 'Check to hide widget title', 'extended-widget-options' );?></label>
                                 </p>
                             <?php } ?>
@@ -598,7 +598,7 @@ class PHPBITS_extendedWidgetsTabs {
                                     <tr valign="top">
                                         <td scope="row">
                                             <strong><?php _e( 'Widget CSS ID:', 'widget-options' );?></strong><br />
-                                            <input type="text" id="opts-class-id-<?php echo $args['id'];?>" class="widefat" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][id]" value="<?php echo $id;?>" />
+                                            <input type="text" id="opts-class-id-<?php echo $args['id'];?>" class="widefat" name="<?php echo $args['namespace'];?>[extended_widget_opts][class][id]" value="<?php echo $id;?>" />
                                         </td>
                                     </tr>
                                 <?php } ?>
@@ -608,7 +608,7 @@ class PHPBITS_extendedWidgetsTabs {
                                     <tr valign="top">
                                         <td scope="row">
                                             <strong><?php _e( 'Widget CSS Classes:', 'widget-options' );?></strong><br />
-                                            <input type="text" id="opts-class-classes-<?php echo $args['id'];?>" class="widefat" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][classes]" value="<?php echo $classes;?>" />
+                                            <input type="text" id="opts-class-classes-<?php echo $args['id'];?>" class="widefat" name="<?php echo $args['namespace'];?>[extended_widget_opts][class][classes]" value="<?php echo $classes;?>" />
                                             <small><em><?php _e( 'Separate each class with space.', 'widget-options' );?></em></small>
                                         </td>
                                     </tr>
@@ -632,7 +632,7 @@ class PHPBITS_extendedWidgetsTabs {
                                                             }
                                                             ?>
                                                             <p>
-                                                                <input type="checkbox" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][predefined][]" id="<?php echo $args['id'];?>-opts-class-<?php echo $key;?>" value="<?php echo $value;?>" <?php echo $checked;?> />
+                                                                <input type="checkbox" name="<?php echo $args['namespace'];?>[extended_widget_opts][class][predefined][]" id="<?php echo $args['id'];?>-opts-class-<?php echo $key;?>" value="<?php echo $value;?>" <?php echo $checked;?> />
                                                                 <label for="<?php echo $args['id'];?>-opts-class-<?php echo $key;?>"><?php echo $value;?></label>
                                                             </p>
                                                         <?php } ?>
@@ -658,7 +658,7 @@ class PHPBITS_extendedWidgetsTabs {
                     <div id="extended-widget-opts-settings-tab-<?php echo $args['id'];?>-logic" class="extended-widget-opts-settings-tabcontent extended-widget-opts-inner-tabcontent">
                         <div class="widget-opts-logic">
                             <p><small><?php _e( 'The text field lets you use <a href="http://codex.wordpress.org/Conditional_Tags" target="_blank">WP Conditional Tags</a>, or any general PHP code.', 'widget-options' );?></small></p>
-                            <textarea class="widefat" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][class][logic]"><?php echo stripslashes( $logic );?></textarea>
+                            <textarea class="widefat" name="<?php echo $args['namespace'];?>[extended_widget_opts][class][logic]"><?php echo stripslashes( $logic );?></textarea>
                             <?php if( !isset( $this->settings['logic'] ) ||
                                      ( isset( $this->settings['logic']  ) && !isset( $this->settings['logic']['notice']  ) ) ){ ?>
                                          <p><a href="#" class="widget-opts-toggler-note"><?php _e( 'Click to Toggle Note', 'widget-options' );?></a></p>

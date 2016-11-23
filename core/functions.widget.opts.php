@@ -33,11 +33,28 @@ class PHPBITS_extendedWidgets {
         global $wp_registered_widget_controls;
         $width = (isset( $wp_registered_widget_controls[$widget->id]['width'] )) ? (int) $wp_registered_widget_controls[$widget->id]['width'] : 250;
         $opts = ( isset( $instance[ 'extended_widget_opts-'. $widget->id ] ) ) ? $instance[ 'extended_widget_opts-'. $widget->id ] : array();
+        $is_siteorigin = get_option( 'widgetopts_tabmodule-siteorigin' );
+
+        /** change widget names for SO Pagebuilder support **/
+        if( isset( $widget->id ) && 'temp' == $widget->id ){
+            $namespace  = 'widgets['. $widget->number .']';
+            $optsname   = 'widgets['. $widget->number .'][extended_widget_opts_name]';
+            $opts       = ( isset( $instance[ 'extended_widget_opts' ] ) ) ? $instance[ 'extended_widget_opts'] : array();
+            $widget->id = $widget->number;
+
+            //create siteorigin pagebuilder variable
+            echo '<input type="hidden" name="'. $namespace .'[siteorigin]" value="1" />';
+        }else{
+            $namespace = 'extended_widget_opts-'. $widget->id;
+            $optsname   = 'extended_widget_opts_name';
+        }
+
         // print_r( $instance );
         $args = array(
                     'width'     =>  $width,
                     'id'        =>  $widget->id,
-                    'params'    =>  $opts
+                    'params'    =>  $opts,
+                    'namespace' =>  $namespace
                 );
         $selected = 0;
         if( isset( $opts['tabselect'] ) ){
@@ -57,25 +74,47 @@ class PHPBITS_extendedWidgets {
                 <div class="extended-widget-opts-clearfix"></div>
             </div><!--  end .extended-widget-opts-tabs -->
         </div><!-- end .extended-widget-opts-form -->
+
+        <?php if( 'activate' == $is_siteorigin ){?>
+            <script type="text/javascript">
+    			jQuery(document).ready(function($){
+    				if($('.so-content .extended-widget-opts-tabs').length > 0){
+                        $('.extended-widget-opts-tabs').tabs({ active: 0 });
+            	    	$('.extended-widget-opts-visibility-tabs').tabs({ active: 0 });
+            	    	$('.extended-widget-opts-settings-tabs').tabs({ active: 0 });
+    				}
+    			});
+			</script>
+        <?php } else{ ?>
+            <style type="text/css">
+                .so-content.panel-dialog .extended-widget-opts-form{ display: none; }
+            </style>
+        <?php } ?>
+
         <?php
     }
 
     /*
      * Update Options
      */
-    function ajax_update_callback($instance, $new_instance, $this_widget){
-        if( isset($_POST['extended_widget_opts_name']) ){
-            $name 		= sanitize_text_field( $_POST['extended_widget_opts_name'] );
-            $options 	= $_POST[ $name ];
-            $options    = $this->sanitize( $options );
-
-            if( isset( $options['extended_widget_opts'] ) ){
-            	// update_option( $name , $options['extended_widget_opts'] );
-                $instance[ $name ] = $options['extended_widget_opts'];
-            }
-        }
-        return $instance;
-    }
+     function ajax_update_callback( $instance, $new_instance, $this_widget){
+         if( isset($_POST['extended_widget_opts_name']) ||
+             ( !isset( $_POST['extended_widget_opts_name'] ) && isset( $new_instance['siteorigin'] ) )
+         ){
+             //check if from SO pagebuilder
+             if( is_array( $new_instance ) && isset( $new_instance['extended_widget_opts'] ) && isset( $new_instance['siteorigin'] ) ){
+                 $name       = 'extended_widget_opts';
+                 $options    = $this->sanitize( $new_instance );
+             }else{
+                 $name 		= strip_tags( $_POST['extended_widget_opts_name'] );
+                 $options 	= $_POST[ $name ];
+             }
+             if( isset( $options['extended_widget_opts'] ) ){
+                 $instance[ $name ] = $this->sanitize( $options['extended_widget_opts'] );
+             }
+         }
+         return $instance;
+     }
 
     /**
      * A custom sanitization function that will take the incoming input, and sanitize

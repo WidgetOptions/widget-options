@@ -19,6 +19,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 			add_action( 'widgetopts_module_cards', array( $this, 'hide_title' ) );
 			add_action( 'widgetopts_module_cards', array( $this, 'classes' ) );
 			add_action( 'widgetopts_module_cards', array( $this, 'logic' ) );
+			add_action( 'widgetopts_module_cards', array( $this, 'siteorigin' ) );
 			add_action( 'widgetopts_module_cards', array( $this, 'links' ) );
 			add_action( 'widgetopts_module_cards', array( $this, 'fixed' ) );
 			add_action( 'widgetopts_module_cards', array( $this, 'columns' ) );
@@ -30,7 +31,6 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 			add_action( 'widgetopts_module_cards', array( $this, 'shortcodes' ) );
 			add_action( 'widgetopts_module_cards', array( $this, 'disable_widgets' ) );
 			add_action( 'widgetopts_module_cards', array( $this, 'permission' ) );
-			add_action( 'widgetopts_module_cards', array( $this, 'siteorigin' ) );
 			// add_action( 'widgetopts_module_cards', array( $this, 'suggest' ) );
 
 			add_action( 'widgetopts_module_sidebar', array( $this, 'upgrade_pro' ) );
@@ -677,16 +677,46 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 			</li>
 		<?php }
 
-		function siteorigin(){ ?>
-			<li class="widgetopts-module-card widgetopts-module-type-pro" data-module-id="siteorigin">
+		function siteorigin(){
+			$option  = get_option( 'widgetopts_tabmodule-siteorigin' ); ?>
+
+			<li class="widgetopts-module-card widgetopts-module-card-no-settings <?php echo ( $option == 'activate' ) ? 'widgetopts-module-type-enabled' : 'widgetopts-module-type-disabled'; ?>" id="widgetopts-module-card-siteorigin" data-module-id="siteorigin">
 				<div class="widgetopts-module-card-content">
-					<a href="http://widget-options.com/features/pagebuilder-siteorigin-extensive-widget-options/" target="_blank" class="widgetopts-pro-upsell"></a>
 					<h2><?php _e( 'SiteOrigin Pagebuilder Support', 'extended-widget-options' );?></h2>
-					<div class="widgetopts-pro-label"><span class="dashicons dashicons-lock"></span></div>
+					<!-- <div class="widgetopts-pro-label"><span class="dashicons dashicons-unlock"></span></div> -->
 					<p class="widgetopts-module-desc">
 						<?php _e( 'Extends widget options functionality to SiteOrigin Pagebuilder Plugin.', 'extended-widget-options' );?>
 					</p>
+					<?php //print_r( $visibility );?>
+					<div class="widgetopts-module-actions hide-if-no-js">
+						<?php if( $option == 'activate' ){ ?>
+							<button class="button button-secondary widgetopts-toggle-settings"><?php echo $this->translation['show_description'];?></button>
+							<button class="button button-secondary widgetopts-toggle-activation"><?php echo $this->translation['deactivate'];?></button>
+						<?php }else{ ?>
+							<button class="button button-secondary widgetopts-toggle-settings"><?php echo $this->translation['show_description'];?></button>
+							<button class="button button-primary widgetopts-toggle-activation"><?php echo $this->translation['activate'];?></button>
+						<?php } ?>
+
+					</div>
 				</div>
+
+				<?php $this->start_modal( $option ); ?>
+					<span class="dashicons widgetopts-dashicons widgetopts-no-top dashicons-editor-kitchensink"></span>
+					<h3 class="widgetopts-modal-header"><?php _e( 'SiteOrigin Pagebuilder Support', 'extended-widget-options' );?></h3>
+					<p>
+						<?php _e( 'This feature will enable the widget options to your widgets when you are using <a href="https://wordpress.org/plugins/siteorigin-panels/" target="_blank">Pagebuilder by SiteOrigin</a>. Easily manage and extends widget functionalities and visibility using tabbed options provided for each widgets.', 'extended-widget-options' );?>
+					</p>
+					<h4><?php _e( 'Limitations', 'extended-widget-options' );?></h4>
+					<p><?php _e( ' - Visibility options tab option is not available since you are using pagebuilder.', 'extended-widget-options' );?></p>
+					<p><?php _e( ' - Custom widget ID on pagebuilder widget was removed to avoid conflicts.', 'extended-widget-options' );?></p>
+					<p>
+						<?php _e( 'That\'s all! Other options will work smoothly and integrated perfectly on the plugin.', 'extended-widget-options' );?>
+					</p>
+					<p class="widgetopts-settings-section">
+						<?php _e( 'No additional settings available.', 'extended-widget-options' );?>
+					</p>
+				<?php $this->end_modal( $option ); ?>
+
 			</li>
 		<?php }
 

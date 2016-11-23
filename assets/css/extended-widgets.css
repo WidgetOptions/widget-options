@@ -4,9 +4,25 @@
 	padding-top: 5px;
 	clear: both;
 }
-.so-content.panel-dialog .extended-widget-opts-form{
+
+/** SO **/
+.so-content .widgetops-sc-opts{
 	display: none;
 }
+.so-content .extended-widget-opts-tab-visibility,
+.so-content .extended-widget-opts-tabcontent-visibility,
+.so-content .widgetopts_id_fld{
+	display: none;
+}
+.so-content .widgetopts-unlock-features{
+	margin-top: 0px;
+	padding-top: 20px;
+}
+.so-content .extended-widget-opts-tabs > .ui-tabs-nav{
+	padding-left: 15px !important;
+}
+
+
 .extended-widget-opts-form.extended-widget-opts-form-large .ui-tabs-nav .dashicons{
 	display: none;
 }
