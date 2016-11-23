@@ -304,86 +304,118 @@ class PHPBITS_extendedWidgetsDisplay {
             $opts = array();
         }
 
-        $devices        = isset( $opts['devices'] ) ? $opts['devices'] : '';
-        $alignment      = isset( $opts['alignment'] ) ? $opts['alignment'] : '';
         $custom_class   = isset( $opts['class'] ) ? $opts['class'] : '';
-        $abbr           = array(
-                            'mobile'    =>  'xs',
-                            'tablet'    =>  'sm',
-                            'desktop'   =>  'md',
-                        );
-        if( isset( $devices['options'] ) ){
-            unset( $devices['options'] );
-        }
-
-        if( 'activate' == $this->widgetopts_tabs['devices'] ){
-            if( !empty( $devices ) ){
-                $device_opts    = ( isset( $opts['devices']['options'] ) ) ? $opts['devices']['options'] : 'hide';
-                $classe_to_add .= 'extendedwopts-' . $device_opts . ' ';
-
-                foreach ($devices as $key => $value) {
-                    $classe_to_add .= 'extendedwopts-' . $key . ' ';
-                }
-            }
-        }
-
-        if( 'activate' == $this->widgetopts_tabs['alignment'] ){
-            //alignment
-            if( !empty( $alignment ) ){
-                foreach ($alignment as $k => $v) {
-                    if( 'default' != $v ){
-                        $classe_to_add .= 'extendedwopts-' . $abbr[ $k ] . '-'. $v . ' ';
-                    }
-                }
-            }
-        }
+        $widget_id_set  = $params[0]['widget_id'];
 
         if( 'activate' == $this->widgetopts_tabs['classes'] && isset( $this->settings['classes'] ) ){
             //don't add the IDs when the setting is set to NO
             if( isset( $this->settings['classes']['id'] ) ){
-                if( is_array( $custom_class ) && isset( $custom_class['id'] ) ){
+                if( is_array( $custom_class ) && isset( $custom_class['id'] ) && !empty( $custom_class['id'] ) ){
                     $params[0]['before_widget'] = preg_replace( '/id="[^"]*/', "id=\"{$custom_class['id']}", $params[0]['before_widget'], 1 );
+                    $widget_id_set = $custom_class['id'];
                 }
             }
+
         }
 
-        if( 'activate' == $this->widgetopts_tabs['classes'] && isset( $this->settings['classes'] ) ){
-            //classes & ID
-            $options    = get_option('extwopts_class_settings');
-            $predefined = array();
-            if( isset( $this->settings['classes'] ) && isset( $this->settings['classes']['classlists'] ) && !empty( $this->settings['classes']['classlists'] ) ){
-                $predefined = $this->settings['classes']['classlists'];
-            }
-
-            //don't add any classes when settings is set to predefined or hide
-            if( !isset( $this->settings['classes']['type'] ) ||
-                    ( isset(  $this->settings['classes']['type'] ) && !in_array(  $this->settings['classes']['type'] , array( 'hide', 'predefined' ) ) ) ){
-                    if( is_array( $custom_class ) && isset( $custom_class['classes'] ) && !empty( $custom_class['classes'] ) ){
-                        $classe_to_add .= $custom_class['classes'] .' ';
-                    }
-            }
-
-            //don't add any classes when settings is set to text or hide
-            if( !isset(  $this->settings['classes']['type'] ) ||
-                    ( isset(  $this->settings['classes']['type'] ) && !in_array( $this->settings['classes']['type'] , array( 'hide', 'text' ) ) ) ){
-                    if( is_array( $predefined ) && !empty( $predefined ) ){
-                        $predefined = array_unique( $predefined );
-                        if( isset( $custom_class['predefined'] ) && is_array( $custom_class['predefined'] ) ){
-                            $filtered = array_intersect( $predefined, $custom_class['predefined'] );
-                            if( !empty( $filtered ) ){
-                                $classe_to_add .= implode( ' ', $filtered );
-                                $classe_to_add .= ' ';
-                            }
-                        }
-                    }
-            }
+        //add classes to widget
+        $get_classes = widgetopts_classes_generator( $opts, $this->widgetopts_tabs, $this->settings );
+        if( !empty( $get_classes ) ){
+            $classes                    = 'class="'. ( implode( ' ', $get_classes ) ) . ' ';
+            $params[0]['before_widget'] = str_replace('class="', $classes, $params[0]['before_widget']);
         }
 
-        $classes                    = 'class="'.$classe_to_add;
-        $params[0]['before_widget'] = str_replace('class="',$classes,$params[0]['before_widget']);
+        // $classes                    = 'class="'.$classe_to_add;
+        // $params[0]['before_widget'] = str_replace('class="',$classes,$params[0]['before_widget']);
         return $params;
     }
 }
 new PHPBITS_extendedWidgetsDisplay();
 endif;
+
+//create separate function returning classes for reuse
+if( !function_exists( 'widgetopts_classes_generator' ) ){
+    function widgetopts_classes_generator( $opts, $tabs, $settings, $so = false ){
+        if( !empty( $opts ) && is_array( $opts ) ){
+            $classes        = array();
+            $devices        = isset( $opts['devices'] ) ? $opts['devices'] : '';
+            $alignment      = isset( $opts['alignment'] ) ? $opts['alignment'] : '';
+            $clearfix       = isset( $opts['clearfix'] ) ? $opts['clearfix'] : '';
+            $custom_class   = isset( $opts['class'] ) ? $opts['class'] : '';
+            $abbr           = array(
+                                'mobile'    =>  'xs',
+                                'tablet'    =>  'sm',
+                                'desktop'   =>  'md',
+                            );
+            if( isset( $devices['options'] ) ){
+                unset( $devices['options'] );
+            }
+
+            if( 'activate' == $tabs['devices'] ){
+                //devices visibility
+                if( !empty( $devices ) ){
+                    $device_opts    = ( isset( $opts['devices']['options'] ) ) ? $opts['devices']['options'] : 'hide';
+                    $classes[] = 'extendedwopts-' . $device_opts ;
+
+                    foreach ($devices as $key => $value) {
+                        $classes[] = 'extendedwopts-' . $key;
+                    }
+                }
+            }
+
+            if( 'activate' == $tabs['alignment'] ){
+                //alignment
+                if( !empty( $alignment ) ){
+                    foreach ($alignment as $k => $v) {
+                        if( 'default' != $v ){
+                            $classes[] = 'extendedwopts-' . $abbr[ $k ] . '-'. $v ;
+                        }
+                    }
+                }
+            }
+
+            if( 'activate' == $tabs['classes'] && isset( $settings['classes'] ) ){
+                //classes & ID
+                $options    = get_option('extwopts_class_settings');
+                $predefined = array();
+                if( isset( $settings['classes'] ) && isset( $settings['classes']['classlists'] ) && !empty( $settings['classes']['classlists'] ) ){
+                    $predefined = $settings['classes']['classlists'];
+                }
+
+                //don't add any classes when settings is set to predefined or hide
+                if( !isset( $settings['classes']['type'] ) ||
+                    ( isset(  $settings['classes']['type'] ) && !in_array(  $settings['classes']['type'] , array( 'hide', 'predefined' ) ) ) ){
+                    if( is_array( $custom_class ) && isset( $custom_class['classes'] ) && !empty( $custom_class['classes'] ) ){
+                        $classes[] = $custom_class['classes'];
+                    }
+                }
+
+                //don't add any classes when settings is set to text or hide
+                if( !isset(  $settings['classes']['type'] ) ||
+                    ( isset(  $settings['classes']['type'] ) && !in_array( $settings['classes']['type'] , array( 'hide', 'text' ) ) ) ){
+                    if( is_array( $predefined ) && !empty( $predefined ) ){
+                        $predefined = array_unique( $predefined );
+                        if( isset( $custom_class['predefined'] ) && is_array( $custom_class['predefined'] ) ){
+                            $filtered = array_intersect( $predefined, $custom_class['predefined'] );
+                            if( !empty( $filtered ) ){
+                                $classes = array_merge( $classes,  $filtered );
+                                // $classes[] = implode( ' ', $filtered );
+                                // $classes[] = ' ';
+                            }
+                        }
+                    }
+                }
+            }
+
+            if( $so && 'activate' == $tabs['hide_title'] ){
+                //add fixed class to widget
+                if( isset( $custom_class['title'] ) && !empty( $custom_class['title'] ) ){
+                    $classes[] = 'widgetopts-hide_title';
+                }
+            }
+
+            return $classes;
+        }
+    }
+}
 ?>
