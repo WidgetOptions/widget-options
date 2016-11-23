@@ -18,6 +18,11 @@ body{
     .extendedwopts-md-justify{
       text-align: justify;
     }
+    .widgetopts-hide_title{
+			.widget-title{
+				display: none;
+			}
+		}
 	@media screen and (min-width: $desktop) {
 		.extendedwopts-hide.extendedwopts-desktop{
 			display: none;

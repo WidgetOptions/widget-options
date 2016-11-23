@@ -12,7 +12,7 @@
 .so-content .extended-widget-opts-tab-visibility,
 .so-content .extended-widget-opts-tabcontent-visibility,
 .so-content .widgetopts_id_fld{
-	display: none;
+	display: none !important;
 }
 .so-content .widgetopts-unlock-features{
 	margin-top: 0px;

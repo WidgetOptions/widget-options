@@ -21,7 +21,8 @@ class PHPBITS_extendedWidgetsDisplay {
                 'alignment'     => get_option( 'widgetopts_tabmodule-alignment' ),
                 'hide_title'    => get_option( 'widgetopts_tabmodule-hide_title' ),
                 'classes'       => get_option( 'widgetopts_tabmodule-classes' ),
-                'logic'         => get_option( 'widgetopts_tabmodule-logic' )
+                'logic'         => get_option( 'widgetopts_tabmodule-logic' ),
+                'siteorigin'    => get_option( 'widgetopts_tabmodule-siteorigin' )
             );
             $widgetopts_tabs = maybe_serialize($widgetopts_tabs);
           // Put the results in a transient. Expire after 4 weeks.

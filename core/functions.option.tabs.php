@@ -21,7 +21,8 @@ class PHPBITS_extendedWidgetsTabs {
                 'alignment'     => get_option( 'widgetopts_tabmodule-alignment' ),
                 'hide_title'    => get_option( 'widgetopts_tabmodule-hide_title' ),
                 'classes'       => get_option( 'widgetopts_tabmodule-classes' ),
-                'logic'         => get_option( 'widgetopts_tabmodule-logic' )
+                'logic'         => get_option( 'widgetopts_tabmodule-logic' ),
+                'siteorigin'    => get_option( 'widgetopts_tabmodule-siteorigin' )
             );
             $widgetopts_tabs = maybe_serialize($widgetopts_tabs);
           // Put the results in a transient. Expire after 4 weeks.
@@ -108,7 +109,7 @@ class PHPBITS_extendedWidgetsTabs {
                         </td>
                     </tr>
                     <tr valign="top" class="widgetopts-topro">
-                        <td colspan="2"><small><?php _e( '<em>Upgrade to <a href="https://phpbits.net/plugin/extended-widget-options/" target="_blank">Pro Version</a> for Multiple Devices Alignment and Additional Widget Options.</em>', 'widget-options' );?></small></td>
+                        <td colspan="2"><small><?php _e( '<em>Upgrade to <a href="http://widget-options.com/?utm_source=wordpressadmin&utm_medium=widgettabs&utm_campaign=widgetoptsprotab" target="_blank">Pro Version</a> for Multiple Devices Alignment and Additional Widget Options.</em>', 'widget-options' );?></small></td>
                     </tr>
                 </tbody>
             </table>
@@ -595,7 +596,7 @@ class PHPBITS_extendedWidgetsTabs {
                             <table class="form-table">
                             <tbody>
                                 <?php if( isset( $this->settings['classes'] ) && ( isset( $this->settings['classes']['id'] ) && '1' == $this->settings['classes']['id'] ) ){?>
-                                    <tr valign="top">
+                                    <tr valign="top" class="widgetopts_id_fld">
                                         <td scope="row">
                                             <strong><?php _e( 'Widget CSS ID:', 'widget-options' );?></strong><br />
                                             <input type="text" id="opts-class-id-<?php echo $args['id'];?>" class="widefat" name="<?php echo $args['namespace'];?>[extended_widget_opts][class][id]" value="<?php echo $id;?>" />
@@ -723,9 +724,6 @@ class PHPBITS_extendedWidgetsTabs {
                 </li>
                 <li>
                     <span class="dashicons dashicons-lock"></span> <?php _e( 'Disable Widgets and Permissions', 'widget-options' );?>
-                </li>
-                <li>
-                    <span class="dashicons dashicons-lock"></span> <?php _e( 'Pagebuilder by SiteOrigin Support', 'widget-options' );?>
                 </li>
             </ul>
             <p><strong><a href="http://widget-options.com/?utm_source=wordpressadmin&utm_medium=widgettabs&utm_campaign=widgetoptsprotab" class="button-primary" target="_blank"><?php _e( 'Learn More', 'widget-options' );?></a></strong></p>
