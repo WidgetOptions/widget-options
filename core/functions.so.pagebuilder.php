@@ -50,33 +50,35 @@ class PHPBITS_extendedWidgetsSOSupport {
     }
 
     function panels_data( $panels_data, $post_id ){
-        if( isset( $panels_data['widgets'] ) && !empty( $panels_data['widgets'] ) && is_array( $panels_data['widgets'] ) ){
+        if( !is_admin() ){
+            if( isset( $panels_data['widgets'] ) && !empty( $panels_data['widgets'] ) && is_array( $panels_data['widgets'] ) ){
 
-            global $current_user;
+                global $current_user;
 
-            foreach ( $panels_data['widgets'] as $key => $widgets ) {
-                if( isset( $widgets['extended_widget_opts'] ) && !empty( $widgets['extended_widget_opts'] ) ){
+                foreach ( $panels_data['widgets'] as $key => $widgets ) {
+                    if( isset( $widgets['extended_widget_opts'] ) && !empty( $widgets['extended_widget_opts'] ) ){
 
-                    if( isset( $panels_data['widgets'][$key] ) && 'activate' == $this->widgetopts_tabs['logic'] ){
-                        // display widget logic
-                        if( isset( $widgets['extended_widget_opts']['class'] ) && isset( $widgets['extended_widget_opts']['class']['logic'] ) && !empty( $widgets['extended_widget_opts']['class']['logic'] ) ){
-                            $display_logic = stripslashes( trim( $widgets['extended_widget_opts']['class']['logic'] ) );
-                            $display_logic = apply_filters( "extended_widget_options_logic_override", $display_logic );
-                            if ( $display_logic === false ){
-                                unset( $panels_data['widgets'][$key]);
-                            }
-                            if ( $display_logic === true ){
-                                // return true;
-                            }
-                            if ( stristr($display_logic,"return")===false ){
-                                $display_logic="return (" . $display_logic . ");";
-                            }
-                            if ( !eval( $display_logic ) ){
-                                unset( $panels_data['widgets'][$key]);
+                        if( isset( $panels_data['widgets'][$key] ) && 'activate' == $this->widgetopts_tabs['logic'] ){
+                            // display widget logic
+                            if( isset( $widgets['extended_widget_opts']['class'] ) && isset( $widgets['extended_widget_opts']['class']['logic'] ) && !empty( $widgets['extended_widget_opts']['class']['logic'] ) ){
+                                $display_logic = stripslashes( trim( $widgets['extended_widget_opts']['class']['logic'] ) );
+                                $display_logic = apply_filters( "extended_widget_options_logic_override", $display_logic );
+                                if ( $display_logic === false ){
+                                    unset( $panels_data['widgets'][$key]);
+                                }
+                                if ( $display_logic === true ){
+                                    // return true;
+                                }
+                                if ( stristr($display_logic,"return")===false ){
+                                    $display_logic="return (" . $display_logic . ");";
+                                }
+                                if ( !eval( $display_logic ) ){
+                                    unset( $panels_data['widgets'][$key]);
+                                }
                             }
                         }
-                    }
 
+                    }
                 }
             }
         }

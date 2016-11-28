@@ -126,6 +126,7 @@ if( !class_exists( 'Modular_Settings_API_Widget_Options' ) ){
 			$response['closeModal'] = true;
 			$response = (object) $response;
 			delete_transient( 'widgetopts_tabs_transient' );
+			do_action( 'widgetopts_ajax_success', $response );
 			echo json_encode( $response );
 			die();
 		}

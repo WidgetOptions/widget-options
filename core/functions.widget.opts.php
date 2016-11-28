@@ -15,7 +15,22 @@ class PHPBITS_extendedWidgets {
     }
 
     function enqueue_scripts(){
-        wp_enqueue_style( 'widgetopts-jquery-ui', plugins_url( '../assets/css/jqueryui/1.11.4/themes/ui-lightness/jquery-ui.css' , __FILE__ ) , array(), null );
+        global $pagenow;
+
+        //fixes for https://github.com/phpbits/widget-options/issues/6
+        $doUI = true;
+        if( in_array( $pagenow, array( 'admin.php' ) ) ){
+            $screen = get_current_screen();
+            // print_r( $screen );
+            if( !empty( $screen ) && isset( $screen->base ) &&  ( ( strpos( $screen->base, 'toolset_page_' ) !== false ) || ( strpos( $screen->base, 'page_toolset' ) !== false ) )  ){
+                $doUI = false;
+            }
+        }
+
+        if( $doUI ){
+            wp_enqueue_style( 'widgetopts-jquery-ui', plugins_url( '../assets/css/jqueryui/1.11.4/themes/ui-lightness/jquery-ui.css' , __FILE__ ) , array(), null );
+        }
+
     	wp_enqueue_style( 'extended-widget-options-css', plugins_url( '../assets/css/extended-widgets.css' , __FILE__ ) , array(), null );
 
         wp_enqueue_script(
