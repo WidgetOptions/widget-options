@@ -98,6 +98,7 @@ e.g.
 3. Custom Alignment
 4. Widget CSS ID & Classes
 5. Display Widget Logic
+6. Pagebuilder by SiteOrigin Plugin Widget Options
 
 == Changelog ==
 
