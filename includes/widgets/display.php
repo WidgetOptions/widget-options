@@ -1,0 +1,310 @@
+<?php
+/**
+ * Handles Front-end Display
+ *
+ * @copyright   Copyright (c) 2015, Jeffrey Carandang
+ * @since       1.0
+ */
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+/**
+ * Handles widget_display_callback filter
+ *
+ * @since 1.0
+ * @global $widget_options
+ * @return $instance
+ */
+
+//check if function exists
+if( !function_exists( 'widgetopts_display_callback' ) ):
+    function widgetopts_display_callback( $instance, $widget, $args ){
+        global $widget_options, $current_user;
+
+        $hidden     = false;
+        $opts       = ( isset( $instance[ 'extended_widget_opts-'. $widget->id ] ) ) ? $instance[ 'extended_widget_opts-'. $widget->id ] : array();
+        $visibility = array( 'show' => array(), 'hide' => array() );
+
+        //wordpress pages
+        $visibility         = isset( $opts['visibility'] ) ? $opts['visibility'] : array();
+        $visibility_opts    = isset( $opts['visibility']['options'] ) ? $opts['visibility']['options'] : 'hide';
+
+        $is_misc    = ( 'activate' == $widget_options['visibility'] && isset( $widget_options['settings']['visibility'] ) && isset( $widget_options['settings']['visibility']['misc'] ) ) ? true : false;
+        $is_types   = ( 'activate' == $widget_options['visibility'] && isset( $widget_options['settings']['visibility'] ) && isset( $widget_options['settings']['visibility']['post_type'] ) ) ? true : false;
+        $is_tax     = ( 'activate' == $widget_options['visibility'] && isset( $widget_options['settings']['visibility'] ) && isset( $widget_options['settings']['visibility']['taxonomies'] ) ) ? true : false;
+
+        if ( $is_misc && ( ( is_home() && is_front_page() ) || is_front_page() ) ) {
+            if( isset( $visibility['misc']['home'] ) && $visibility_opts == 'hide' ){
+                $hidden = true; //hide if checked on hidden pages
+            }elseif( !isset( $visibility['misc']['home'] ) && $visibility_opts == 'show' ){
+                $hidden = true; //hide if not checked on visible pages
+            }
+
+            //do return to bypass other conditions
+            $hidden = apply_filters( 'extended_widget_options_home', $hidden );
+            if( $hidden ){
+                return false;
+            }
+        }elseif ( $is_misc && is_home() ) { //filter for blog page
+            if( isset( $visibility['misc']['blog'] ) && $visibility_opts == 'hide' ){
+                $hidden = true; //hide if checked on hidden pages
+            }elseif( !isset( $visibility['misc']['blog'] ) && $visibility_opts == 'show' ){
+                $hidden = true; //hide if not checked on visible pages
+            }
+
+            //do return to bypass other conditions
+            $hidden = apply_filters( 'extended_widget_options_blog', $hidden );
+            if( $hidden ){
+                return false;
+            }
+
+        }elseif ( $is_tax && is_category() ) {
+            if( !isset( $visibility['categories'] ) ){
+                $visibility['categories'] = array();
+            }
+
+            if( !isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'hide' && array_key_exists( get_query_var('cat') , $visibility['categories']) ){
+                $hidden = true; //hide if exists on hidden pages
+            }elseif( !isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'show' && !array_key_exists( get_query_var('cat') , $visibility['categories']) ){
+                $hidden = true; //hide if doesn't exists on visible pages
+            }elseif( isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'hide' ){
+                $hidden = true; //hide to all categories
+            }elseif( isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'show' ){
+                $hidden = false; //hide to all categories
+            }
+
+            //do return to bypass other conditions
+            $hidden = apply_filters( 'extended_widget_options_categories', $hidden );
+            if( $hidden ){
+                return false;
+            }
+        }elseif ( $is_tax && is_tax() ) {
+            $term = get_queried_object();
+            if( !isset( $visibility['taxonomies'] ) ){
+                $visibility['taxonomies'] = array();
+            }
+
+            if( $visibility_opts == 'hide' && array_key_exists( $term->taxonomy , $visibility['taxonomies']) ){
+                $hidden = true; //hide if exists on hidden pages
+            }elseif( $visibility_opts == 'show' && !array_key_exists( $term->taxonomy , $visibility['taxonomies']) ){
+                $hidden = true; //hide if doesn't exists on visible pages
+            }
+
+            //do return to bypass other conditions
+            $hidden = apply_filters( 'extended_widget_options_taxonomies', $hidden );
+            if( $hidden ){
+                return false;
+            }
+        }elseif ( $is_misc && is_archive() ) {
+            if( isset( $visibility['misc']['archives'] ) && $visibility_opts == 'hide' ){
+                $hidden = true; //hide if checked on hidden pages
+            }elseif( !isset( $visibility['misc']['archives'] ) && $visibility_opts == 'show' ){
+                $hidden = true; //hide if not checked on visible pages
+            }
+
+            //do return to bypass other conditions
+            $hidden = apply_filters( 'extended_widget_options_archives', $hidden );
+            if( $hidden ){
+                return false;
+            }
+        }elseif ( $is_misc && is_404() ) {
+            if( isset( $visibility['misc']['404'] ) && $visibility_opts == 'hide' ){
+                $hidden = true; //hide if checked on hidden pages
+            }elseif( !isset( $visibility['misc']['404'] ) && $visibility_opts == 'show' ){
+                $hidden = true; //hide if not checked on visible pages
+            }
+
+            //do return to bypass other conditions
+            $hidden = apply_filters( 'extended_widget_options_404', $hidden );
+            if( $hidden ){
+                return false;
+            }
+        }elseif ( $is_misc && is_search() ) {
+            if( isset( $visibility['misc']['search'] ) && $visibility_opts == 'hide' ){
+                $hidden = true; //hide if checked on hidden pages
+            }elseif( !isset( $visibility['misc']['search'] ) && $visibility_opts == 'show' ){
+                $hidden = true; //hide if not checked on visible pages
+            }
+
+            //do return to bypass other conditions
+            $hidden = apply_filters( 'extended_widget_options_search', $hidden );
+            if( $hidden ){
+                return false;
+            }
+        }elseif ( is_single() && !is_page() ) {
+            $type = get_post_type();
+            if( $is_types && !isset( $visibility['types'] ) ){
+                $visibility['types'] = array();
+            }
+            if( $visibility_opts == 'hide' && array_key_exists( $type , $visibility['types']) ){
+                $hidden = true; //hide if exists on hidden pages
+            }elseif( $visibility_opts == 'show' && !array_key_exists( $type , $visibility['types']) ){
+                $hidden = true; //hide if doesn't exists on visible pages
+            }
+            // do return to bypass other conditions
+            $hidden = apply_filters( 'extended_widget_options_types', $hidden );
+            //hide posts assign on category
+            if( !isset( $visibility['categories'] ) ){
+                $visibility['categories'] = array();
+            }
+            if( isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'hide' ){
+                $hidden = true; //hide to all categories
+            }elseif( isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'show' ){
+                $hidden = false; //hide to all categories
+            }elseif( !isset( $visibility['categories']['all_categories'] ) && !empty( $visibility['categories'] ) ) {
+                $cats           = wp_get_post_categories( get_the_ID() );
+                if( is_array( $cats ) && !empty( $cats ) ){
+                    $checked_cats   = array_keys( $visibility['categories'] );
+                    $intersect      = array_intersect( $cats , $checked_cats );
+                    if( !empty( $intersect ) && $visibility_opts == 'hide' ){
+                        $hidden = true;
+                    }elseif( !empty( $intersect ) && $visibility_opts == 'show' ){
+                        $hidden = false;
+                    }
+                }
+            }
+            // do return to bypass other conditions
+            $hidden = apply_filters( 'extended_widget_options_post_category', $hidden );
+            if( $hidden ){
+                return false;
+            }
+            // echo $type;
+        }elseif ( $is_types && is_page() ) {
+            global $post;
+            //do post type condition first
+            if( isset( $visibility['types'] ) && isset( $visibility['types']['page'] ) ){
+                if( $visibility_opts == 'hide' && array_key_exists( 'page' , $visibility['types']) ){
+                    $hidden = true; //hide if exists on hidden pages
+                }elseif( $visibility_opts == 'show' && !array_key_exists( 'page' , $visibility['types']) ){
+                    $hidden = true; //hide if doesn't exists on visible pages
+                }
+            }else{
+                //do per pages condition
+                if( !isset( $visibility['pages'] ) ){
+                    $visibility['pages'] = array();
+                }
+                if( $visibility_opts == 'hide' && array_key_exists( $post->ID , $visibility['pages']) ){
+                    $hidden = true; //hide if exists on hidden pages
+                }elseif( $visibility_opts == 'show' && !array_key_exists( $post->ID , $visibility['pages']) ){
+                    $hidden = true; //hide if doesn't exists on visible pages
+                }
+            }
+            //do return to bypass other conditions
+            $hidden = apply_filters( 'extended_widget_options_page', $hidden );
+            if( $hidden ){
+                return false;
+            }
+        }
+
+        //end wordpress pages
+
+        if( 'activate' == $widget_options['logic'] ){
+            // display widget logic
+            if( isset( $opts['class'] ) && isset( $opts['class']['logic'] ) && !empty( $opts['class']['logic'] ) ){
+                $display_logic = stripslashes( trim( $opts['class']['logic'] ) );
+                $display_logic = apply_filters( 'widget_options_logic_override', $display_logic );
+                if ( $display_logic === false ){
+                    return false;
+                }
+                if ( $display_logic === true ){
+                    return true;
+                }
+                if ( stristr($display_logic,"return")===false ){
+                    $display_logic="return (" . $display_logic . ");";
+                }
+                if ( !eval( $display_logic ) ){
+                    return false;
+                }
+            }
+        }
+
+        if( 'activate' == $widget_options['hide_title'] ){
+            //hide widget title
+            if( isset( $instance['title'] ) && isset( $opts['class'] ) && isset( $opts['class']['title'] ) && '1' == $opts['class']['title'] ){
+                $instance['title'] = '';
+            }
+        }
+
+        return $instance;
+    }
+    add_filter( 'widget_display_callback', 'widgetopts_display_callback', 50, 3 );
+endif;
+
+//Don't show widget title
+if( !function_exists( 'widgetopts_remove_title' ) ):
+    function widgetopts_remove_title( $widget_title, $instance = array(), $widget_id = '' ){
+        global $widget_options;
+        if ( 'activate' == $widget_options['hide_title'] && is_array( $instance ) && !empty( $instance ) ){
+            foreach ( $instance as $key => $value) {
+                if( substr( $key, 0, 20 ) == 'extended_widget_opts' ){
+                    $opts       = ( isset( $instance[ $key ] ) ) ? $instance[ $key ] : array();
+
+                    if( isset( $opts['class'] ) && isset( $opts['class']['title'] ) && '1' == $opts['class']['title'] ){
+                        return;
+                    }
+
+                    break;
+                }
+            }
+            return $widget_title;
+        }else{
+            return ( $widget_title );
+        }
+    }
+    add_filter( 'widget_title', 'widgetopts_remove_title', 10, 4 );
+endif;
+
+/*
+ * Add custom classes on dynamic_sidebar_params filter
+ */
+ if( !function_exists( 'widgetopts_add_classes' ) ):
+    function widgetopts_add_classes( $params ){
+        global $widget_options, $wp_registered_widget_controls;
+        $classe_to_add  = '';
+        $id_base        = $wp_registered_widget_controls[ $params[0]['widget_id'] ]['id_base'];
+        $instance       = get_option( 'widget_' . $id_base );
+
+        if( isset( $wp_registered_widget_controls[ $params[0]['widget_id'] ]['params'][0]['number'] ) ){
+            $num = $wp_registered_widget_controls[ $params[0]['widget_id'] ]['params'][0]['number'];
+        }elseif( isset( $wp_registered_widget_controls[ $params[0]['widget_id'] ]['callback'][0]->number ) ){
+            $num = $wp_registered_widget_controls[ $params[0]['widget_id'] ]['callback'][0]->number;
+        }else{
+            $num = substr( $params[0]['widget_id'], -1 );
+        }
+        if( isset( $instance[ $num ] ) ){
+            $opts           = ( isset( $instance[ $num ][ 'extended_widget_opts-'. $params[0]['widget_id'] ] ) ) ? $instance[ $num ][ 'extended_widget_opts-'. $params[0]['widget_id'] ] : array();
+        }else{
+            $opts = array();
+        }
+
+        $custom_class   = isset( $opts['class'] ) ? $opts['class'] : '';
+        $widget_id_set  = $params[0]['widget_id'];
+
+        if( 'activate' == $widget_options['classes'] && isset( $widget_options['settings']['classes'] ) ){
+            //don't add the IDs when the setting is set to NO
+            if( isset( $widget_options['settings']['classes']['id'] ) ){
+                if( is_array( $custom_class ) && isset( $custom_class['id'] ) && !empty( $custom_class['id'] ) ){
+                    $params[0]['before_widget'] = preg_replace( '/id="[^"]*/', "id=\"{$custom_class['id']}", $params[0]['before_widget'], 1 );
+                    $widget_id_set = $custom_class['id'];
+                }
+            }
+
+        }
+
+        //add custom styling to widget
+        echo widgetopts_styles_generator( $widget_id_set, $opts, $widget_options, $widget_options['settings'] );
+
+        $get_classes = widgetopts_classes_generator( $opts, $widget_options, $widget_options['settings'] );
+        if( !empty( $get_classes ) ){
+            $classes        = 'class="'. ( implode( ' ', $get_classes ) ) . ' ';
+            $params[0]['before_widget'] = str_replace('class="', $classes, $params[0]['before_widget']);
+        }
+
+        // $params[0]['before_widget'] = str_replace('class="', ' data-animation="asdf" class="', $params[0]['before_widget']);
+
+        return $params;
+    }
+    add_filter( 'dynamic_sidebar_params', 'widgetopts_add_classes' );
+endif;
+
+?>
