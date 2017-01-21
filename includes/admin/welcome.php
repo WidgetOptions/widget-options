@@ -25,7 +25,7 @@ if( !class_exists( 'WIDGETOPS_Welcome' ) ){
 		}
 
 		function enqueue(){
-			if ( !isset( $_GET['page'] ) || 'extended-widget-opts-getting-started' != $_GET['page'] )
+			if ( !isset( $_GET['page'] ) || 'widget-opts-getting-started' != $_GET['page'] )
 			return;
 
 			wp_enqueue_style( 'extended-widget-opts-welcome', plugins_url( '../assets/css/welcome.css' , dirname(__FILE__) ) , array(), null );
@@ -33,27 +33,27 @@ if( !class_exists( 'WIDGETOPS_Welcome' ) ){
 
 		function screen_page(){
 			add_dashboard_page(
-				__( 'Getting started with Extended Widget Options', 'widget-options' ),
-				__( 'Getting started with Extended Widget Options', 'widget-options' ),
+				__( 'Getting started with Widget Options', 'widget-options' ),
+				__( 'Getting started with Widget Options', 'widget-options' ),
 				apply_filters( 'widgetopts_welcome_cap', 'manage_options' ),
-				'extended-widget-opts-getting-started',
+				'widget-opts-getting-started',
 				array( $this, 'welcome_content' )
 			);
 		}
 
 		function welcome_head(){
-			$selected = isset( $_GET['page'] ) ? $_GET['page'] : 'extended-widget-opts-getting-started';
+			$selected = isset( $_GET['page'] ) ? $_GET['page'] : 'widget-opts-getting-started';
 			?>
-			<h1><?php _e( 'Welcome to Extended Widget Options', 'widget-options' ); ?></h1>
+			<h1><?php _e( 'Welcome to Widget Options', 'widget-options' ); ?></h1>
 			<div class="about-text">
-				<?php _e( 'Congratulations for extending your WordPress widgets! You are now rocking with Extended Widget Options - the world\'s most complete widget management plugin yet.', 'widget-options' ); ?>
+				<?php _e( 'Congratulations! You\'ve just unlocked features on managing your widgets better.', 'widget-options' ); ?>
 			</div>
 			<div class="widgetopts-badge">
 				<span class="widgetopts-mascot"></span>
 				<span class="version"><?php _e( 'Version', 'widget-options' );?> <?php echo WIDGETOPTS_VERSION; ?></span>
 			</div>
 			<h2 class="nav-tab-wrapper">
-				<a class="nav-tab <?php echo $selected == 'extended-widget-opts-getting-started' ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( admin_url( add_query_arg( array( 'page' => 'extended-widget-opts-getting-started' ), 'index.php' ) ) ); ?>">
+				<a class="nav-tab <?php echo $selected == 'widget-opts-getting-started' ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( admin_url( add_query_arg( array( 'page' => 'widget-opts-getting-started' ), 'index.php' ) ) ); ?>">
 					<?php _e( 'Getting Started', 'widget-options' ); ?>
 				</a>
 			</h2>
@@ -70,31 +70,31 @@ if( !class_exists( 'WIDGETOPS_Welcome' ) ){
 				<div class="feature-section two-col">
 					<div class="col">
 						<h3><?php _e( 'Take full control over your widgets!' , 'widget-options' ); ?></h3>
-						<p><?php printf( __( 'Extended Widget Options is your all-in-on plugin to take over your widgets like it was built as WordPress core functionality. You can follow the tutorial on the right to see how the plugin works but in reality it\'s so easy and integrated elegantly on each widgets. <a href="%s" target="_blank">Expand your widgets here to view Widget Options</a>.', 'widget-options' ), esc_url( admin_url('widgets.php') ) ); ?>
+						<p><?php printf( __( 'Widget Options is your all-in-on plugin to take over your widgets like it was built as WordPress core functionality. You can follow the tutorial on the right to see how the plugin works but in reality it\'s so easy and integrated elegantly on each widgets. <a href="%s" target="_blank">Expand your widgets here to view Widget Options</a>.', 'widget-options' ), esc_url( admin_url('widgets.php') ) ); ?>
 					</div>
 					<div class="col">
 						<div class="feature-video">
-							<iframe width="495" height="278" src="https://player.vimeo.com/video/189304732" frameborder="0" allowfullscreen></iframe>
+							<iframe width="495" height="278" src="https://player.vimeo.com/video/190057410" frameborder="0" allowfullscreen></iframe>
 						</div>
 					</div>
 				</div>
 
 				<div class="feature-section two-col">
-					<h3><?php _e( 'Plugin Features', 'widget-options' ); ?></h3>
-					<p><?php _e( 'Extended Widget Options is both easy to use and extremely powerful. We have tons of helpful features that will let you fully manage your widgets and extend functionalities.', 'widget-options' ); ?></p>
+					<h3><?php _e( 'Extend Plugin Features', 'widget-options' ); ?></h3>
+					<p><?php _e( 'Unlock more features by upgrading to Extended Widget Options to get the full plugin functionalities! We have tons of helpful features that will let you fully manage your widgets and extend functionalities.', 'widget-options' ); ?></p>
 					<p><a href="http://widget-options.com/features/" target="_blank" class="widgetopts-features-button button button-primary"><?php _e( 'See all Features', 'widget-options' ); ?></a></p>
 				</div>
 			</div>
 		<?php }
 
 		function redirect($plugin){
-			if($plugin=='extended-widget-options/widget-options.php') {
-				wp_redirect(admin_url('index.php?page=extended-widget-opts-getting-started'));
+			if($plugin=='widget-options/plugin.php') {
+				wp_redirect(admin_url('index.php?page=widget-opts-getting-started'));
 				die();
 			}
 		}
 		function remove_menu(){
-		    remove_submenu_page( 'index.php', 'extended-widget-opts-getting-started' );
+		    remove_submenu_page( 'index.php', 'widget-opts-getting-started' );
 		}
     }
     new WIDGETOPS_Welcome();
