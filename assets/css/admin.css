@@ -235,6 +235,30 @@
 	border: 1px solid #ddd;
 }
 
+#widgetopts-sidebar-widget-more_plugins table td{
+	width: 50%;
+	vertical-align: top;
+	text-align: center;
+}
+#widgetopts-sidebar-widget-more_plugins .dashicons{
+	font-size: 30px;
+	height: 30px;
+	width: 30px;
+	margin-bottom: 5px;
+}
+#widgetopts-sidebar-widget-more_plugins td a{
+	text-decoration: none;
+	color: #444;
+	background: #f3f3f3;
+	display: block;
+	padding: 8px 5px;
+	border-radius: 3px;
+	font-size: 13px;
+}
+#widgetopts-sidebar-widget-more_plugins td a:hover{
+	background: #ddd;
+}
+
 /** Modular Settings Page **/
 .widgetopts-poststuff #post-body #postbox-container-1, .widgetopts-poststuff #post-body #postbox-container-2{
 	border-top: 1px solid #ddd;
@@ -455,10 +479,10 @@ p.widgetopts-settings-section{
     top: 5px;
 	opacity: 0.6;
 
-	/*background: #ffb310;*/
+	background: #ffb310;
     /*box-shadow: 1px 1px 1px rgba(0,0,0,0.2);*/
     font-size: 11px;
-    color: #aaa;
+    color: #5e5018;
     text-transform: uppercase;
 }
 .widgetopts-pro-label .dashicons{

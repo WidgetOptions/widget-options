@@ -23,7 +23,6 @@ if( !function_exists( 'widgetopts_settings_siteorigin' ) ):
 	    <li class="widgetopts-module-card widgetopts-module-card-no-settings <?php echo ( $widget_options['siteorigin'] == 'activate' ) ? 'widgetopts-module-type-enabled' : 'widgetopts-module-type-disabled'; ?>" id="widgetopts-module-card-siteorigin" data-module-id="siteorigin">
 			<div class="widgetopts-module-card-content">
 				<h2><?php _e( 'SiteOrigin Pagebuilder Support', 'widget-options' );?></h2>
-				<div class="widgetopts-pro-label"><span class="dashicons dashicons-unlock"></span></div>
 				<p class="widgetopts-module-desc">
 					<?php _e( 'Extends widget options functionality to SiteOrigin Pagebuilder Plugin.', 'widget-options' );?>
 				</p>

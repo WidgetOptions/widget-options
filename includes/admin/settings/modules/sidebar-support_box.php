@@ -16,20 +16,28 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @since 4.0
  * @return void
  */
-
-function widgetopts_settings_support_box(){ ?>
-    <div id="widgetopts-sidebar-widget-support" class="postbox widgetopts-sidebar-widget">
-		<h3 class="hndle ui-sortable-handle"><span><?php _e( 'Need Help on Managing Widgets?', 'widget-options' );?></span></h3>
-		<div class="inside">
-			<p>
-				<?php _e( 'In need of any assistance or having issue using Extended Widget Options Plugin? We are very happy to help you out, just click the button below and we will answer your concerns professionally. Thanks!', 'widget-options' );?>
-			</p>
-			<p>
-				<a class="button-secondary" href="https://phpbits.net/contact/?utm_source=wordpressadmin&amp;utm_medium=widget&amp;utm_campaign=widgetoptssupportcta" target="_blank"><?php _e( 'Open Support Ticket', 'widget-options' );?></a>
-			</p>
+if( !function_exists( 'widgetopts_settings_support_box' ) ):
+	function widgetopts_settings_support_box(){ ?>
+		<div id="widgetopts-sidebar-widget-support" class="postbox widgetopts-sidebar-widget">
+			<h3 class="hndle ui-sortable-handle"><span><?php _e( 'Need Help on Managing Widgets?', 'widget-options' );?></span></h3>
+			<div class="inside">
+				<p>
+					<?php _e( 'Since you are using the free version, you can get the free support on WordPress.org community forums. Thanks!', 'widget-options' );?>
+				</p>
+				<p>
+					<a class="button-secondary" href="https://wordpress.org/support/plugin/widget-options/" target="_blank"><?php _e( 'Get Free Support', 'widget-options' );?></a>
+				</p>
+				<p>
+					<?php _e( 'Manage your widgets better and get fast professional support by upgrading to Extended Widget Options.', 'widget-options' );?>
+				</p>
+				<p>
+					<a class="button-secondary" href="http://widget-options.com/?utm_source=wordpressadmin&amp;utm_medium=widget&amp;utm_campaign=widgetoptsprocta" target="_blank"><?php _e( 'Get Extended Widget Options', 'widget-options' );?></a>
+				</p>
+			</div>
 		</div>
-	</div>
-    <?php
-}
-add_action( 'widgetopts_module_sidebar', 'widgetopts_settings_support_box', 20 );
+
+	    <?php
+	}
+	add_action( 'widgetopts_module_sidebar', 'widgetopts_settings_support_box', 30 );
+endif;
 ?>

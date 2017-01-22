@@ -140,7 +140,9 @@ final class WP_Widget_Options {
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/shortcodes.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/cache.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/siteorigin.php';
-				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/sidebar-purchase_validation.php';
+				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/sidebar-upsell_pro.php';
+				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/sidebar-opt_in.php';
+				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/sidebar-more_plugins.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/sidebar-support_box.php';
 			}
 
