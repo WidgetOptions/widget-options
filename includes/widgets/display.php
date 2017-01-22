@@ -308,9 +308,6 @@ endif;
 
         }
 
-        //add custom styling to widget
-        echo widgetopts_styles_generator( $widget_id_set, $opts, $widget_options, $widget_options['settings'] );
-
         $get_classes = widgetopts_classes_generator( $opts, $widget_options, $widget_options['settings'] );
         if( !empty( $get_classes ) ){
             $classes        = 'class="'. ( implode( ' ', $get_classes ) ) . ' ';
