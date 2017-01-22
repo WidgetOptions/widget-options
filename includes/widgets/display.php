@@ -149,7 +149,7 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
             }
         }elseif ( is_single() && !is_page() ) {
             $type = get_post_type();
-            if( $is_types && !isset( $visibility['types'] ) ){
+            if( !isset( $visibility['types'] ) ){
                 $visibility['types'] = array();
             }
             if( $visibility_opts == 'hide' && array_key_exists( $type , $visibility['types']) ){

@@ -69,7 +69,7 @@ function widgetopts_in_widget_form( $widget, $return, $instance ){
         <script type="text/javascript">
     		jQuery(document).ready(function($){
     			if($('.so-content .extended-widget-opts-tabs').length > 0){
-                    $('.extended-widget-opts-tabs').tabs({ active: 0 });
+                    $('.extended-widget-opts-tabs').tabs({ active: 1 });
         	    	$('.extended-widget-opts-visibility-tabs').tabs({ active: 0 });
         	    	$('.extended-widget-opts-settings-tabs').tabs({ active: 0 });
     			}
