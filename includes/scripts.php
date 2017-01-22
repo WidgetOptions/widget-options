@@ -45,12 +45,9 @@ if( !function_exists( 'widgetopts_load_admin_scripts' ) ):
       	$suffix  = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
 
             wp_enqueue_style( 'widgetopts-admin-styles', $css_dir . 'admin.css' , array(), null );
-
-            wp_enqueue_media();
+            
             wp_enqueue_style( 'widgetopts-jquery-ui', $css_dir . 'jqueryui/1.11.4/themes/ui-lightness/jquery-ui.css' , array(), null );
             wp_enqueue_style( 'jquery-ui' );
-            wp_enqueue_style( 'wp-color-picker' );
-            wp_enqueue_script('wp-color-picker');
 
             wp_enqueue_script(
                  'jquery-widgetopts-option-tabs',

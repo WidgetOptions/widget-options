@@ -70,18 +70,8 @@ function widgetopts_in_widget_form( $widget, $return, $instance ){
     		jQuery(document).ready(function($){
     			if($('.so-content .extended-widget-opts-tabs').length > 0){
                     $('.extended-widget-opts-tabs').tabs({ active: 0 });
-        	    	$('.extended-widget-opts-styling-tabs').tabs({ active: 0 });
         	    	$('.extended-widget-opts-visibility-tabs').tabs({ active: 0 });
         	    	$('.extended-widget-opts-settings-tabs').tabs({ active: 0 });
-                    $('.widget-opts-color').wpColorPicker();
-                    $('.extended-widget-opts-date').datepicker({
-            		    //comment the beforeShow handler if you want to see the ugly overlay
-            		    beforeShow: function() {
-            		        setTimeout(function(){
-            		            $('.ui-datepicker').css('z-index', 99999999999999);
-            		        }, 0);
-            		    }
-            		});
     			}
     		});
     	</script>
