@@ -6,29 +6,6 @@ body{
 		.extendedwopts-show{
 			display: none;
 		}
-		.widget.widgetopts-animate-hide{
-			@include opacity(0);
-		}
-		.widget.widgetopts-animate-hide.animated{
-			@include opacity(1);
-		}
-		.widgetopts-custom-wlink{
-			position: absolute;
-			width: 100%;
-			height: 100%;
-			top: 0px;
-			left: 0px;
-			z-index: 15;
-			&, &:hover, &:focus, &:visited{
-				border: 0px;
-				text-decoration: none;
-				outline: none;
-				background: transparent;
-			}
-			&:before, &:after{
-				display: none;
-			}
-		}
 		.widgetopts-hide_title{
 			.widget-title{
 				display: none;
