@@ -202,11 +202,13 @@ endif; // End if class_exists check.
  * Example: <?php $widgetopts = WP_Widget_Options(); ?>
  *
  * @since 3.2
-* @return object|WP_Widget_Options The one true WP_Widget_Options Instance.
+ * @return object|WP_Widget_Options The one true WP_Widget_Options Instance.
  */
-function WIDGETOPTS() {
-	return WP_Widget_Options::instance();
+if( !function_exists( 'WIDGETOPTS' ) ){
+	function WIDGETOPTS() {
+		return WP_Widget_Options::instance();
+	}
+	// Get Plugin Running.
+	WIDGETOPTS();
 }
-// Get Plugin Running.
-WIDGETOPTS();
 ?>

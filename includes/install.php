@@ -8,6 +8,20 @@
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+//check if free version is activated
+if( !function_exists( 'widgetopts_upgraded' ) ){
+	add_action( 'admin_notices', 'widgetopts_upgraded' );
+	function widgetopts_upgraded(){
+		if( is_plugin_active( 'widget-options/plugin.php' ) && is_plugin_active( 'extended-widget-options/plugin.php' ) ){ ?>
+			<div class="widgetopts_activated_notice notice-error notice" style="box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);">
+				<p>
+					<?php _e( 'Please deactivate <strong>Widget Options</strong> Plugin, it may cause issue with the extended plugin version. Thanks!', 'widget-options' );?>
+				</p>
+			</div>
+		<?php }
+	}
+}
+
 //add settings link on plugin page
 if( !function_exists( 'widgetopts_filter_plugin_actions' ) ){
   add_action( 'plugin_action_links_' . plugin_basename( WIDGETOPTS_PLUGIN_FILE ) , 'widgetopts_filter_plugin_actions' );
@@ -27,7 +41,7 @@ if( !function_exists( 'widgetopts_register_defaults' ) ){
 			if( !get_option( 'widgetopts_installDate' ) ){
 				add_option( 'widgetopts_installDate', date( 'Y-m-d h:i:s' ) );
 			}
-			
+
 			if( !get_option( '_widgetopts_default_registered_' ) ){
 				//activate free version modules
 				add_option( 'widgetopts_tabmodule-visibility', 'activate' );
