@@ -164,6 +164,37 @@
 	font-size: 11px;
 }
 
+.widget-opts-learnmore{
+	text-decoration: none;
+}
+
+.extended-widget-opts-tabs .ui-tabs-nav li.ui-tabs-active.extended-widget-gopro-tab-alignment a{
+	background-color: #FFF1B8 !important;
+}
+.extended-widget-opts-tabcontent-gopro{
+	background-color: #FFF1B8 !important;
+	color: #444;
+	margin-bottom: 15px;
+}
+.extended-widget-opts-tabcontent-gopro li{
+	font-size: 12px;
+	line-height: 24px;
+}
+body .extended-widget-opts-tabs .extended-widget-gopro-tab-alignment a{
+	font-weight: bold !important;
+	padding-left: 9px !important;
+	padding-right: 9px !important;
+}
+.widgetopts-unlock-features{
+	text-align: center;
+	font-size: 16px;
+    font-weight: bold;
+}
+.widgetopts-unlock-features .dashicons{
+	font-size: 25px;
+	margin-right: 4px;
+}
+
 /* customizer fix */
 #customize-theme-controls .ui-tabs .ui-tabs-panel.extended-widget-opts-tabcontent{
 	min-width: 100%;

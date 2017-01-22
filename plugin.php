@@ -170,6 +170,8 @@ final class WP_Widget_Options {
 			        'activate' == $widget_options['logic'] ){
 					require_once WIDGETOPTS_PLUGIN_DIR . 'includes/widgets/option-tabs/settings.php';
 				}
+
+				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/widgets/option-tabs/upsell.php';
 			// }
 
 		} //end is_admin condition
