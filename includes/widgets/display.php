@@ -41,7 +41,7 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
             }
 
             //do return to bypass other conditions
-            $hidden = apply_filters( 'extended_widget_options_home', $hidden );
+            $hidden = apply_filters( 'widget_options_visibility_home', $hidden );
             if( $hidden ){
                 return false;
             }
@@ -53,7 +53,7 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
             }
 
             //do return to bypass other conditions
-            $hidden = apply_filters( 'extended_widget_options_blog', $hidden );
+            $hidden = apply_filters( 'widget_options_visibility_blog', $hidden );
             if( $hidden ){
                 return false;
             }
@@ -74,7 +74,23 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
             }
 
             //do return to bypass other conditions
-            $hidden = apply_filters( 'extended_widget_options_categories', $hidden );
+            $hidden = apply_filters( 'widget_options_visibility_categories', $hidden );
+            if( $hidden ){
+                return false;
+            }
+        }elseif ( $is_tax && is_tag() ) {
+            if( !isset( $visibility['tags'] ) ){
+                $visibility['tags'] = array();
+            }
+
+            if( isset( $visibility['taxonomies']['post_tag'] ) && $visibility_opts == 'hide' ){
+                $hidden = true; //hide to all tags
+            }elseif( isset( $visibility['taxonomies']['post_tag'] ) && $visibility_opts == 'show' ){
+                $hidden = false; //hide to all tags
+            }
+
+            //do return to bypass other conditions
+            $hidden = apply_filters( 'widget_options_visibility_tags', $hidden );
             if( $hidden ){
                 return false;
             }
@@ -91,7 +107,7 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
             }
 
             //do return to bypass other conditions
-            $hidden = apply_filters( 'extended_widget_options_taxonomies', $hidden );
+            $hidden = apply_filters( 'widget_options_visibility_taxonomies', $hidden );
             if( $hidden ){
                 return false;
             }
@@ -103,7 +119,7 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
             }
 
             //do return to bypass other conditions
-            $hidden = apply_filters( 'extended_widget_options_archives', $hidden );
+            $hidden = apply_filters( 'widget_options_visibility_archives', $hidden );
             if( $hidden ){
                 return false;
             }
@@ -115,7 +131,7 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
             }
 
             //do return to bypass other conditions
-            $hidden = apply_filters( 'extended_widget_options_404', $hidden );
+            $hidden = apply_filters( 'widget_options_visibility_404', $hidden );
             if( $hidden ){
                 return false;
             }
@@ -127,7 +143,7 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
             }
 
             //do return to bypass other conditions
-            $hidden = apply_filters( 'extended_widget_options_search', $hidden );
+            $hidden = apply_filters( 'widget_options_visibility_search', $hidden );
             if( $hidden ){
                 return false;
             }
@@ -142,7 +158,7 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
                 $hidden = true; //hide if doesn't exists on visible pages
             }
             // do return to bypass other conditions
-            $hidden = apply_filters( 'extended_widget_options_types', $hidden );
+            $hidden = apply_filters( 'widget_options_visibility_types', $hidden );
             //hide posts assign on category
             if( !isset( $visibility['categories'] ) ){
                 $visibility['categories'] = array();
@@ -164,7 +180,7 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
                 }
             }
             // do return to bypass other conditions
-            $hidden = apply_filters( 'extended_widget_options_post_category', $hidden );
+            $hidden = apply_filters( 'widget_options_visibility_post_category', $hidden );
             if( $hidden ){
                 return false;
             }
@@ -190,7 +206,7 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
                 }
             }
             //do return to bypass other conditions
-            $hidden = apply_filters( 'extended_widget_options_page', $hidden );
+            $hidden = apply_filters( 'widget_options_visibility_page', $hidden );
             if( $hidden ){
                 return false;
             }
@@ -203,6 +219,7 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
             if( isset( $opts['class'] ) && isset( $opts['class']['logic'] ) && !empty( $opts['class']['logic'] ) ){
                 $display_logic = stripslashes( trim( $opts['class']['logic'] ) );
                 $display_logic = apply_filters( 'widget_options_logic_override', $display_logic );
+                $display_logic = apply_filters( 'extended_widget_options_logic_override', $display_logic );
                 if ( $display_logic === false ){
                     return false;
                 }

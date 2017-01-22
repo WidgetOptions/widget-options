@@ -100,7 +100,7 @@ final class WP_Widget_Options {
 	 * @return void
 	 */
 	private function includes() {
-		global $widget_options, $extended_license, $widgetopts_taxonomies, $widgetopts_pages, $widgetopts_categories, $pagenow;
+		global $widget_options, $extended_license, $widgetopts_taxonomies, $widgetopts_pages, $widgetopts_types, $widgetopts_categories, $pagenow;
 
 		require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/register-settings.php';
 		$widget_options = widgetopts_get_settings();
@@ -113,6 +113,7 @@ final class WP_Widget_Options {
 
 			//other global variables to prevent duplicate and faster calls
 			$widgetopts_taxonomies 	= widgetopts_global_taxonomies();
+			$widgetopts_types 		= widgetopts_global_types();
 			$widgetopts_pages 		= widgetopts_global_pages();
 			$widgetopts_categories 	= widgetopts_global_categories();
 

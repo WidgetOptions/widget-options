@@ -63,6 +63,20 @@ function widgetopts_global_taxonomies() {
     return apply_filters( 'widgetopts_get_global_taxonomies', $taxonomies );
 }
 
+function widgetopts_global_types() {
+	$types = get_option( 'widgetopts_global_types' );
+
+	if( empty( $types ) ) {
+
+        $types  = get_post_types( array(
+                               'public' => true,
+                           ), 'object' );
+
+	}
+
+	return apply_filters( 'widgetopts_get_global_types', $types );
+}
+
 function widgetopts_global_pages() {
 	$pages = get_option( 'widgetopts_global_pages' );
 
