@@ -11,16 +11,8 @@ body{
 				display: none;
 			}
 		}
-	@media screen and (min-width: $desktop) {
-		.extendedwopts-hide.extendedwopts-desktop{
-			display: none;
-		}
-		.extendedwopts-show.extendedwopts-desktop{
-			display: block;
-		}
-		.widget.clearfix-desktop{
-			clear: both;
-		}
+
+		//alignment
 		.extendedwopts-md-right{
 			text-align: right;
 		}
@@ -32,6 +24,16 @@ body{
 		}
 		.extendedwopts-md-justify{
 			text-align: justify;
+		}
+	@media screen and (min-width: $desktop) {
+		.extendedwopts-hide.extendedwopts-desktop{
+			display: none;
+		}
+		.extendedwopts-show.extendedwopts-desktop{
+			display: block;
+		}
+		.widget.clearfix-desktop{
+			clear: both;
 		}
 	}
 	@media screen and (max-width: $tablet)
@@ -48,19 +50,6 @@ body{
 		.widget.clearfix-tablet{
 			clear: both;
 		}
-
-		.extendedwopts-sm-right{
-			text-align: right;
-		}
-		.extendedwopts-sm-left{
-			text-align: left;
-		}
-		.extendedwopts-sm-center{
-			text-align: center;
-		}
-		.extendedwopts-sm-justify{
-			text-align: justify;
-		}
 	}
 	@media screen and (max-width: $mobile) {
 		.extendedwopts-hide.extendedwopts-mobile{
@@ -74,19 +63,6 @@ body{
 		}
 		.widget.clearfix-mobile{
 			clear: both;
-		}
-
-		.extendedwopts-xs-right{
-			text-align: right;
-		}
-		.extendedwopts-xs-left{
-			text-align: left;
-		}
-		.extendedwopts-xs-center{
-			text-align: center;
-		}
-		.extendedwopts-xs-justify{
-			text-align: justify;
 		}
 	}
 }
