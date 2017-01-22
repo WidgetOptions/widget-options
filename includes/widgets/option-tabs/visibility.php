@@ -33,7 +33,7 @@ add_action( 'extended_widget_opts_tabs', 'widgetopts_tab_visibility' );
  * create new tab content options for visibility options
  */
 function widgetopts_tabcontent_visibility( $args ){
-    global $widget_options, $widgetopts_taxonomies, $widgetopts_pages, $widgetopts_types;
+    global $widget_options, $widgetopts_taxonomies, $widgetopts_pages, $widgetopts_types, $widgetopts_categories;
 
     $checked    = "";
     $selected   = 0;
@@ -41,6 +41,7 @@ function widgetopts_tabcontent_visibility( $args ){
     $pages      = ( !empty( $widgetopts_pages ) )       ? $widgetopts_pages         : array();
     $taxonomies = ( !empty( $widgetopts_taxonomies ) )  ? $widgetopts_taxonomies    : array();
     $types      = ( !empty( $widgetopts_types ) )       ? $widgetopts_types         : array();
+    $categories = ( !empty( $widgetopts_categories ) )  ? $widgetopts_categories    : array();
 
     //declare miscellaneous pages - wordpress default pages
     $misc       = array(
@@ -223,39 +224,25 @@ function widgetopts_tabcontent_visibility( $args ){
                 <!--  start tax tab content -->
                 <div id="extended-widget-opts-visibility-tab-<?php echo $args['id'];?>-tax" class="extended-widget-opts-visibility-tabcontent extended-widget-opts-inner-tabcontent">
                     <div class="extended-widget-opts-inner-lists" style="height: 230px;padding: 5px;overflow:auto;">
-                        <?php
-                            if( !empty( $widget_options['settings']['taxonomies'] ) && is_array( $widget_options['settings']['taxonomies'] ) ){
-                                foreach ( $widget_options['settings']['taxonomies'] as $tax_opt => $vallue ) {
-                                    if( isset( $taxonomies[ $tax_opt ] ) ){ ?>
-                                        <h4 id="extended-widget-opts-taxt-<?php echo $tax_opt;?>"><?php echo $taxonomies[ $tax_opt ]->label;?> <?php if( isset( $taxonomies[ $tax_opt ]->object_type ) && isset( $taxonomies[ $tax_opt ]->object_type[0] ) ){ echo ' <small>- '. $taxonomies[ $tax_opt ]->object_type[0] .'</small>'; } ?> +/-</h4>
-                                        <div class="extended-widget-opts-taxt-<?php echo $tax_opt;?>">
-                                            <?php foreach ( $get_terms[ $tax_opt ] as $get_term ) {
-                                                if( isset( $terms_values[ $tax_opt ][ $get_term->term_id ] ) && $terms_values[ $tax_opt ][ $get_term->term_id ] == '1' ){
-                                                    $checked = 'checked="checked"';
-                                                }else{
-                                                    $checked = '';
-                                                }
-
-                                                //backward compatibility fix for category
-                                                if( $tax_opt == 'category' && !empty( $cat_values ) ){
-                                                    if( isset( $cat_values[ $get_term->term_id ] ) && $cat_values[ $get_term->term_id ] == '1' ){
-                                                        $checked = 'checked="checked"';
-                                                    }else{
-                                                        $checked = '';
-                                                    }
-                                                }
-                                                ?>
-                                                <p>
-                                                    <input type="checkbox" name="<?php echo $args['namespace'];?>[extended_widget_opts][visibility][tax_terms][<?php echo $tax_opt;?>][<?php echo $get_term->term_id;?>]" id="<?php echo $args['id'];?>-opts-<?php echo $tax_opt;?>-<?php echo $get_term->term_id;?>" value="1" <?php echo $checked;?> />
-                                                    <label for="<?php echo $args['id'];?>-opts-<?php echo $tax_opt;?>-<?php echo $get_term->term_id;?>"><?php echo $get_term->name;?></label>
-                                                </p>
-                                            <?php } ?>
-                                        </div>
-                                <?php
+                        <h4 id="extended-widget-opts-categories"><?php _e( 'Categories', 'widget-options' );?> +/-</h4>
+                        <div class="extended-widget-opts-categories">
+                            <p>
+                                <input type="checkbox" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][visibility][categories][all_categories]" id="<?php echo $args['id'];?>-opts-categories-all" value="1" <?php if( isset( $cat_values['all_categories'] ) ){ echo 'checked="checked"'; };?> />
+                                <label for="<?php echo $args['id'];?>-opts-categories-all"><?php _e( 'All Categories', 'widget-options' );?></label>
+                            </p>
+                            <?php foreach ($categories as $cat) {
+                                    if( isset( $cat_values[ $cat->cat_ID ] ) && $cat_values[ $cat->cat_ID ] == '1' ){
+                                        $checked = 'checked="checked"';
+                                    }else{
+                                        $checked = '';
                                     }
-                                }
-                            }
-                        ?>
+                                ?>
+                                <p>
+                                    <input type="checkbox" name="<?php echo $args['namespace'];?>[extended_widget_opts][visibility][categories][<?php echo $cat->cat_ID;?>]" id="<?php echo $args['id'];?>-opts-categories-<?php echo $cat->cat_ID;?>" value="1" <?php echo $checked;?> />
+                                    <label for="<?php echo $args['id'];?>-opts-categories-<?php echo $cat->cat_ID;?>"><?php echo $cat->cat_name;?></label>
+                                </p>
+                            <?php } ?>
+                        </div>
 
                         <h4 id="extended-widget-opts-taxonomies"><?php _e( 'Taxonomies', 'widget-options' );?> +/-</h4>
                         <div class="extended-widget-opts-taxonomies">

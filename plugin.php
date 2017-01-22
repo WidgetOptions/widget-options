@@ -100,7 +100,7 @@ final class WP_Widget_Options {
 	 * @return void
 	 */
 	private function includes() {
-		global $widget_options, $extended_license, $widgetopts_pages, $pagenow;
+		global $widget_options, $extended_license, $widgetopts_taxonomies, $widgetopts_pages, $widgetopts_categories, $pagenow;
 
 		require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/register-settings.php';
 		$widget_options = widgetopts_get_settings();
@@ -112,7 +112,9 @@ final class WP_Widget_Options {
 		if ( is_admin() ) {
 
 			//other global variables to prevent duplicate and faster calls
+			$widgetopts_taxonomies 	= widgetopts_global_taxonomies();
 			$widgetopts_pages 		= widgetopts_global_pages();
+			$widgetopts_categories 	= widgetopts_global_categories();
 
 			//admin settings
 			require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/welcome.php';

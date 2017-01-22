@@ -44,6 +44,24 @@ function widgetopts_addhttp($url) {
  * @since 5.0
  * @return array
  */
+function widgetopts_global_taxonomies() {
+    global $widget_options;
+	$taxonomies = get_option( 'widgetopts_global_taxonomies' );
+
+    if( empty( $taxonomies ) ) {
+
+        $tax_args = array(
+            'public'   => true
+        );
+        $tax_output     = 'objects'; // or objects
+        $tax_operator   = 'and'; // 'and' or 'or'
+        $taxonomies     = get_taxonomies( $tax_args, $tax_output, $tax_operator );
+        unset( $taxonomies['post_format'] );
+
+    }
+
+    return apply_filters( 'widgetopts_get_global_taxonomies', $taxonomies );
+}
 
 function widgetopts_global_pages() {
 	$pages = get_option( 'widgetopts_global_pages' );
@@ -60,5 +78,17 @@ function widgetopts_global_pages() {
 	}
 
 	return apply_filters( 'widgetopts_get_global_pages', $pages );
+}
+
+function widgetopts_global_categories(){
+    $categories = get_option( 'widgetopts_global_categories' );
+
+	if( empty( $categories ) ) {
+        $categories = get_categories( array(
+                        'hide_empty'    => false
+                    ) );
+	}
+
+	return apply_filters( 'widgetopts_global_categories', $categories );
 }
 ?>

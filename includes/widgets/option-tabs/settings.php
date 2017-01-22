@@ -177,7 +177,7 @@ if( !function_exists( 'widgetopts_tabcontent_settings' ) ):
                            <?php if( !isset( $widget_options['settings']['logic'] ) ||
                                     ( isset( $widget_options['settings']['logic']  ) && !isset( $widget_options['settings']['logic']['notice']  ) ) ){ ?>
                                          <p><a href="#" class="widget-opts-toggler-note"><?php _e( 'Click to Toggle Note', 'widget-options' );?></a></p>
-                                         <p class="widget-opts-toggle-note"><small><?php _e( 'PLEASE NOTE that the display logic you introduce is EVAL\'d directly. Anyone who has access to edit widget appearance will have the right to add any code, including malicious and possibly destructive functions. There is an optional filter <em>"extended_widget_options_logic_override"</em> which you can use to bypass the EVAL with your own code if needed.', 'widget-options' );?></small></p>
+                                         <p class="widget-opts-toggle-note"><small><?php _e( 'PLEASE NOTE that the display logic you introduce is EVAL\'d directly. Anyone who has access to edit widget appearance will have the right to add any code, including malicious and possibly destructive functions. There is an optional filter <em>"widget_options_logic_override"</em> which you can use to bypass the EVAL with your own code if needed.', 'widget-options' );?></small></p>
                            <?php } ?>
                        </div>
                    </div><!--  end logiv tab content -->
