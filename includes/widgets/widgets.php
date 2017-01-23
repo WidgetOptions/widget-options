@@ -18,10 +18,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 
 function widgetopts_in_widget_form( $widget, $return, $instance ){
-    global $wp_registered_widget_controls;
+    global $widget_options, $wp_registered_widget_controls;
     $width          = ( isset( $wp_registered_widget_controls[$widget->id]['width'] ) ) ? (int) $wp_registered_widget_controls[ $widget->id]['width' ]  : 250;
     $opts           = ( isset( $instance[ 'extended_widget_opts-'. $widget->id ] ) )    ? $instance[ 'extended_widget_opts-'. $widget->id ]             : array();
-    $is_siteorigin  = get_option( 'widgetopts_tabmodule-siteorigin' );
+    $is_siteorigin  = ( isset( $widget_options['siteorigin'] ) ) ? $widget_options['siteorigin'] : '';
 
     /** change widget names for SO Pagebuilder support **/
     if( isset( $widget->id ) && 'temp' == $widget->id ){
