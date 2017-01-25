@@ -44,55 +44,66 @@ function widgetopts_addhttp($url) {
  * @since 5.0
  * @return array
  */
-function widgetopts_global_taxonomies() {
-    global $widget_options;
-	$taxonomies = get_option( 'widgetopts_global_taxonomies' );
+ function widgetopts_global_taxonomies() {
+ 	$taxonomies = get_option( 'widgetopts_global_taxonomies' );
 
-    if( empty( $taxonomies ) ) {
+ 	if( empty( $taxonomies ) ) {
 
-        $tax_args = array(
-            'public'   => true
-        );
-        $tax_output     = 'objects'; // or objects
-        $tax_operator   = 'and'; // 'and' or 'or'
-        $taxonomies     = get_taxonomies( $tax_args, $tax_output, $tax_operator );
-        unset( $taxonomies['post_format'] );
+         $tax_args = array(
+           'public'   => true
+         );
+         $tax_output     = 'objects'; // or objects
+         $tax_operator   = 'and'; // 'and' or 'or'
+         $taxonomies     = get_taxonomies( $tax_args, $tax_output, $tax_operator );
+         unset( $taxonomies['post_format'] );
 
-    }
+         // Let's let devs alter that value coming in
+         $taxonomies = apply_filters( 'widgetopts_update_global_taxonomies', $taxonomies );
+         update_option( 'widgetopts_global_taxonomies', $taxonomies );
 
-    return apply_filters( 'widgetopts_get_global_taxonomies', $taxonomies );
-}
+ 	}
 
-function widgetopts_global_types() {
-	$types = get_option( 'widgetopts_global_types' );
+ 	return apply_filters( 'widgetopts_get_global_taxonomies', $taxonomies );
+ }
 
-	if( empty( $types ) ) {
+ function widgetopts_global_types() {
+ 	$types = get_option( 'widgetopts_global_types' );
 
-        $types  = get_post_types( array(
-                               'public' => true,
-                           ), 'object' );
+ 	if( empty( $types ) ) {
 
-	}
+         $types  = get_post_types( array(
+                                'public' => true,
+                            ), 'object' );
 
-	return apply_filters( 'widgetopts_get_global_types', $types );
-}
+        // Let's let devs alter that value coming in
+        $types = apply_filters( 'widgetopts_update_global_types', $types );
+        update_option( 'widgetopts_global_types', $types );
 
-function widgetopts_global_pages() {
-	$pages = get_option( 'widgetopts_global_pages' );
+ 	}
 
-	if( empty( $pages ) ) {
-        $pages  = get_posts( array(
-                                'post_type'     => 'page',
-                                'post_status'   => 'publish',
-                                'numberposts'   => -1,
-                                'orderby'       => 'title',
-                                'order'         => 'ASC',
-                                'fields'        => array('ID', 'name')
-                            ));
-	}
+ 	return apply_filters( 'widgetopts_get_global_types', $types );
+ }
 
-	return apply_filters( 'widgetopts_get_global_pages', $pages );
-}
+ function widgetopts_global_pages() {
+ 	$pages = get_option( 'widgetopts_global_pages' );
+
+ 	if( empty( $pages ) ) {
+         $pages  = get_posts( array(
+                                 'post_type'     => 'page',
+                                 'post_status'   => 'publish',
+                                 'numberposts'   => -1,
+                                 'orderby'       => 'title',
+                                 'order'         => 'ASC',
+                                 'fields'        => array('ID', 'name')
+                             ));
+
+         // Let's let devs alter that value coming in
+         $pages = apply_filters( 'widgetopts_update_global_pages', $pages );
+         update_option( 'widgetopts_global_pages', $pages );
+ 	}
+
+ 	return apply_filters( 'widgetopts_get_global_pages', $pages );
+ }
 
 function widgetopts_global_categories(){
     $categories = get_option( 'widgetopts_global_categories' );
@@ -101,6 +112,10 @@ function widgetopts_global_categories(){
         $categories = get_categories( array(
                         'hide_empty'    => false
                     ) );
+
+        // Let's let devs alter that value coming in
+        $categories = apply_filters( 'widgetopts_update_global_categories', $categories );
+        update_option( 'widgetopts_global_categories', $categories );
 	}
 
 	return apply_filters( 'widgetopts_global_categories', $categories );

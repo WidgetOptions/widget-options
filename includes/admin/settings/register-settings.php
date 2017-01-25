@@ -120,8 +120,14 @@ if( !function_exists( 'widgetopts_get_settings' ) ):
 
 		if( empty( $settings ) ) {
 
+			$opts_settings 		= get_option( 'widgetopts_tabmodule-settings' );
+			//fallback to prevent error
+			if( is_serialized( $opts_settings ) ){
+				$opts_settings = maybe_unserialize( $opts_settings );
+			}
+
 			// Update old settings with new single option
-			$settings 			= !empty( get_option( 'widgetopts_tabmodule-settings' ) ) ? maybe_unserialize( get_option( 'widgetopts_tabmodule-settings' ) ) : array();
+			$settings 			= !empty( $opts_settings ) ?  $opts_settings : array();
 			$visibility 		= array( 'visibility' 		=> get_option( 'widgetopts_tabmodule-visibility' ) );
 			$devices 			= array( 'devices' 			=> get_option( 'widgetopts_tabmodule-devices' ) );
 			$alignment 			= array( 'alignment' 		=> get_option( 'widgetopts_tabmodule-alignment' ) );

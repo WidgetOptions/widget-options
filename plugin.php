@@ -120,6 +120,7 @@ final class WP_Widget_Options {
 			//admin settings
 			require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/welcome.php';
 			require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/display-settings.php';
+			require_once WIDGETOPTS_PLUGIN_DIR . 'includes/transient.php';
 
 			if( in_array( $pagenow, array( 'options-general.php' ) ) ){
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/visibility.php';
