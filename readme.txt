@@ -3,7 +3,7 @@ Contributors: phpbits
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FMKC2SLPTULP8
 Tags: widgets, widget, display widgets, display widget, hide widgets, hide widget, sidebar, widget content, widget logic, widget options, widget option, restrict widgets, widget css, CSS, widget classes, widget styling, widget ID, widget custom class, widget visibility, widget ninja, jetpack visibility, siteorigin, siteorigin pagebuilder, pagebuilder by siteorigin
 Requires at least: 4.0
-Tested up to: 4.7
+Tested up to: 4.7.1
 Stable tag: 1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -58,6 +58,7 @@ For more widgets management and restriction options, upgrade to <a href="http://
 * Widget Animations on scroll and page load
 * Sticky / Fixed WordPress Widgets
 * Custom Widget Links
+* Widget Cache
 * Custom Widget Columns Display
 * Restrict Widget Visibility per User Roles
 * Widget Visibility per Days and Date Range
@@ -101,6 +102,10 @@ e.g.
 6. Pagebuilder by SiteOrigin Plugin Widget Options
 
 == Changelog ==
+
+= 3.2 =
+* Improve Plugin Loading and Performance
+* Fix issues reported on github
 
 = 3.1 =
 * Add Pagebuilder by SiteOrigin Plugin Compatibility
