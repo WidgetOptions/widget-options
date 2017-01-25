@@ -17,7 +17,11 @@ var widgetoptsSettingsModule = {
 		$wpcontent.on( 'keyup', self.closeModal );
 		$wpcontent.on( 'click', '.widgetopts-toggle-activation', self.moduleToggle );
 		$wpcontent.on( 'click', '.widgetopts-module-settings-save', self.saveSettings );
-		$wpcontent.on( 'click', '.widgetopts-license-button', self.licenseHandler );
+		// $wpcontent.on( 'click', '.widgetopts-license-button', self.licenseHandler );
+		$wpcontent.on( 'click', '.opts-add-class-btn', self.toggleCustomClass );
+		$wpcontent.on( 'click', '.opts-remove-class-btn', self.removeCustomClass );
+		$wpcontent.on( 'click', '.widgetopts-delete-cache', self.clearWidgetCache );
+		$wpcontent.on( 'click', '.widgetopts-license_deactivate', self.deactivationHandler );
 
 	},
 
@@ -115,9 +119,9 @@ var widgetoptsSettingsModule = {
 			var newToggleSettingsLabel = widgetopts.translation.show_description;
 		}
 
-		if( !$card.hasClass('widgetopts-module-card-no-settings') ){
+		// if( !$card.hasClass('widgetopts-module-card-no-settings') ){
 			$card.find( '.widgetopts-toggle-settings' ).html( newToggleSettingsLabel );
-		}
+		// }
 	},
 
 	saveSettings: function( e ) {
@@ -226,6 +230,7 @@ var widgetoptsSettingsModule = {
 			'jqxhr':         null,
 			'success':       false,
 			'response':      null,
+			'button':      	 null,
 			'errors':        [],
 			'messages':      [],
 			'functionCalls': [],
@@ -246,6 +251,7 @@ var widgetoptsSettingsModule = {
 			results.functionCalls = a.functionCalls;
 			results.redirect = a.redirect;
 			results.closeModal = a.closeModal;
+			results.button = a.button;
 
 			if( typeof results.license_status != 'undefined' ){
 				results.license_status = a.license_status;
@@ -257,6 +263,85 @@ var widgetoptsSettingsModule = {
 		} else if ( 'function' === typeof console.log ) {
 			console.log( 'ERROR: Unable to handle settings AJAX request due to an invalid callback:', callback, {'data': postData, 'results': results} );
 		}
+
+	},
+
+	toggleCustomClass: function(e){
+		var getVal = jQuery('.opts-add-class-txtfld').val();
+		var fname = 'extwopts_class_settings[classlists][]';
+		if( jQuery(this).hasClass('widgetopts-add-class-btn') ){
+			fname = 'classes[classlists][]';
+		}
+		if( getVal.length > 0 ){
+			jQuery('#opts-predefined-classes ul').append('<li><input type="hidden" name="'+ fname +'" value="'+ getVal +'" /><span class"opts-li-value">'+ getVal +'</span> <a href="#" class="opts-remove-class-btn"><span class="dashicons dashicons-dismiss"></span></a></li>');
+			jQuery('.opts-add-class-txtfld').val('');
+		}
+
+		e.preventDefault();
+		e.stopPropagation();
+	},
+
+	removeCustomClass: function(e){
+		jQuery(this).parent('li').fadeOut('fast',function(){
+			jQuery(this).remove();
+		});
+		e.preventDefault();
+		e.stopPropagation();
+	},
+
+	clearWidgetCache: function( e ){
+		var $button = jQuery(this);
+		$button.prop( 'disabled', true );
+
+		widgetoptsSettingsModule.ajaxRequest( 'clear_cache', 'clear_cache', '', widgetoptsSettingsModule.clearWidgetCacheCallback );
+		return false;
+	},
+	clearWidgetCacheCallback: function( results ){
+		if( typeof results.response != 'undefined' ){
+			jQuery( '.widgetopts-delete-cache' ).after( '<span class="dashicons dashicons-yes widgetopts-cache-dashicons"></span>' );
+			jQuery( '.widgetopts-cache-dashicons' ).delay(2000).fadeOut(400);
+			jQuery( '.widgetopts-delete-cache' ).prop( 'disabled', false );
+		}
+	},
+
+	deactivationHandler: function(e){
+		e.preventDefault();
+
+		var fld;
+		var $button = jQuery(this);
+		$button.prop( 'disabled', true );
+
+		fld = jQuery( '#' + $button.attr('data-target') );
+		if( fld.val() != '' ){
+			var data = {
+				'license-data': fld.val(),
+				'license-action': 'deactivate',
+				'button': $button.attr('id')
+			};
+
+			widgetoptsSettingsModule.ajaxRequest( 'license_key', 'deactivate_license', data, widgetoptsSettingsModule.licenseDeactivationCallback );
+		}else{
+			fld.css({ 'border' : '1px solid red' });
+			$button.prop( 'disabled', false );
+		}
+	},
+
+	licenseDeactivationCallback: function( results ){
+		// console.log( results ); widgetopts-license-extended-response
+		if( typeof results.response != 'undefined' && typeof results.messages != 'undefined' && typeof results.button != 'undefined' ){
+			var $button = jQuery( '#' + results.button );
+
+			jQuery( '.widgetopts-settings-license' ).before( '<span>' + results.messages[0] + '</span>' );
+			if( results.success == 'deactivated' ){
+				$button.parent('td').parent('tr').fadeOut();
+				jQuery( '#' + $button.attr('data-target') ).val('');
+			}
+		}else{
+			// jQuery('.widgetopts-license-key').css({ 'border' : '1px solid red' });
+			// jQuery('.widgetopts-license-status').fadeIn();
+		}
+
+		$button.prop( 'disabled', false );
 
 	}
 }

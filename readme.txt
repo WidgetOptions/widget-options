@@ -1,9 +1,9 @@
 === Widget Options ===
 Contributors: phpbits
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FMKC2SLPTULP8
-Tags: widgets, widget, display widgets, display widget, hide widgets, hide widget, sidebar, widget content, widget logic, widget options, widget option, restrict widgets, widget css, CSS, widget classes, widget styling, widget ID, widget custom class, widget visibility, widget ninja, jetpack visibility
+Tags: widgets, widget, display widgets, display widget, hide widgets, hide widget, sidebar, widget content, widget logic, widget options, widget option, restrict widgets, widget css, CSS, widget classes, widget styling, widget ID, widget custom class, widget visibility, widget ninja, jetpack visibility, siteorigin, siteorigin pagebuilder, pagebuilder by siteorigin
 Requires at least: 4.0
-Tested up to: 4.7
+Tested up to: 4.7.1
 Stable tag: 1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -44,6 +44,9 @@ Use only the features you want and disable any other widget options easily using
 <h4>View your changes live!</h4>
 This plugin is customizer ready for easier customization. View your changes live before saving it, <strong>not just better control but a time saver plugin!</strong>
 
+<h3>Pagebuilder by SiteOrigin Plugin Compatible since version 3.1</h3>
+Extend your SiteOrigin Pagebuilder powered website's widget panels control and management using Widget Options! Restrict devices visibility, change alignments, hide widget panel title, add custom classes and control visibility using display widget logic option! <br /><strong>Pagebuilder by SiteOrigin Plugin + Widget Options = Total Freedom!</strong>
+
 <blockquote>
 <p><strong>Upgrade to Extended Widget Options</strong><br />
 For more widgets management and restriction options, upgrade to <a href="http://widget-options.com/pricing/">Extended Widget Options today!</a></p>
@@ -55,6 +58,7 @@ For more widgets management and restriction options, upgrade to <a href="http://
 * Widget Animations on scroll and page load
 * Sticky / Fixed WordPress Widgets
 * Custom Widget Links
+* Widget Cache
 * Custom Widget Columns Display
 * Restrict Widget Visibility per User Roles
 * Widget Visibility per Days and Date Range
@@ -62,7 +66,6 @@ For more widgets management and restriction options, upgrade to <a href="http://
 * Display Sidebars and Widgets using Shortcodes
 * Disable any WordPress Widgets
 * Permission Options
-* Pagebuilder by SiteOrigin Plugin Compatible
 * Option for child page to inherit parent widget visibilities
 
 Check full <a href="http://widget-options.com/features/">Extended Widget Options features</a>.
@@ -96,10 +99,24 @@ e.g.
 3. Custom Alignment
 4. Widget CSS ID & Classes
 5. Display Widget Logic
+6. Pagebuilder by SiteOrigin Plugin Widget Options
 
 == Changelog ==
 
+= 3.2 =
+* Improve Plugin Loading and Performance
+* Fix issues reported on github
+
 = 3.1 =
+* Add Pagebuilder by SiteOrigin Plugin Compatibility
+* Fixes for https://github.com/phpbits/widget-options/issues/6
+* Performance enhancement
+
+= 3.0.2 =
+* Fix reported issue : https://github.com/phpbits/widget-options/issues/7
+* Fix DIVI jQuery UI styling issues
+
+= 3.0.1 =
 * Fix reported issue : https://github.com/phpbits/widget-options/issues/4
 
 = 3.0 =

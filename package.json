@@ -1,0 +1,28 @@
+{
+  "name": "widget-options",
+  "version": "3.2.0",
+  "description": "Your all-in-one plugin to completely manage your widgets.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/phpbits/widget-options"
+  },
+  "author": "phpbits",
+  "license": "BSD-2-Clause",
+  "devDependencies": {
+    "gulp-rename": "~1.2.2",
+    "run-sequence": "~1.2.2",
+    "gulp-plumber": "~1.1.0",
+    "gulp": "~3.9.1",
+    "gulp-uglify": "~2.0.0",
+    "gulp-notify": "~2.2.0",
+    "browser-sync": "~2.18.6",
+    "gulp-sass": "~3.1.0",
+    "compass-mixins": "~0.12.10",
+    "gulp-minify": "0.0.14",
+    "gulp-minify-css": "~1.2.4"
+  }
+}
