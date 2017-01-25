@@ -74,6 +74,7 @@ if( !function_exists( 'widgetopts_register_defaults' ) ){
 				add_option( 'widgetopts_tabmodule-settings', serialize( $defaults ) );
 				add_option( '_widgetopts_default_registered_', '1' );
 				delete_transient( 'widgetopts_tabs_transient' ); //remove transient for settings
+				delete_option( 'widgetopts_settings' );
 			}
 
 		}
