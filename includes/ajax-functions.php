@@ -65,4 +65,16 @@ function widgetopts_ajax_save_settings(){
 	die();
 }
 add_action( 'wp_ajax_widgetopts_ajax_settings',  'widgetopts_ajax_save_settings' );
+
+/* Hide the rating div
+ * @return json string
+ *
+ */
+if( !function_exists( 'widgetopts_ajax_hide_rating' ) ):
+	function widgetopts_ajax_hide_rating(){
+	    update_option('widgetopts_RatingDiv','yes');
+	    echo json_encode(array("success")); exit;
+	}
+	add_action( 'wp_ajax_widgetopts_hideRating', 'widgetopts_ajax_hide_rating' );
+endif;
 ?>

@@ -176,6 +176,9 @@ final class WP_Widget_Options {
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/widgets/option-tabs/upsell.php';
 			// }
 
+				//admin notices
+				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/notices.php';
+
 		} //end is_admin condition
 
 		require_once WIDGETOPTS_PLUGIN_DIR . 'includes/widgets/extras.php';
