@@ -21,7 +21,7 @@ if( !function_exists( 'widgetopts_add_search_input' ) ):
     function widgetopts_add_search_input() { ?>
         <div id="widgetopts-widgets-filter">
         	<label class="screen-reader-text" for="widgetopts-widgets-search"><?php _e( 'Search Widgets', 'widget-options' ); ?></label>
-        	<input type="search" id="widgetopts-widgets-search" placeholder="<?php esc_attr_e( 'Search widgets&hellip;', 'widget-options' ) ?>" />
+        	<input type="text" id="widgetopts-widgets-search" placeholder="<?php esc_attr_e( 'Search widgets&hellip;', 'widget-options' ) ?>" />
         </div>
     <?php }
     add_action( 'widgets_admin_page', 'widgetopts_add_search_input' );

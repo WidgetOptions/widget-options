@@ -685,3 +685,6 @@ input#widgetopts-widgets-search{
 	width: 100%;
     max-width: 250px;
 }
+input#widgetopts-search-chooser{
+	width: 100%;
+}

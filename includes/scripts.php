@@ -66,7 +66,7 @@ if( !function_exists( 'widgetopts_load_admin_scripts' ) ):
                  '',
                  true
             );
-            wp_localize_script( 'jquery-widgetopts-option-tabs', 'widgetopts10n', array( 'opts_page' => esc_url( admin_url( 'options-general.php?page=widgetopts_plugin_settings' ) ), 'translation' => array( 'manage_settings' => __( 'Manage Widget Options', 'widget-options' ) )) );
+            wp_localize_script( 'jquery-widgetopts-option-tabs', 'widgetopts10n', array( 'opts_page' => esc_url( admin_url( 'options-general.php?page=widgetopts_plugin_settings' ) ), 'translation' => array( 'manage_settings' => __( 'Manage Widget Options', 'widget-options' ), 'search_chooser' => __( 'Search sidebar&hellip;', 'widget-options' ) )) );
 
             if( in_array( $hook, apply_filters( 'widgetopts_load_settings_scripts', array( 'settings_page_widgetopts_plugin_settings' ) ) ) ){
                   wp_register_script(

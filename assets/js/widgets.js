@@ -10,6 +10,14 @@
 	  	$(document).on('widget-added', function(event, widget) {
 		    extended_widget_opts_init( widget, 'added' );
 
+			if( $( '.widgets-chooser .widgets-chooser-sidebars' ).length > 0 ){
+				$( '.widgets-chooser .widgets-chooser-sidebars li' ).removeAttr( 'style' );
+			}
+
+			if( $( '#widgetopts-search-chooser' ).length > 0 ){
+				$( '#widgetopts-search-chooser' ).val('');
+			}
+
 		});
 		$(document).on('widget-updated', function(event, widget) {
 			extended_widget_opts_init( widget, 'updated' );
@@ -53,7 +61,7 @@
 		}
 
 		//add live filter
-		if ( typeof $.fn.liveFilter !== 'undefined' && $.isFunction( $.fn.liveFilter ) ) {
+		if ( typeof $.fn.liveFilter !== 'undefined' && $.isFunction( $.fn.liveFilter ) && $( '#widgetopts-widgets-search' ).length > 0 ) {
 			// Add separator to distinguish between visible and hidden widgets
 			$('.widget:last-of-type').after('<div class="widgetopts-separator" />');
 
@@ -63,7 +71,7 @@
 				$(this).attr('data-widget-index', index );
 			});
 
-			// Add liveFilter
+			// Add liveFilter : credits to https://wordpress.org/plugins/widget-search-filter/ plugin
 			$('#widgets-left').liveFilter('#widgetopts-widgets-search', '.widget', {
 				filterChildSelector: '.widget-title h4, .widget-title h3',
 				after: function(contains, containsNot) {
@@ -85,6 +93,33 @@
 
 				}
 			});
+
+			//add sidebar chooser search field
+			$('.widgets-chooser').prepend('<div><input type="text" id="widgetopts-search-chooser" placeholder="'+ widgetopts10n.translation.search_chooser +'" /></div>');
+			//live filter
+			$('.widgets-chooser').liveFilter('#widgetopts-search-chooser', '.widgets-chooser-sidebars li', {
+				// filterChildSelector: 'li',
+				after: function(contains, containsNot) {
+					//hide
+					containsNot.each(function() {
+						$(this).hide();
+					});
+
+				}
+			});
+
+			if( $( '.widgets-chooser-cancel' ).length > 0 ){
+				$('.widgets-chooser').on( 'click', '.widgets-chooser-cancel', function(e){
+					if( $( '.widgets-chooser .widgets-chooser-sidebars' ).length > 0 ){
+						$( '.widgets-chooser .widgets-chooser-sidebars li' ).removeAttr( 'style' );
+					}
+
+					if( $( '#widgetopts-search-chooser' ).length > 0 ){
+						$( '#widgetopts-search-chooser' ).val('');
+					}
+				});
+			}
+
 		}
 
 	});
