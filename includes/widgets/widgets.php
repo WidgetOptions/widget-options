@@ -10,6 +10,23 @@
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+
+
+/**
+ * Output widget search filter textfield before widget lists
+ *
+ * @since  3.3
+ */
+if( !function_exists( 'widgetopts_add_search_input' ) ):
+    function widgetopts_add_search_input() { ?>
+        <div id="widgetopts-widgets-filter">
+        	<label class="screen-reader-text" for="widgetopts-widgets-search"><?php _e( 'Search Widgets', 'widget-options' ); ?></label>
+        	<input type="search" id="widgetopts-widgets-search" placeholder="<?php esc_attr_e( 'Search widgets&hellip;', 'widget-options' ) ?>" />
+        </div>
+    <?php }
+    add_action( 'widgets_admin_page', 'widgetopts_add_search_input' );
+endif;
+
 /**
  * Add Options on in_widget_form action
  *

@@ -675,3 +675,13 @@ span.widgetopts-license-active{
 	border-radius: 4px;
 	margin-top: 8px;
 }
+
+/** Search **/
+#widgetopts-widgets-filter{
+	display: block;
+	padding: 12px 0px 1px;
+}
+input#widgetopts-widgets-search{
+	width: 100%;
+    max-width: 250px;
+}

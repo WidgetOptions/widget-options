@@ -45,9 +45,19 @@ if( !function_exists( 'widgetopts_load_admin_scripts' ) ):
       	$suffix  = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
 
             wp_enqueue_style( 'widgetopts-admin-styles', $css_dir . 'admin.css' , array(), null );
-            
+
             wp_enqueue_style( 'widgetopts-jquery-ui', $css_dir . 'jqueryui/1.11.4/themes/ui-lightness/jquery-ui.css' , array(), null );
             wp_enqueue_style( 'jquery-ui' );
+
+            if( in_array( $hook, apply_filters( 'widgetopts_load_liveFilter_scripts', array( 'widgets.php' ) ) ) ){
+                  wp_enqueue_script(
+                       'jquery-liveFilter',
+                       plugins_url( 'assets/js/jquery.liveFilter.js' , dirname(__FILE__) ),
+                       array( 'jquery' ),
+                       '',
+                       true
+                  );
+            }
 
             wp_enqueue_script(
                  'jquery-widgetopts-option-tabs',
@@ -57,7 +67,6 @@ if( !function_exists( 'widgetopts_load_admin_scripts' ) ):
                  true
             );
             wp_localize_script( 'jquery-widgetopts-option-tabs', 'widgetopts10n', array( 'opts_page' => esc_url( admin_url( 'options-general.php?page=widgetopts_plugin_settings' ) ), 'translation' => array( 'manage_settings' => __( 'Manage Widget Options', 'widget-options' ) )) );
-
 
             if( in_array( $hook, apply_filters( 'widgetopts_load_settings_scripts', array( 'settings_page_widgetopts_plugin_settings' ) ) ) ){
                   wp_register_script(

@@ -52,6 +52,41 @@
 			$('.wp-admin.widgets-php .wrap a.page-title-action').after('<a href="'+ widgetopts10n.opts_page +'" class="page-title-action hide-if-no-customize">'+ widgetopts10n.translation.manage_settings +'</a>');
 		}
 
+		//add live filter
+		if ( typeof $.fn.liveFilter !== 'undefined' && $.isFunction( $.fn.liveFilter ) ) {
+			// Add separator to distinguish between visible and hidden widgets
+			$('.widget:last-of-type').after('<div class="widgetopts-separator" />');
+
+			// Add data attribute for order to each widget
+			$('#widgets-left .widget').each(function() {
+				var index = $(this).index() + 1;
+				$(this).attr('data-widget-index', index );
+			});
+
+			// Add liveFilter
+			$('#widgets-left').liveFilter('#widgetopts-widgets-search', '.widget', {
+				filterChildSelector: '.widget-title h4, .widget-title h3',
+				after: function(contains, containsNot) {
+
+					// Move all hidden widgets to end.
+					containsNot.each(function() {
+						$(this).insertAfter($(this).parent().find('.widgetopts-separator'));
+					});
+
+					// Sort all visible widgets by original index
+					contains.sort(function(a,b) {
+						return a.getAttribute('data-widget-index') - b.getAttribute('data-widget-index');
+					});
+
+					// Move all visible back
+					contains.each(function() {
+						$(this).insertBefore($(this).parent().find('.widgetopts-separator'));
+					});
+
+				}
+			});
+		}
+
 	});
 
 	function extended_widget_opts_init( widget, action ){
