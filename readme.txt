@@ -3,7 +3,7 @@ Contributors: phpbits
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FMKC2SLPTULP8
 Tags: widgets, widget, display widgets, display widget, hide widgets, hide widget, sidebar, widget content, widget logic, widget options, widget option, restrict widgets, widget css, CSS, widget classes, widget styling, widget ID, widget custom class, widget visibility, widget ninja, jetpack visibility, siteorigin, siteorigin pagebuilder, pagebuilder by siteorigin
 Requires at least: 4.0
-Tested up to: 4.7.1
+Tested up to: 4.8
 Stable tag: 1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -102,6 +102,10 @@ e.g.
 6. Pagebuilder by SiteOrigin Plugin Widget Options
 
 == Changelog ==
+
+= 3.2.1 =
+* Fix Categories not updating when new one added
+* Re-add review/rating admin notice from version 3.1
 
 = 3.2 =
 * Improve Plugin Loading and Performance

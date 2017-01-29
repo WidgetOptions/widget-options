@@ -38,6 +38,10 @@ if( !function_exists( 'widgetopts_delete_transient_terms' ) ){
 		if( is_array( $widgetopts_taxonomies ) && !empty( $widgetopts_taxonomies ) && !in_array( $taxonomy, $widgetopts_taxonomies ) ){
 			delete_option( 'widgetopts_global_taxonomies' );
 		}
+
+		if( $taxonomy == 'category' ){
+			delete_option( 'widgetopts_global_categories' );
+		}
 	}
 }
 ?>
