@@ -10,13 +10,13 @@
 	  	$(document).on('widget-added', function(event, widget) {
 		    extended_widget_opts_init( widget, 'added' );
 
-			if( $( '.widgets-chooser .widgets-chooser-sidebars' ).length > 0 ){
-				$( '.widgets-chooser .widgets-chooser-sidebars li' ).removeAttr( 'style' );
-			}
-
-			if( $( '#widgetopts-search-chooser' ).length > 0 ){
-				$( '#widgetopts-search-chooser' ).val('');
-			}
+			// if( $( '.widgets-chooser .widgets-chooser-sidebars' ).length > 0 ){
+			// 	$( '.widgets-chooser .widgets-chooser-sidebars li' ).removeClass( 'widgetopts-is-hidden' );
+			// }
+			//
+			// if( $( '#widgetopts-search-chooser' ).length > 0 ){
+			// 	$( '#widgetopts-search-chooser' ).val('');
+			// }
 
 		});
 		$(document).on('widget-updated', function(event, widget) {
@@ -68,7 +68,7 @@
 			// Add data attribute for order to each widget
 			$('#widgets-left .widget').each(function() {
 				var index = $(this).index() + 1;
-				$(this).attr('data-widget-index', index );
+				$(this).attr( 'data-widget-index', index );
 			});
 
 			// Add liveFilter : credits to https://wordpress.org/plugins/widget-search-filter/ plugin
@@ -94,31 +94,60 @@
 				}
 			});
 
+			//add clear search
+			$( '#wpbody-content' ).on( 'keyup', '.widgetopts-widgets-search', function(e){
+				p = $(this).parent().find( '.widgetopts-clear-results' );
+				if ( '' !== $(this).val() ) {
+					p.addClass( 'widgetopts-is-visible' );
+				}else{
+					p.removeClass( 'widgetopts-is-visible' );
+				}
+			} );
+
+			$( '#wpbody-content' ).on( 'click', '.widgetopts-clear-results', function(e){
+				s = $(this).parent().find( '.widgetopts-widgets-search' );
+				s.val( '' ).focus().trigger( 'keyup' );
+
+				if( s.attr( 'id' ) == 'widgetopts-search-chooser' ){
+					$( '.widgets-chooser-sidebars li:not(:first)' ).removeClass( 'widgets-chooser-selected' );
+				}
+
+				e.preventDefault();
+				e.stopPropagation();
+				return false;
+			} );
+
 			//add sidebar chooser search field
-			$('.widgets-chooser').prepend('<div><input type="text" id="widgetopts-search-chooser" placeholder="'+ widgetopts10n.translation.search_chooser +'" /></div>');
+			$('.widgets-chooser').prepend( widgetopts10n.search_form );
 			//live filter
 			$('.widgets-chooser').liveFilter('#widgetopts-search-chooser', '.widgets-chooser-sidebars li', {
 				// filterChildSelector: 'li',
-				after: function(contains, containsNot) {
+				after: function( contains, containsNot ) {
 					//hide
 					containsNot.each(function() {
-						$(this).hide();
+						$(this).addClass( 'widgetopts-is-hidden' ).removeClass( 'widgets-chooser-selected' );
 					});
+					contains.each(function() {
+						$(this).removeClass( 'widgetopts-is-hidden' ).removeClass( 'widgets-chooser-selected' );
+					});
+					if( contains.length > 0 ){
+						$( contains[0] ).addClass( 'widgets-chooser-selected' );
+					}
 
 				}
 			});
 
-			if( $( '.widgets-chooser-cancel' ).length > 0 ){
-				$('.widgets-chooser').on( 'click', '.widgets-chooser-cancel', function(e){
-					if( $( '.widgets-chooser .widgets-chooser-sidebars' ).length > 0 ){
-						$( '.widgets-chooser .widgets-chooser-sidebars li' ).removeAttr( 'style' );
-					}
-
-					if( $( '#widgetopts-search-chooser' ).length > 0 ){
-						$( '#widgetopts-search-chooser' ).val('');
-					}
-				});
-			}
+			// if( $( '.widgets-chooser-cancel' ).length > 0 ){
+			// 	$('.widgets-chooser').on( 'click', '.widgets-chooser-cancel', function(e){
+			// 		if( $( '.widgets-chooser .widgets-chooser-sidebars' ).length > 0 ){
+			// 			$( '.widgets-chooser .widgets-chooser-sidebars li' ).removeClass( 'widgetopts-is-hidden' );
+			// 		}
+			//
+			// 		if( $( '#widgetopts-search-chooser' ).length > 0 ){
+			// 			$( '#widgetopts-search-chooser' ).val('');
+			// 		}
+			// 	});
+			// }
 
 		}
 
