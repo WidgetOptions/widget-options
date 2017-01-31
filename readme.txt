@@ -103,6 +103,9 @@ e.g.
 
 == Changelog ==
 
+= 3.3 =
+* Add Widget Live Search option on widgets.php admin dashboard
+
 = 3.2.1 =
 * Fix Categories not updating when new one added
 * Re-add review/rating admin notice from version 3.1
