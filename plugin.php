@@ -146,6 +146,7 @@ final class WP_Widget_Options {
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/sidebar-opt_in.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/sidebar-more_plugins.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/sidebar-support_box.php';
+				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/search.php';
 			}
 
 			// if( in_array( $pagenow, array( 'widgets.php' ) ) ){

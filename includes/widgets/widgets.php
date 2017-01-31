@@ -18,15 +18,19 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @since  3.3
  */
 if( !function_exists( 'widgetopts_add_search_input' ) ):
-    function widgetopts_add_search_input() { ?>
-        <div id="widgetopts-widgets-filter">
-        	<label class="screen-reader-text" for="widgetopts-widgets-search"><?php _e( 'Search Widgets', 'widget-options' ); ?></label>
-        	<input type="text" id="widgetopts-widgets-search" class="widgetopts-widgets-search" placeholder="<?php esc_attr_e( 'Search widgets&hellip;', 'widget-options' ) ?>" />
-            <div class="widgetopts-search-icon" aria-hidden="true"></div>
-            <button type="button" class="widgetopts-clear-results"><span class="screen-reader-text"><?php _e( 'Clear Results', 'widget-options' ); ?></span></button>
-            <p class="screen-reader-text" id="widgetopts-search-desc"><?php _e( 'The search results will be updated as you type.', 'widget-options' ); ?></p>
-        </div>
-    <?php }
+    function widgetopts_add_search_input() {
+        global $widget_options;
+        if( isset( $widget_options['search'] ) && 'activate' == $widget_options['search'] ): ?>
+            <div id="widgetopts-widgets-filter">
+            	<label class="screen-reader-text" for="widgetopts-widgets-search"><?php _e( 'Search Widgets', 'widget-options' ); ?></label>
+            	<input type="text" id="widgetopts-widgets-search" class="widgetopts-widgets-search" placeholder="<?php esc_attr_e( 'Search widgets&hellip;', 'widget-options' ) ?>" />
+                <div class="widgetopts-search-icon" aria-hidden="true"></div>
+                <button type="button" class="widgetopts-clear-results"><span class="screen-reader-text"><?php _e( 'Clear Results', 'widget-options' ); ?></span></button>
+                <p class="screen-reader-text" id="widgetopts-search-desc"><?php _e( 'The search results will be updated as you type.', 'widget-options' ); ?></p>
+            </div>
+        <?php 
+        endif;
+    }
     add_action( 'widgets_admin_page', 'widgetopts_add_search_input' );
 endif;
 
