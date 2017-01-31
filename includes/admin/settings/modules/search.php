@@ -45,7 +45,7 @@ if( !function_exists( 'widgetopts_settings_search' ) ):
 			</div>
 
 			<?php widgetopts_modal_start( $widget_options['search'] ); ?>
-				<span class="dashicons widgetopts-dashicons widgetopts-no-top dashicons-smartphone"></span>
+				<span class="dashicons widgetopts-dashicons widgetopts-no-top dashicons-search"></span>
 				<h3 class="widgetopts-modal-header"><?php _e( 'Live Widget & Sidebar Search', 'widget-options' );?></h3>
 				<p>
 					<?php _e( 'This feature will add search box before available widgets area that will let you filter the widgets for better widget handling. This will also add search box above the sidebar chooser when you click each widgets for you to assign them easily.', 'widget-options' );?>
