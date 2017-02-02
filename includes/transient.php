@@ -31,6 +31,7 @@ if( !function_exists( 'widgetopts_delete_transient_pages' ) ){
 if( !function_exists( 'widgetopts_delete_transient_terms' ) ){
 	add_action( 'create_term', 'widgetopts_delete_transient_terms', 10, 3 );
 	add_action( 'edit_term', 'widgetopts_delete_transient_terms', 10, 3 );
+	add_action( 'delete_term', 'widgetopts_delete_transient_terms', 10, 3 );
 	function widgetopts_delete_transient_terms( $term_id, $tt_id, $taxonomy ){
 		global $widgetopts_taxonomies;
 
