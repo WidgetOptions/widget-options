@@ -3,7 +3,7 @@
  * Plugin Name: Widget Options
  * Plugin URI: https://widget-options.com/
  * Description: Additional Widget options for better widget control. Get <strong><a href="http://widget-options.com/" target="_blank" >Extended Widget Options for WordPress</a></strong> for complete widget controls. Thanks!
- * Version: 3.3
+ * Version: 3.3.1
  * Author: Phpbits Creative Studio
  * Author URI: https://phpbits.net/
  * Text Domain: widget-options
@@ -73,7 +73,7 @@ final class WP_Widget_Options {
 
 		// Plugin version.
 		if ( ! defined( 'WIDGETOPTS_VERSION' ) ) {
-			define( 'WIDGETOPTS_VERSION', ' 3.2.1' );
+			define( 'WIDGETOPTS_VERSION', ' 3.3.1' );
 		}
 
 		// Plugin Folder Path.
@@ -112,12 +112,10 @@ final class WP_Widget_Options {
 		if ( is_admin() ) {
 
 			//other global variables to prevent duplicate and faster calls
-			$widgetopts_taxonomies 	= widgetopts_global_taxonomies();
-			$widgetopts_types 		= widgetopts_global_types();
 			$widgetopts_pages 		= widgetopts_global_pages();
-			$widgetopts_categories 	= widgetopts_global_categories();
 
 			//admin settings
+			require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/globals.php';
 			require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/welcome.php';
 			require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/display-settings.php';
 			require_once WIDGETOPTS_PLUGIN_DIR . 'includes/transient.php';
