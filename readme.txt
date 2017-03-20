@@ -41,6 +41,9 @@ Easily hide widget title on front-end display while retaining them on the backen
 <h4>Enable / Disable Options</h4>
 Use only the features you want and disable any other widget options easily using the brand new settings page.
 
+<h4>Live Widget Search Filter</h4>
+Increase administrator widget management by enabling live widget search box on your widget dashboard to locate any widgets easier rather than scrolling the page.
+
 <h4>View your changes live!</h4>
 This plugin is customizer ready for easier customization. View your changes live before saving it, <strong>not just better control but a time saver plugin!</strong>
 
