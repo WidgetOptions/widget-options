@@ -103,6 +103,9 @@ e.g.
 
 == Changelog ==
 
+= 3.3.1 =
+* Fix PHP 7.0 Global variables issue
+
 = 3.3 =
 * Add Widget Live Search option on widgets.php admin dashboard
 
