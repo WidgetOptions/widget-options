@@ -58,14 +58,15 @@ function widgetopts_tabcontent_visibility( $args ){
         unset( $types[ $unset ] );
     }
 
-    $get_terms = array();
-    if( !empty( $widget_options['settings']['taxonomies'] ) && is_array( $widget_options['settings']['taxonomies'] ) ){
-        foreach ( $widget_options['settings']['taxonomies'] as $tax_opt => $vall ) {
-            $tax_name = 'widgetopts_taxonomy_'. $tax_opt;
-            global $$tax_name;
-            $get_terms[ $tax_opt ] = $$tax_name;
-        }
-    }
+    //pro version only
+    // $get_terms = array();
+    // if( !empty( $widget_options['settings']['taxonomies'] ) && is_array( $widget_options['settings']['taxonomies'] ) ){
+    //     foreach ( $widget_options['settings']['taxonomies'] as $tax_opt => $vall ) {
+    //         $tax_name = 'widgetopts_taxonomy_'. $tax_opt;
+    //         global $$tax_name;
+    //         $get_terms[ $tax_opt ] = $$tax_name;
+    //     }
+    // }
 
 
     //get save values
