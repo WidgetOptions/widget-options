@@ -85,21 +85,33 @@ function widgetopts_addhttp($url) {
  }
 
  function widgetopts_global_pages() {
- 	$pages = get_option( 'widgetopts_global_pages' );
+ 	$pages = get_option( 'widgetopts_global_all_pages' );
 
- 	if( empty( $pages ) ) {
-         $pages  = get_posts( array(
-                                 'post_type'     => 'page',
-                                 'post_status'   => 'publish',
-                                 'numberposts'   => -1,
-                                 'orderby'       => 'title',
-                                 'order'         => 'ASC',
-                                 'fields'        => array('ID', 'name')
-                             ));
+     //old pages object
+ 	// if( empty( $pages ) ) {
+     //     $pages  = get_posts( array(
+     //                             'post_type'     => 'page',
+     //                             'post_status'   => 'publish',
+     //                             'numberposts'   => -1,
+     //                             'orderby'       => 'title',
+     //                             'order'         => 'ASC',
+     //                             'fields'        => array('ID', 'name')
+     //                         ));
+     //
+     //     // Let's let devs alter that value coming in
+     //     $pages = apply_filters( 'widgetopts_update_global_pages', $pages );
+     //     update_option( 'widgetopts_global_pages', $pages );
+ 	// }
+
+     //create new pages object
+     if( empty( $pages ) ) {
+         global $wpdb;
+
+         $pages  = $wpdb->get_results("SELECT ID, post_title FROM $wpdb->posts WHERE post_type = 'page' AND post_status = 'publish' ORDER BY post_title ASC ");
 
          // Let's let devs alter that value coming in
          $pages = apply_filters( 'widgetopts_update_global_pages', $pages );
-         update_option( 'widgetopts_global_pages', $pages );
+         update_option( 'widgetopts_global_all_pages', $pages );
  	}
 
  	return apply_filters( 'widgetopts_get_global_pages', $pages );
