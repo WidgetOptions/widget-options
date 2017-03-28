@@ -106,6 +106,10 @@ e.g.
 
 == Changelog ==
 
+= 3.3.2 =
+* Use better Global pages items to prevent issues with site with lots of pages
+* Fix Multisite Issue when Network Activated
+
 = 3.3.1 =
 * Fix PHP 7.0 Global variables issue
 
