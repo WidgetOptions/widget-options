@@ -212,6 +212,11 @@ if( !function_exists( 'WIDGETOPTS' ) ){
 		return WP_Widget_Options::instance();
 	}
 	// Get Plugin Running.
-	WIDGETOPTS();
+	if( function_exists( 'is_multisite' ) && is_multisite() ){
+		//loads on plugins_loaded action to avoid issue on multisite
+		add_action( 'plugins_loaded', 'WIDGETOPTS', apply_filters( 'widgetopts_priority', 90 ) );
+	}else{
+		WIDGETOPTS();
+	}
 }
 ?>
