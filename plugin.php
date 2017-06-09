@@ -73,7 +73,7 @@ final class WP_Widget_Options {
 
 		// Plugin version.
 		if ( ! defined( 'WIDGETOPTS_VERSION' ) ) {
-			define( 'WIDGETOPTS_VERSION', ' 3.3.1' );
+			define( 'WIDGETOPTS_VERSION', ' 3.3.2' );
 		}
 
 		// Plugin Folder Path.
