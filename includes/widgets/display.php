@@ -320,7 +320,7 @@ endif;
              ( strpos( $params[0]['before_widget'], ' widget ' ) !== false ) ||
              ( strpos( $params[0]['before_widget'], ' widget"' ) !== false)
             ) {
-
+            //do nothing
         }else{
             $get_classes[] = 'widget';
         }
