@@ -316,11 +316,12 @@ endif;
         }
 
         //check if widget class exists
-        if ( strpos( $params[0]['before_widget'], '"widget ' ) === false) {
-            $get_classes[] = 'widget';
-        }else if ( strpos( $params[0]['before_widget'], ' widget ' ) === false) {
-            $get_classes[] = 'widget';
-        }else if ( strpos( $params[0]['before_widget'], ' widget"' ) === false) {
+        if ( ( strpos( $params[0]['before_widget'], '"widget ' ) !== false ) ||
+             ( strpos( $params[0]['before_widget'], ' widget ' ) !== false ) ||
+             ( strpos( $params[0]['before_widget'], ' widget"' ) !== false)
+            ) {
+
+        }else{
             $get_classes[] = 'widget';
         }
 
