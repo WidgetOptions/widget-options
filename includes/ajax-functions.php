@@ -49,6 +49,47 @@ function widgetopts_ajax_save_settings(){
 				widgetopts_update_option( 'settings', $sanitized );
 			break;
 
+			case 'deactivate_license':
+					global $extended_license;
+					$license = sanitize_text_field( $_POST['data']['license-data'] );
+					if( !empty( $license ) ){
+
+						if( isset( $_POST['data']['shortname'] ) ){
+							$item_shortname = sanitize_text_field( $_POST['data']['shortname'] );
+						}else{
+							$item_shortname = 'widgetopts_' . preg_replace( '/[^a-zA-Z0-9_\s]/', '', str_replace( ' ', '_', strtolower( WIDGETOPTS_PLUGIN_NAME ) ) );
+						}
+						switch ( $item_shortname ) {
+							case 'widgetopts_sliding_widget_options':
+								global $widgetopts_sliding_license;
+								$data = $widgetopts_sliding_license->deactivate_license( $license );
+								break;
+
+							default:
+								$data = $extended_license->deactivate_license( $license );
+								break;
+						}
+
+						$response['button'] = sanitize_text_field( $_POST['data']['button'] );
+						if( $data == 'deactivated' ){
+
+							$optiondata = get_option( 'widgetopts_license_keys' );
+							$name = str_replace( 'widgetopts-license-btn-', '', sanitize_text_field( $_POST['data']['button'] ) );
+							$optiondata[ $name ] = '';
+							update_option( 'widgetopts_license_keys', $optiondata );
+
+							//remove license key on option
+							delete_option( $item_shortname . '_license_key' );
+
+							$response['messages'] = array( __( 'Successfully Deactivated.', 'widget-options' ) );
+						}else{
+							$response['messages'] = array( __( 'Deactivation Failed.', 'widget-options' ) );
+						}
+						$response['success'] = $data;
+					}
+
+				break;
+
 		default:
 			# code...
 			break;

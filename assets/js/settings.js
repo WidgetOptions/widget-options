@@ -316,6 +316,7 @@ var widgetoptsSettingsModule = {
 			var data = {
 				'license-data': fld.val(),
 				'license-action': 'deactivate',
+				'shortname' : $button.attr('data-shortname'),
 				'button': $button.attr('id')
 			};
 
@@ -331,7 +332,7 @@ var widgetoptsSettingsModule = {
 		if( typeof results.response != 'undefined' && typeof results.messages != 'undefined' && typeof results.button != 'undefined' ){
 			var $button = jQuery( '#' + results.button );
 
-			jQuery( '.widgetopts-settings-license' ).before( '<span>' + results.messages[0] + '</span>' );
+			jQuery( '#' + $button.attr('data-target') ).before( '<span>' + results.messages[0] + '</span>' );
 			if( results.success == 'deactivated' ){
 				$button.parent('td').parent('tr').fadeOut();
 				jQuery( '#' + $button.attr('data-target') ).val('');
