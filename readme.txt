@@ -1,7 +1,7 @@
 === Widget Options ===
 Contributors: phpbits
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FMKC2SLPTULP8
-Tags: widgets, widget, display widgets, display widget, hide widgets, hide widget, sidebar, widget content, widget logic, widget options, widget option, restrict widgets, widget css, CSS, widget classes, widget styling, widget ID, widget custom class, widget visibility, widget ninja, jetpack visibility, siteorigin, siteorigin pagebuilder, pagebuilder by siteorigin
+Tags: widgets, restrict widgets, display widgets, widget logic, hide widgets, hide widget, sidebar, widget content, display widget, widget options, widget option, widget, widget css, CSS, widget classes, widget styling, widget ID, widget custom class, widget visibility, widget ninja, jetpack visibility, siteorigin, siteorigin pagebuilder, pagebuilder by siteorigin
 Requires at least: 4.0
 Tested up to: 4.8
 Stable tag: 1.0
@@ -73,6 +73,10 @@ For more widgets management and restriction options, upgrade to <a href="http://
 
 Check full <a href="http://widget-options.com/features/">Extended Widget Options features</a>.
 
+<h4>Add-ons</h4>
+
+In need of <a href="https://widget-options.com/modal-pop-up-and-sliding-widget-options/" target="_blank">WordPress Sliding Panel</a> for your widgets? Check out <a href="https://widget-options.com/modal-pop-up-and-sliding-widget-options/" target="_blank">Sliding Widget Options</a> add-on and transform any of your widgets to modal pop-up, slide in and/or sliding widget panel; and increase your website's user engagement!
+
 If you like to contribute, report issue or have suggestions, you can find the development version on <a href="https://github.com/phpbits/widget-options" target="_blank">Github</a>.
 
 <strong>More information</strong>
@@ -109,6 +113,8 @@ e.g.
 = 3.3.2 =
 * Use better Global pages items to prevent issues with site with lots of pages
 * Fix Multisite Issue when Network Activated
+* Add 'widget' class to fix issue with Elegant Themes that using 'et_widget' as base class
+* Add support for <a href="https://widget-options.com/modal-pop-up-and-sliding-widget-options/" target="_blank">Sliding Widgets</a> add-on
 
 = 3.3.1 =
 * Fix PHP 7.0 Global variables issue
