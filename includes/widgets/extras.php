@@ -90,7 +90,7 @@ if( !function_exists( 'widgetopts_classes_generator' ) ){
                 }
             }
 
-            return $classes;
+            return apply_filters( 'widgetopts_get_classes', $classes );
         }
     }
 }

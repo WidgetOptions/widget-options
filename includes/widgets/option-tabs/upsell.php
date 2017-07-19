@@ -26,7 +26,7 @@ function widgetopts_tab_gopro( $args ){ ?>
     </li>
 <?php
 }
-add_action( 'extended_widget_opts_tabs', 'widgetopts_tab_gopro' );
+add_action( 'extended_widget_opts_tabs', 'widgetopts_tab_gopro', 100 );
 
 /**
  * Called on 'extended_widget_opts_tabcontent'

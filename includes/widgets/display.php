@@ -309,6 +309,22 @@ endif;
         }
 
         $get_classes = widgetopts_classes_generator( $opts, $widget_options, $widget_options['settings'] );
+
+        //double check array
+        if( !is_array( $get_classes ) ){
+            $get_classes = array();
+        }
+
+        //check if widget class exists
+        if ( ( strpos( $params[0]['before_widget'], '"widget ' ) !== false ) ||
+             ( strpos( $params[0]['before_widget'], ' widget ' ) !== false ) ||
+             ( strpos( $params[0]['before_widget'], ' widget"' ) !== false)
+            ) {
+            //do nothing
+        }else{
+            $get_classes[] = 'widget';
+        }
+
         if( !empty( $get_classes ) ){
             $classes        = 'class="'. ( implode( ' ', $get_classes ) ) . ' ';
             $params[0]['before_widget'] = str_replace('class="', $classes, $params[0]['before_widget']);

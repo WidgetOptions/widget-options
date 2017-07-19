@@ -77,6 +77,12 @@ if( !function_exists( 'widgetopts_register_defaults' ) ){
 				delete_option( 'widgetopts_settings' );
 			}
 
+			//make sure to delete previous pages cache
+			if( !get_option( 'widgetopts_removed_global_pages' ) ){
+				delete_option( 'widgetopts_global_pages' );		
+				add_option( 'widgetopts_removed_global_pages', 1 );
+			}
+
 		}
 	}
 }
