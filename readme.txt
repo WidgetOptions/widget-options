@@ -110,6 +110,11 @@ e.g.
 
 == Changelog ==
 
+= 3.3.3 =
+* Add option to disable automatic addition of .widget class
+* Update subscription sidebar and add free e-book download
+* Add module card for <a href="https://widget-options.com/modal-pop-up-and-sliding-widget-options/" target="_blank">WordPress Sliding Panel</a> add-on
+
 = 3.3.2 =
 * Use better Global pages items to prevent issues with site with lots of pages
 * Fix Multisite Issue when Network Activated
