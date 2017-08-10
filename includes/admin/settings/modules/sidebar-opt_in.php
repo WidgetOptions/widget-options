@@ -22,13 +22,17 @@ if( !function_exists( 'widgetopts_settings_sidebar_opt_in' ) ):
 			<h3 class="hndle ui-sortable-handle"><span><?php _e( 'Download our Ultimate Guide: Optimizing WordPress Sidebars and Widgets for Better Traffic and Conversions', 'widget-options' );?></span></h3>
 			<div class="inside">
 				<p style="text-align: center;"><img src="<?php echo WIDGETOPTS_PLUGIN_URL . '/assets/images/cover-book.jpg'?>" width="180"></p>
-				<form action="https://phpbits.us12.list-manage.com/subscribe/post?u=5597485458f20da5305e44c55&amp;id=65b77b0af4" method="post" class="validate" target="_blank" novalidate>
+				<form action="https://phpbits.us12.list-manage.com/subscribe/post?u=5597485458f20da5305e44c55&amp;id=6729a2bb96" method="post" class="validate widgetopts-ebook-form" target="_blank" novalidate>
 					<p>
 						<?php _e( 'Get detailed insights based on our research on 70+ popular websites that will help you optimize your WordPress sidebars and widgets.', 'widget-options' );?>
 					</p>
 					<p>
 						<?php _e( 'Email Address:', 'widget-options' );?><br  />
 						<input name="EMAIL" class="required email widefat" placeholder="<?php _e( 'email@domain.com', 'widget-options' );?>" />
+
+						<input type="hidden" name="MMERGE3" value="Freebies" />
+						<input type="hidden" name="MMERGE4" value="Plugin Campaign" />
+						<input type="hidden" name="MMERGE5" value="Introducing Ultimate Guide: Optimizing WordPress Sidebars and Widgets for Better Traffic and Conversions" />
 					</p>
 					<p>
 						<button class="button-secondary"><?php _e( 'Subscribe & Download', 'widget-options' );?></button>
@@ -36,6 +40,18 @@ if( !function_exists( 'widgetopts_settings_sidebar_opt_in' ) ):
 				</form>
 			</div>
 		</div>
+		<script type="text/javascript">
+			jQuery( document ).ready( function(){
+				jQuery( '.widgetopts-ebook-form' ).on( 'submit', function(e){
+					if( jQuery( this ).find( '.required' ).val() == '' ){
+						jQuery( this ).find( '.required' ).css({ 'border' : '1px solid red' });
+						return false;
+					}else{
+						jQuery( this ).find( '.required' ).removeAttr('style');
+					}
+				} );
+			} );
+		</script>
 
 	    <?php
 	}
