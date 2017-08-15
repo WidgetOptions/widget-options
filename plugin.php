@@ -146,6 +146,7 @@ final class WP_Widget_Options {
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/sidebar-support_box.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/search.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/sliding.php';
+				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/move.php';
 			}
 
 			// if( in_array( $pagenow, array( 'widgets.php' ) ) ){

@@ -37,6 +37,7 @@ add_action( 'customize_controls_enqueue_scripts', 'widgetopts_load_scripts' );
  */
 if( !function_exists( 'widgetopts_load_admin_scripts' ) ):
       function widgetopts_load_admin_scripts( $hook ) {
+            global $widget_options;
 
             $js_dir  = WIDGETOPTS_PLUGIN_URL . 'assets/js/';
       	$css_dir = WIDGETOPTS_PLUGIN_URL . 'assets/css/';
