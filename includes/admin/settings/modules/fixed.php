@@ -31,6 +31,6 @@ if( !function_exists( 'widgetopts_settings_fixed' ) ):
 		</li>
 	    <?php
 	}
-	add_action( 'widgetopts_module_cards', 'widgetopts_settings_fixed', 80 );
+	add_action( 'widgetopts_module_cards', 'widgetopts_settings_fixed', 68 );
 endif;
 ?>

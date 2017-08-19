@@ -63,6 +63,9 @@ function widgetopts_tabcontent_gopro( $args ){ ?>
                 <span class="dashicons dashicons-lock"></span> <?php _e( 'Link Widget Options', 'widget-options' );?>
             </li>
             <li>
+                <span class="dashicons dashicons-lock"></span> <?php _e( 'Clone Widget Options', 'widget-options' );?>
+            </li>
+            <li>
                 <span class="dashicons dashicons-lock"></span> <?php _e( 'Widget Caching Options', 'widget-options' );?>
             </li>
             <li>

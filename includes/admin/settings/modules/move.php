@@ -61,6 +61,6 @@ if( !function_exists( 'widgetopts_settings_move' ) ):
     	</li>
         <?php
     }
-    add_action( 'widgetopts_module_cards', 'widgetopts_settings_move', 65 );
+    add_action( 'widgetopts_module_cards', 'widgetopts_settings_move', 64 );
 endif;
 ?>
