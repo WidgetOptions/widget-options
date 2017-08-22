@@ -323,6 +323,7 @@ wpWidgetOpts = {
 		var self = this;
 
 		$( '.widgetsopts-chooser' ).slideUp( 200, function() {
+			$( '.widgetopts-control' ).removeClass( 'widgetopts-control-open' );
 			$( '#wpbody-content' ).append( this );
 		});
 	},
