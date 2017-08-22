@@ -212,6 +212,9 @@ body .extended-widget-opts-tabs .extended-widget-gopro-tab-alignment a{
 #customize-theme-controls .extended-widget-opts-form .extended-widget-opts-tabcontent-styling .inputsize5{
 	max-width: 50px;
 }
+#customize-theme-controls .widget-inside .widget-control-actions .widgetopts-control{
+	display: none !important;
+}
 
 /** Settings Page **/
 .widgetopts-settings-desc{
