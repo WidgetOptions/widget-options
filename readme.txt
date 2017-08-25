@@ -104,6 +104,11 @@ e.g.
 = How do I begin working with this plugin? =
 After Widget Options plugin activation you'll get welcome message with detailed video instructions to get started. Then go to <strong>Settings > Widget Options</strong> to enable/disable the features you want. Then go to <strong>Appearance > Widgets</strong> and start optimising your widgets!
 
+= How do I add set of predefined custom widget classes? =
+Easy! Simply go to <strong>Settings > Widget Options</strong> and on <em>Classes & ID</em> module click Configure Settings then you can add your predefined CSS classes for your widgets.
+
+= How's the speed and loading time compare to other plugins? =
+Widget Options is a featured pack fully lightweight plugin. Using Query Monitor plugin you'll find that the plugin doesn't load too much queries and doesn't affect your website's loading time. You can check more information how optimized Widget Options is <a href="https://widget-options.com/new-improved-widget-options-wordpress/">here</a>.
 
 == Screenshots ==
 
@@ -187,4 +192,9 @@ After Widget Options plugin activation you'll get welcome message with detailed 
 == Upgrade Notice ==
 
 = 1.0 =
+
 * Initial Plugin release
+
+== Contact and Credits ==
+
+Widget Options for WordPress is maintained and developed by <a href="https://phpbits.net/">Phpbits Creative Studio</a>.
