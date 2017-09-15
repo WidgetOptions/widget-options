@@ -190,7 +190,7 @@ final class WP_Widget_Options {
 
 		//pagebuilders support
 		require_once WIDGETOPTS_PLUGIN_DIR . 'includes/pagebuilders/siteorigin.php';
-		if( is_plugin_active( 'elementor/elementor.php' ) && isset( $widget_options['elementor'] ) && 'activate' == $widget_options['elementor'] ){
+		if( defined( 'ELEMENTOR_VERSION' ) && isset( $widget_options['elementor'] ) && 'activate' == $widget_options['elementor'] ){
 			require_once WIDGETOPTS_PLUGIN_DIR . 'includes/pagebuilders/elementor/elementor.php';
 			require_once WIDGETOPTS_PLUGIN_DIR . 'includes/pagebuilders/elementor/render.php';
 		}
