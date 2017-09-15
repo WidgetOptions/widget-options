@@ -105,7 +105,7 @@ if( !function_exists( 'widgetopts_sidebars_widgets' ) ){
 		if ( is_admin() ) {
 			return $sidebars;
 		}
-
+        
 		global $wp_registered_widgets;
         $checked = array();
 
