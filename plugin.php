@@ -148,6 +148,7 @@ final class WP_Widget_Options {
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/sliding.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/move.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/clone.php';
+				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/elementor.php';
 			}
 
 			// if( in_array( $pagenow, array( 'widgets.php' ) ) ){
