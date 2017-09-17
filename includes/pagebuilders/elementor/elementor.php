@@ -89,7 +89,7 @@ if( !function_exists( 'widgetopts_elementor_section' ) ){
                     			[
                     				'type' => Elementor\Controls_Manager::RAW_HTML,
                     				'raw' => '<div class="elementor-panel-nerd-box">
-                    						<i class="elementor-panel-nerd-box-icon eicon-hypster"></i>
+                    						<i class="elementor-panel-nerd-box-icon fa fa-lock"></i>
                     						<div class="elementor-panel-nerd-box-title">' .
                     							__( 'Unlock All Widget Options', 'widget-options' ) .
                     						'</div>

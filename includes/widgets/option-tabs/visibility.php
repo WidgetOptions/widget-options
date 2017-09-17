@@ -48,7 +48,7 @@ function widgetopts_tabcontent_visibility( $args ){
                     'home'      =>  __( 'Home/Front', 'widget-options' ),
                     'blog'      =>  __( 'Blog', 'widget-options' ),
                     'archives'  =>  __( 'Archives', 'widget-options' ),
-                    'single'    =>  __( 'Single Post', 'widget-options' ),
+                    // 'single'    =>  __( 'Single Post', 'widget-options' ),
                     '404'       =>  __( '404', 'widget-options' ),
                     'search'    =>  __( 'Search', 'widget-options' )
                 );
