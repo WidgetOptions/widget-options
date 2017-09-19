@@ -15,7 +15,7 @@ if( !function_exists( 'widgetopts_delete_transient_pages' ) ){
 	function widgetopts_delete_transient_pages( $new_status, $old_status, $post  ){
 		global $widgetopts_types;
 
-		if ( 'publish' == $new_status && 'publish' != $old_status && 'page' == $post->post_type ){
+		if ( 'page' == $post->post_type ){
 	        delete_option( 'widgetopts_global_all_pages' );
 	    }
 

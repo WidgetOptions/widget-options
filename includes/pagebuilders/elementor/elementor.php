@@ -94,7 +94,7 @@ if( !function_exists( 'widgetopts_elementor_section' ) ){
                     							__( 'Unlock All Widget Options', 'widget-options' ) .
                     						'</div>
                     						<div class="elementor-panel-nerd-box-message">' .
-                    							__( 'Upgrade to Extended Widget Options to unlock all options to easily control and manage each Elementor widgets.', 'widget-options' ) .
+                    							__( 'Upgrade to Extended Widget Options to unlock all options to easily control and manage each Elementor widget.', 'widget-options' ) .
                     						'</div>
                     						<a href="http://widget-options.com/?utm_source=elementor&utm_medium=upgrade&utm_campaign=upgradebtn" class="elementor-panel-nerd-box-link elementor-button elementor-button-default elementor-go-pro" target="_blank">' .
                     							__( 'Upgrade Now!', 'widget-options' ) .
