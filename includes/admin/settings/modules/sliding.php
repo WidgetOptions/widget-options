@@ -26,7 +26,12 @@ if( !function_exists( 'widgetopts_settings_sliding_addon' ) ):
 					<h2><?php _e( 'Sliding Widgets Add-on', 'widget-options' );?></h2>
 					<div class="widgetopts-pro-label"><span class="dashicons dashicons-admin-plugins"></span></div>
 					<p class="widgetopts-module-desc">
-						<?php _e( 'Premium add-on to transform any widgets into Modal Pop-up, Slide-ins and Sliding Panels.', 'widget-options' );?>
+						<?php 
+						_e( 'Premium add-on to transform any widgets into Modal Pop-up, Slide-ins and Sliding Panels.', 'widget-options' );
+						if( defined( 'ELEMENTOR_VERSION' ) ){
+							_e( '<br /><span class="dashicons dashicons-yes" style="color: #ffb310;"></span> Elementor Compatible', 'widget-options' );
+						}
+						?>
 					</p>
 				</div>
 			</li>
