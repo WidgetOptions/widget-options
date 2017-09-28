@@ -251,4 +251,20 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 		return $content;
 	}
 }
+
+if( !function_exists( 'widgetopts_elementor_before_render' ) ){
+	add_action( 'elementor/frontend/widget/before_render', 'widgetopts_elementor_before_render', 10, 2 );
+	function widgetopts_elementor_before_render( $element ){
+		$enabled = array( 'button', 'button_plus', 'eael-creative-button', 'cta' );
+		if ( in_array( $element->get_name(), $enabled ) ) {
+			global $widget_options;
+			if( 'activate' == $widget_options['sliding'] ){
+				$settings = $element->get_settings();
+				if( isset( $settings['widgetopts_open_sliding'] ) && 'on' == $settings['widgetopts_open_sliding'] ){
+					$element->add_render_attribute( 'button', 'class', 'sl-widgetopts-open' );
+				}
+			}
+		}
+	}
+}
 ?>

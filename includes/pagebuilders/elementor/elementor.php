@@ -83,7 +83,7 @@ if( !function_exists( 'widgetopts_elementor_section' ) ){
                             widgetopts_elementor_tab_visibility( $element, $section_id, $args );
                         }
 
-                        if( 'activate' == $widget_options['logic'] ){
+                        if( 'activate' == $widget_options['logic'] || ( isset( $widget_options['sliding'] ) && 'activate' == $widget_options['sliding'] && in_array( $element->get_name(), array( 'button', 'button_plus', 'eael-creative-button', 'cta' ) ) ) ){
                             widgetopts_elementor_tab_settings( $element, $section_id, $args );
                         }
 
@@ -310,6 +310,22 @@ if( !function_exists( 'widgetopts_elementor_tab_settings' ) ){
                 'overwrite'         => true
             ] 
         );
+
+        if( is_plugin_active( 'sliding-widget-options/plugin.php' ) && 'activate' == $widget_options['sliding'] && in_array( $element->get_name(), array( 'button', 'button_plus', 'eael-creative-button', 'cta' ) ) ){
+            $element->add_control(
+                'widgetopts_open_sliding',
+                [
+                    'label'          => __( 'Open Pop-up or Sliding Widgets', 'widget-options' ),
+                    'type'           => Elementor\Controls_Manager::SWITCHER,
+                    'return_value'   => 'on',
+                    'default'        => '',
+                    'separator'      => 'none'
+                ],
+                [
+                    'overwrite'         => true
+                ]
+            );
+        }
 
         if( 'activate' == $widget_options['logic'] ){
             $element->add_control(
