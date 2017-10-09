@@ -126,10 +126,13 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 
 = 3.4 =
 * Add <strong>Move WordPress Widgets</strong> Feature
+* Add <strong>Elementor Pagebuilder Support</strong> Beta Feature
 * Add option to disable automatic addition of .widget class
+* Fixes and support for is_active_sidebar
 * Update subscription sidebar and add free e-book download
 * Add module card for <a href="https://widget-options.com/modal-pop-up-and-sliding-widget-options/" target="_blank">WordPress Sliding Panel</a> add-on
 * Add module card for <a href="https://widget-options.com/features/clone-wordpress-widgets/" target="_blank">Clone WordPress Widgets</a> premium feature
+* Improvements for better speed on admin widgets dashboard
 
 = 3.3.2 =
 * Use better Global pages items to prevent issues with site with lots of pages
