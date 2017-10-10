@@ -86,6 +86,18 @@ if( !function_exists( 'widgetopts_settings_classes' ) ):
 							</p>
 						</td>
 					</tr>
+					<tr>
+						<th scope="row">
+							<label for="widgetopts-classes-auto"><?php _e( 'Remove .widget Class', 'widget-options' );?></label>
+						</th>
+						<td>
+							<input type="checkbox" id="widgetopts-classes-auto" name="classes[auto]" <?php echo widgetopts_is_checked( $classes, 'auto' ) ?> value="1" />
+							<label for="widgetopts-classes-auto"><?php _e( 'Disable Additional Class', 'widget-options' );?></label>
+							<p class="description">
+								<?php _e( 'Check this box if you want to disable the automatic addition of .widget class', 'widget-options' );?>
+							</p>
+						</td>
+					</tr>
 				</table>
 				<div class="widgetopts-settings-section">
 					<h4><?php _e( 'Predefined Classes', 'widget-options' );?></h4>

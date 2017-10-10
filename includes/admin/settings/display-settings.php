@@ -44,6 +44,7 @@ if( !function_exists( 'widgetopts_options_page' ) ):
 			<h1>
 				<?php _e( 'Widget Options', 'widget-options' ); ?>
 				<a href="<?php echo esc_url( apply_filters( 'widget_options_support_url', 'https://wordpress.org/support/plugin/widget-options/' ) ); ?>" target="_blank" class="page-title-action"><?php _e( 'Support', 'widget-options' ); ?></a>
+				<a href="<?php echo esc_url( apply_filters( 'widget_options_upgrade_url', 'http://widget-options.com/?utm_source=wordpressadmin&utm_medium=widget&utm_campaign=widgetoptsproupgrade' ) ); ?>" target="_blank" class="page-title-action"><?php _e( 'Upgrade', 'widget-options' ); ?></a>
 			</h1>
 
 			<div id="widgetopts-settings-messages-container"></div>

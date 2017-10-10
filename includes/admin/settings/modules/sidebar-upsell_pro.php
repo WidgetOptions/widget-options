@@ -47,6 +47,9 @@ if( !function_exists( 'widgetopts_settings_upgrade_pro' ) ):
 						<?php _e( 'Widget Caching', 'widget-options' );?>
 					</li>
 					<li>
+						<?php _e( 'Clone Widgets', 'widget-options' );?>
+					</li>
+					<li>
 						<?php _e( 'and more pro-only features', 'widget-options' );?>
 					</li>
 				</ul>

@@ -95,4 +95,75 @@ if( !function_exists( 'widgetopts_classes_generator' ) ){
     }
 }
 
- ?>
+//add is_active_sidebar support
+if( !function_exists( 'widgetopts_sidebars_widgets' ) ){
+	add_action( 'wp_loaded', 'widgetopts_sidebars_widgets_action' );
+	function widgetopts_sidebars_widgets_action() {
+		add_filter( 'sidebars_widgets', 'widgetopts_sidebars_widgets' );
+	}
+	function widgetopts_sidebars_widgets( $sidebars ) {
+		if ( is_admin() ) {
+			return $sidebars;
+		}
+        
+		global $wp_registered_widgets;
+        $checked = array();
+
+		foreach ( $sidebars as $s => $sidebar ) {
+			if ( $s == 'wp_inactive_widgets' || strpos( $s, 'orphaned_widgets' ) === 0 || empty( $sidebar ) ) {
+				continue;
+			}
+
+			foreach ( $sidebar as $w => $widget ) {
+				// $widget is the id of the widget
+				if ( ! isset( $wp_registered_widgets[ $widget ] ) ) {
+					continue;
+				}
+
+				if ( isset( $checked[ $widget ] ) ) {
+					$show = $checked[ $widget ];
+				} else {
+					$opts = $wp_registered_widgets[ $widget ];
+					$id_base = is_array( $opts['callback'] ) ? $opts['callback'][0]->id_base : $opts['callback'];
+
+					if ( ! $id_base ) {
+						continue;
+					}
+
+					$instance = get_option( 'widget_' . $id_base );
+
+					if ( ! $instance || ! is_array( $instance ) ) {
+						continue;
+					}
+
+					if ( isset( $instance['_multiwidget'] ) && $instance['_multiwidget'] ) {
+						$number = $opts['params'][0]['number'];
+						if ( ! isset( $instance[ $number ] ) ) {
+							continue;
+						}
+
+						$instance = $instance[ $number ];
+						unset( $number );
+					}
+
+					unset( $opts );
+
+					$show = widgetopts_display_callback( $instance, (object) array( 'id' => $widget ), '' );
+
+					$checked[ $widget ] = $show ? true : false;
+				}
+
+				if ( ! $show ) {
+					unset( $sidebars[ $s ][ $w ] );
+				}
+
+				unset( $widget );
+			}
+			unset( $sidebar );
+		}
+
+		return $sidebars;
+	}
+}
+
+?>

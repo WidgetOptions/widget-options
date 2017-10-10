@@ -315,14 +315,20 @@ endif;
             $get_classes = array();
         }
 
-        //check if widget class exists
-        if ( ( strpos( $params[0]['before_widget'], '"widget ' ) !== false ) ||
-             ( strpos( $params[0]['before_widget'], ' widget ' ) !== false ) ||
-             ( strpos( $params[0]['before_widget'], ' widget"' ) !== false)
-            ) {
-            //do nothing
-        }else{
-            $get_classes[] = 'widget';
+        if( 'activate' == $widget_options['classes'] ){
+            if( isset( $widget_options['settings']['classes']['auto'] ) ){
+                //do nothing
+            }else{
+                //check if widget class exists
+                if ( ( strpos( $params[0]['before_widget'], '"widget ' ) !== false ) ||
+                     ( strpos( $params[0]['before_widget'], ' widget ' ) !== false ) ||
+                     ( strpos( $params[0]['before_widget'], ' widget"' ) !== false)
+                    ) {
+                    //do nothing
+                }else{
+                    $get_classes[] = 'widget';
+                }
+            }
         }
 
         if( !empty( $get_classes ) ){

@@ -44,6 +44,9 @@ Use only the features you want and disable any other widget options easily using
 <h4>Live Widget Search Filter</h4>
 Increase administrator widget management by enabling live widget search box on your widget dashboard to locate any widgets easier rather than scrolling the page.
 
+<h4>Easily Move WordPress Widgets without dragging</h4>
+Increase productivity and widgets management by moving any widgets easily by clicking a link and selecting the sidebar widget area instead of drag and drop! Elegant option specially on smaller screen devices such as mobile.
+
 <h4>View your changes live!</h4>
 This plugin is customizer ready for easier customization. View your changes live before saving it, <strong>not just better control but a time saver plugin!</strong>
 
@@ -98,17 +101,38 @@ e.g.
 
 == Frequently Asked Questions ==
 
+= How do I begin working with this plugin? =
+After Widget Options plugin activation you'll get welcome message with detailed video instructions to get started. Then go to <strong>Settings > Widget Options</strong> to enable/disable the features you want. Then go to <strong>Appearance > Widgets</strong> and start optimising your widgets!
+
+= How do I add set of predefined custom CSS classes for widgets? =
+Easy! Simply go to <strong>Settings > Widget Options</strong> and on <em>Classes & ID</em> module click Configure Settings then you can add your predefined CSS classes for your widgets.
+
+= What widgets are supported? =
+All of them! Yes, we haven't come across any single non-working widgets yet.
+
+= How's the speed and loading time compare to other plugins? =
+Widget Options is a featured pack fully lightweight plugin. Using Query Monitor plugin you'll find that the plugin doesn't load too much queries and doesn't affect your website's loading time. You can check more information how optimized Widget Options is <a href="https://widget-options.com/new-improved-widget-options-wordpress/">here</a>.
 
 == Screenshots ==
 
-1. Visibility Options
+1. Widgets Visibility Options
 2. Device Visibility Options
-3. Custom Alignment
+3. Widgets Custom Alignment
 4. Widget CSS ID & Classes
 5. Display Widget Logic
 6. Pagebuilder by SiteOrigin Plugin Widget Options
 
 == Changelog ==
+
+= 3.4 =
+* Add <strong>Move WordPress Widgets</strong> Feature
+* Add <strong>Elementor Pagebuilder Support</strong> Beta Feature
+* Add option to disable automatic addition of .widget class
+* Fixes and support for is_active_sidebar
+* Update subscription sidebar and add free e-book download
+* Add module card for <a href="https://widget-options.com/modal-pop-up-and-sliding-widget-options/" target="_blank">WordPress Sliding Panel</a> add-on
+* Add module card for <a href="https://widget-options.com/features/clone-wordpress-widgets/" target="_blank">Clone WordPress Widgets</a> premium feature
+* Improvements for better speed on admin widgets dashboard
 
 = 3.3.2 =
 * Use better Global pages items to prevent issues with site with lots of pages
@@ -131,7 +155,7 @@ e.g.
 * Fix issues reported on github
 
 = 3.1 =
-* Add Pagebuilder by SiteOrigin Plugin Compatibility
+* Add Pagebuilder by SiteOrigin Plugin Widgets Compatibility
 * Fixes for https://github.com/phpbits/widget-options/issues/6
 * Performance enhancement
 
@@ -155,12 +179,12 @@ e.g.
 * other minor improvements
 
 = 1.3 =
-* Apply Category Visibility Selection to associated posts
+* Apply Category Widgets Visibility Selection to associated posts
 * Update pro tabs with additional features added on Extended Widget Options 2.0
 
 = 1.2 =
 * Add Widget CSS ID and Classes tab options. <a href="https://phpbits.net/widget-options-improved-control-adding-id-classes-options">Learn more about this update</a>
-* Add Blog Page Visibility as per @cfabrice & @fljdave request
+* Add Blog Page Visibility for Widgets as per @cfabrice & @fljdave request
 
 = 1.1.1 =
 * Reduce Transient to 5 minutes
@@ -174,4 +198,9 @@ e.g.
 == Upgrade Notice ==
 
 = 1.0 =
+
 * Initial Plugin release
+
+== Contact and Credits ==
+
+Widget Options for WordPress is maintained and developed by <a href="https://phpbits.net/">Phpbits Creative Studio</a>.

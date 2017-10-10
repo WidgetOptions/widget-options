@@ -212,6 +212,9 @@ body .extended-widget-opts-tabs .extended-widget-gopro-tab-alignment a{
 #customize-theme-controls .extended-widget-opts-form .extended-widget-opts-tabcontent-styling .inputsize5{
 	max-width: 50px;
 }
+#customize-theme-controls .widget-inside .widget-control-actions .widgetopts-control{
+	display: none !important;
+}
 
 /** Settings Page **/
 .widgetopts-settings-desc{
@@ -736,11 +739,75 @@ input#widgetopts-widgets-search{
 .widgetopts-is-hidden{
 	display: none !important;
 }
+
+/** Search **/
+#widgetopts-widgets-filter{
+	width: 100%;
+    max-width: 250px;
+	position: relative;
+	display: block;
+	padding: 12px 0px 1px;
+	clear: both;
+}
+input#widgetopts-widgets-search{
+	width: 100%;
+	height: 30px;
+	padding: 6px 30px;
+}
+.widgetopts-search-icon{
+	display: block;
+    position: absolute;
+    top: 13px;
+    left: 2px;
+    width: 30px;
+    height: 30px;
+    line-height: 28px;
+    text-align: center;
+    color: #72777c;
+}
+.widgetopts-search-icon:after{
+	content: "\f179";
+    font: 400 20px/1 dashicons;
+    vertical-align: middle;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.widgetopts-clear-results{
+	position: absolute;
+    top: 13px;
+    right: 2px;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+    background: 0 0;
+    color: #a00;
+    text-decoration: none;
+    outline: 0;
+	display: none;
+}
+.widgetopts-clear-results:before{
+	content: "\f335";
+    font: 400 20px/1 dashicons;
+    vertical-align: middle;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.widgetopts-is-visible{
+	display: block !important;
+}
+.widgetopts-is-hidden{
+	display: none !important;
+}
+
+
+/** Widgets Chooser **/
 #widgetopts-widgets-chooser{
 	position: relative;
 	width: 100%;
 }
-input#widgetopts-search-chooser{
+input.widgetopts-widgets-search{
 	width: 100%;
 	margin: 1px 0px;
 	height: 30px;
@@ -749,4 +816,90 @@ input#widgetopts-search-chooser{
 #widgetopts-widgets-chooser .widgetopts-search-icon,
 #widgetopts-widgets-chooser .widgetopts-clear-results{
 	top: 1px;
+}
+
+.widgetsopts-chooser ul,
+#widgets-right .widget-in-question .widget-top,
+.widget-top:hover,
+div#widgets-right .widget-top:hover,
+#widgets-right .widget-top:hover {
+	border-color: #999;
+	-webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+	box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.widgetsopts-chooser ul.widgetopts-chooser-sidebars {
+	margin: 0;
+	list-style-type: none;
+	max-height: 300px;
+	overflow: auto;
+}
+
+.widgetsopts-chooser {
+	margin-top: 10px;
+	padding: 10px;
+	background: #f7f7f7;
+}
+
+.widgetsopts-chooser ul {
+	border: 1px solid #ccc;
+}
+
+.widgetsopts-chooser li {
+	padding: 10px 15px 10px 35px;
+	border-bottom: 1px solid #ccc;
+	background: #fff;
+	margin: 0;
+	cursor: pointer;
+	outline: none;
+	position: relative;
+	-webkit-transition: background 0.2s ease-in-out;
+	transition: background 0.2s ease-in-out;
+}
+
+ /* @todo looks like these hover/focus states are overridden by .widgets-chooser-selected */
+.widgetsopts-chooser li:hover,
+.widgetsopts-chooser li:focus {
+	background: rgba(255,255,255,0.7);
+}
+
+.widgetsopts-chooser li:focus:before {
+	content: "\f147";
+	display: block;
+	-webkit-font-smoothing: antialiased;
+	font: normal 26px/1 dashicons;
+	color: #555d66;
+	position: absolute;
+	top: 7px;
+	left: 5px;
+}
+
+.widgetsopts-chooser li:last-child {
+	border: none;
+}
+
+.widgetsopts-chooser li.widgetopts-chooser-selected {
+	background: #00a0d2;
+	color: #fff;
+}
+
+.widgetsopts-chooser li.widgetopts-chooser-selected:before,
+.widgetsopts-chooser li.widgetopts-chooser-selected:focus:before {
+	content: "\f147";
+	display: block;
+	-webkit-font-smoothing: antialiased;
+	font: normal 26px/1 dashicons;
+	color: #fff;
+	position: absolute;
+	top: 7px;
+	left: 5px;
+}
+
+.widgetsopts-chooser .widgetsopts-chooser-actions {
+	padding: 10px 0 12px 0;
+	text-align: center;
+}
+
+.widgetsopts-chooser button {
+	margin-right: 5px;
 }

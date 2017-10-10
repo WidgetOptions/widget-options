@@ -37,6 +37,7 @@ add_action( 'customize_controls_enqueue_scripts', 'widgetopts_load_scripts' );
  */
 if( !function_exists( 'widgetopts_load_admin_scripts' ) ):
       function widgetopts_load_admin_scripts( $hook ) {
+            global $widget_options;
 
             $js_dir  = WIDGETOPTS_PLUGIN_URL . 'assets/js/';
       	$css_dir = WIDGETOPTS_PLUGIN_URL . 'assets/css/';
@@ -63,21 +64,26 @@ if( !function_exists( 'widgetopts_load_admin_scripts' ) ):
 
             wp_enqueue_script(
                  'jquery-widgetopts-option-tabs',
-                 plugins_url( 'assets/js/widgets.js' , dirname(__FILE__) ),
+                 plugins_url( 'assets/js/wpWidgetOpts.js' , dirname(__FILE__) ),
                  array( 'jquery', 'jquery-ui-core', 'jquery-ui-tabs', 'jquery-ui-datepicker'),
                  '',
                  true
             );
 
             $form = '<div id="widgetopts-widgets-chooser">
-        	<label class="screen-reader-text" for="widgetopts-search-chooser">'. __( 'Search Sidebar', 'widget-options' ) .'</label>
-        	<input type="text" id="widgetopts-search-chooser" class="widgetopts-widgets-search" placeholder="'. __( 'Search sidebar&hellip;', 'widget-options' ) .'" />
-            <div class="widgetopts-search-icon" aria-hidden="true"></div>
-            <button type="button" class="widgetopts-clear-results"><span class="screen-reader-text">'. __( 'Clear Results', 'widget-options' ) .'</span></button>
-            <p class="screen-reader-text" id="widgetopts-chooser-desc">'. __( 'The search results will be updated as you type.', 'widget-options' ) .'</p>
-        </div>';
+              	<label class="screen-reader-text" for="widgetopts-search-chooser">'. __( 'Search Sidebar', 'widget-options' ) .'</label>
+              	<input type="text" id="widgetopts-search-chooser" class="widgetopts-widgets-search" placeholder="'. __( 'Search sidebar&hellip;', 'widget-options' ) .'" />
+                  <div class="widgetopts-search-icon" aria-hidden="true"></div>
+                  <button type="button" class="widgetopts-clear-results"><span class="screen-reader-text">'. __( 'Clear Results', 'widget-options' ) .'</span></button>
+                  <p class="screen-reader-text" id="widgetopts-chooser-desc">'. __( 'The search results will be updated as you type.', 'widget-options' ) .'</p>
+              </div>';
 
-            wp_localize_script( 'jquery-widgetopts-option-tabs', 'widgetopts10n', array( 'opts_page' => esc_url( admin_url( 'options-general.php?page=widgetopts_plugin_settings' ) ), 'search_form' => $form, 'translation' => array( 'manage_settings' => __( 'Manage Widget Options', 'widget-options' ), 'search_chooser' => __( 'Search sidebar&hellip;', 'widget-options' ) )) );
+            $btn_controls = '';
+            if( isset( $widget_options['move'] ) && 'activate' == $widget_options['move'] ){
+              $btn_controls .= ' | <button type="button" class="button-link widgetopts-control" data-action="move">'. __( 'Move', 'widget-options' ) .'</button>';
+            }
+
+            wp_localize_script( 'jquery-widgetopts-option-tabs', 'widgetopts10n', array( 'opts_page' => esc_url( admin_url( 'options-general.php?page=widgetopts_plugin_settings' ) ), 'search_form' => $form, 'controls' => $btn_controls, 'translation' => array( 'manage_settings' => __( 'Manage Widget Options', 'widget-options' ), 'search_chooser' => __( 'Search sidebar&hellip;', 'widget-options' ) )) );
 
             if( in_array( $hook, apply_filters( 'widgetopts_load_settings_scripts', array( 'settings_page_widgetopts_plugin_settings' ) ) ) ){
                   wp_register_script(
@@ -111,4 +117,27 @@ if( !function_exists( 'widgetopts_load_admin_scripts' ) ):
       }
       add_action( 'admin_enqueue_scripts', 'widgetopts_load_admin_scripts', 100 );
 endif;
+
+if( !function_exists( 'widgetopts_widgets_footer' ) ){
+      function widgetopts_widgets_footer(){
+            global $widget_options;?>
+            <div class="widgetsopts-chooser" style="display:none;">
+                  <?php if( isset( $widget_options['search'] ) && 'activate' == $widget_options['search'] ): ?>
+                        <div id="widgetopts-widgets-chooser">
+                              <label class="screen-reader-text" for="widgetopts-search-chooser"><?php _e( 'Search Sidebar', 'widget-options' );?></label>
+                              <input type="text" id="widgetsopts-widgets-search" class="widgetopts-widgets-search widgetsopts-widgets-search" placeholder="Search sidebar…">
+                              <div class="widgetopts-search-icon" aria-hidden="true"></div>
+                              <button type="button" class="widgetopts-clear-results"><span class="screen-reader-text"><?php _e( 'Clear Results', 'widget-options' );?></span></button>
+                              <p class="screen-reader-text" id="widgetopts-chooser-desc"><?php _e( 'The search results will be updated as you type.', 'widget-options' );?></p>
+                        </div>
+                  <?php endif; ?>
+                  <ul class="widgetopts-chooser-sidebars"></ul>
+                  <div class="widgetsopts-chooser-actions">
+                        <button class="button widgetsopts-chooser-cancel"><?php _e( 'Cancel', 'widget-options' ); ?></button>
+                        <button class="button button-primary widgetopts-chooser-action"><span><?php _e( 'Move', 'widget-options' ); ?></span> <?php _e( 'Widget', 'widget-options' ); ?></button>
+                  </div>
+            </div>
+      <?php }
+      add_action( 'admin_footer-widgets.php', 'widgetopts_widgets_footer' );
+}
 ?>

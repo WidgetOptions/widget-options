@@ -3,7 +3,7 @@
  * Plugin Name: Widget Options
  * Plugin URI: https://widget-options.com/
  * Description: Additional Widget options for better widget control. Get <strong><a href="http://widget-options.com/" target="_blank" >Extended Widget Options for WordPress</a></strong> for complete widget controls. Thanks!
- * Version: 3.3.2
+ * Version: 3.4
  * Author: Phpbits Creative Studio
  * Author URI: https://phpbits.net/
  * Text Domain: widget-options
@@ -73,7 +73,7 @@ final class WP_Widget_Options {
 
 		// Plugin version.
 		if ( ! defined( 'WIDGETOPTS_VERSION' ) ) {
-			define( 'WIDGETOPTS_VERSION', ' 3.3.2' );
+			define( 'WIDGETOPTS_VERSION', ' 3.4' );
 		}
 
 		// Plugin Folder Path.
@@ -145,6 +145,10 @@ final class WP_Widget_Options {
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/sidebar-more_plugins.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/sidebar-support_box.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/search.php';
+				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/sliding.php';
+				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/move.php';
+				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/clone.php';
+				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/elementor.php';
 			}
 
 			// if( in_array( $pagenow, array( 'widgets.php' ) ) ){
@@ -184,7 +188,13 @@ final class WP_Widget_Options {
 		require_once WIDGETOPTS_PLUGIN_DIR . 'includes/widgets/display.php';
 		require_once WIDGETOPTS_PLUGIN_DIR . 'includes/ajax-functions.php';
 
+		//pagebuilders support
 		require_once WIDGETOPTS_PLUGIN_DIR . 'includes/pagebuilders/siteorigin.php';
+		if( defined( 'ELEMENTOR_VERSION' ) && isset( $widget_options['elementor'] ) && 'activate' == $widget_options['elementor'] ){
+			require_once WIDGETOPTS_PLUGIN_DIR . 'includes/pagebuilders/elementor/elementor.php';
+			require_once WIDGETOPTS_PLUGIN_DIR . 'includes/pagebuilders/elementor/render.php';
+		}
+
 		require_once WIDGETOPTS_PLUGIN_DIR . 'includes/install.php';
 	}
 
