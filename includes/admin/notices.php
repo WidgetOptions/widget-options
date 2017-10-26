@@ -25,7 +25,7 @@ if( !function_exists( 'widgetopts_admin_notices' ) ):
         $diff_intrval   = round( ($datetime2->format( 'U' ) - $datetime1->format( 'U' ) ) / (60*60*24));
         if( 'yes' != $saved && $diff_intrval >= 7 ){
         echo '<div class="widgetopts_notice updated" style="box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);">
-            <p>Awesome, you\'ve been using <strong>Widget Options</strong> for more than 1 week. <br> May i ask you to give it a <strong>5-star rating</strong> on Wordpress? </br>
+            <p>Awesome, you\'ve been using <strong>Widget Options</strong> for more than 1 week. <br> May i ask you to give it a <strong>5-star rating</strong> on WordPress? </br>
             This will help to spread its popularity and to make this plugin a better one.
             <br><br>Your help is much appreciated. Thank you very much,<br> ~ Jeffrey Carandang <em>(phpbits)</em>
             <ul>

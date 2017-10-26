@@ -149,6 +149,7 @@ final class WP_Widget_Options {
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/move.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/clone.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/elementor.php';
+				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/import-export.php';
 			}
 
 			// if( in_array( $pagenow, array( 'widgets.php' ) ) ){
@@ -177,6 +178,10 @@ final class WP_Widget_Options {
 				}
 
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/widgets/option-tabs/upsell.php';
+
+				if( isset( $widget_options['import_export'] ) && 'activate' == $widget_options['import_export'] ){
+					require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/import-export.php';
+				}
 			// }
 
 				//admin notices

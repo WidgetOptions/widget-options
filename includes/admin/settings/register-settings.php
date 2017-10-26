@@ -138,6 +138,7 @@ if( !function_exists( 'widgetopts_get_settings' ) ):
 			$search 			= array( 'search' 			=> get_option( 'widgetopts_tabmodule-search' ) );
 			$move 				= array( 'move' 			=> get_option( 'widgetopts_tabmodule-move' ) );
 			$elementor 			= array( 'elementor' 			=> get_option( 'widgetopts_tabmodule-elementor' ) );
+			$import_export 		= array( 'import_export' 			=> get_option( 'widgetopts_tabmodule-import_export' ) );
 
 			/*
 			 * Available only on Extended version
@@ -155,7 +156,7 @@ if( !function_exists( 'widgetopts_get_settings' ) ):
 			// $disable_widgets 	= array( 'disable_widgets' 	=> get_option( 'widgetopts_tabmodule-disable_widgets' ) );
 			// $permission 		= array( 'permission' 		=> get_option( 'widgetopts_tabmodule-permission' ) );
 
-			$settings = array_merge( array( 'settings' => $settings ), $visibility, $devices, $alignment, $hide_title, $classes, $logic, $siteorigin, $search, $move, $elementor );
+			$settings = array_merge( array( 'settings' => $settings ), $visibility, $devices, $alignment, $hide_title, $classes, $logic, $siteorigin, $search, $move, $elementor, $import_export );
 
 			// Let's let devs alter that value coming in
 			$value = apply_filters( 'widgetopts_update_settings', $settings );
