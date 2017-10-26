@@ -150,6 +150,7 @@ final class WP_Widget_Options {
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/clone.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/elementor.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/import-export.php';
+				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/widget-area.php';
 			}
 
 			// if( in_array( $pagenow, array( 'widgets.php' ) ) ){
