@@ -83,7 +83,33 @@ if( !function_exists( 'widgetopts_load_admin_scripts' ) ):
               $btn_controls .= ' | <button type="button" class="button-link widgetopts-control" data-action="move">'. __( 'Move', 'widget-options' ) .'</button>';
             }
 
-            wp_localize_script( 'jquery-widgetopts-option-tabs', 'widgetopts10n', array( 'opts_page' => esc_url( admin_url( 'options-general.php?page=widgetopts_plugin_settings' ) ), 'search_form' => $form, 'controls' => $btn_controls, 'translation' => array( 'manage_settings' => __( 'Manage Widget Options', 'widget-options' ), 'search_chooser' => __( 'Search sidebar&hellip;', 'widget-options' ) )) );
+            $sidebaropts = '';
+            if( isset( $widget_options['widget_area'] ) && 'activate' == $widget_options['widget_area'] ){
+                $sidebaropts = '<div class="widgetopts-sidebaropts">';
+                if( isset( $widget_options['settings']['widget_area'] ) && isset( $widget_options['settings']['widget_area']['remove'] ) && '1' == $widget_options['settings']['widget_area']['remove'] ){
+                    $sidebaropts .= '<a href="#" class="sidebaropts-clear">
+                        <span class="dashicons dashicons-warning"></span> '. __( 'Remove All Widgets', 'widget-options' ) .'
+                      </a>';
+                }
+                if( isset( $widget_options['settings']['widget_area'] ) && isset( $widget_options['settings']['widget_area']['backup'] ) && '1' == $widget_options['settings']['widget_area']['backup'] ){
+                    $sidebaropts .= '<a href="'. esc_url( wp_nonce_url( admin_url('tools.php?page=widgetopts_migrator_settings&action=export&single_sidebar=__sidebaropts__'), 'widgeopts_export', 'widgeopts_nonce_export') ) .'">
+                        <span class="dashicons dashicons-download"></span> '. __( 'Download Backup', 'widget-options' ) .'
+                      </a>';
+                  }
+                
+                if( isset( $widget_options['settings']['widget_area'] ) && isset( $widget_options['settings']['widget_area']['remove'] ) && '1' == $widget_options['settings']['widget_area']['remove'] ){
+                    $sidebaropts .= '<div class="sidebaropts-confirm"><p>
+                      '. __( 'Are you sure you want to DELETE ALL widgets associated to __sidebar_opts__?', 'widget-options' ) .'
+                      </p>
+                      <button class="button">'. __( 'No', 'widget-options' ) .'</button>
+                      <button class="button button-primary">'. __( 'Yes', 'widget-options' ) .'</button>
+                    </div>';
+                }
+
+                $sidebaropts .= '</div>';
+            }
+
+            wp_localize_script( 'jquery-widgetopts-option-tabs', 'widgetopts10n', array( 'opts_page' => esc_url( admin_url( 'options-general.php?page=widgetopts_plugin_settings' ) ), 'search_form' => $form, 'sidebaropts' => $sidebaropts, 'controls' => $btn_controls, 'translation' => array( 'manage_settings' => __( 'Manage Widget Options', 'widget-options' ), 'search_chooser' => __( 'Search sidebar&hellip;', 'widget-options' ) )) );
 
             if( in_array( $hook, apply_filters( 'widgetopts_load_settings_scripts', array( 'settings_page_widgetopts_plugin_settings' ) ) ) ){
                   wp_register_script(
