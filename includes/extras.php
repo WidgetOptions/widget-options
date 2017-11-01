@@ -107,7 +107,7 @@ function widgetopts_addhttp($url) {
      if( empty( $pages ) ) {
          global $wpdb;
 
-         $pages  = $wpdb->get_results("SELECT ID, post_title FROM $wpdb->posts WHERE post_type = 'page' AND post_status = 'publish' ORDER BY post_title ASC ");
+         $pages  = $wpdb->get_results("SELECT ID, post_title, post_parent FROM $wpdb->posts WHERE post_type = 'page' AND post_status = 'publish' ORDER BY post_title ASC ");
 
          // Let's let devs alter that value coming in
          $pages = apply_filters( 'widgetopts_update_global_pages', $pages );
@@ -132,4 +132,56 @@ function widgetopts_global_categories(){
 
 	return apply_filters( 'widgetopts_global_categories', $categories );
 }
+
+/*
+Page Walker Class
+*/
+if( !class_exists( 'WidgetOpts_Pages_Checkboxes' ) ):
+    class WidgetOpts_Pages_Checkboxes extends Walker_Page {
+
+        function start_lvl( &$output, $depth = 0, $args = array() ) {
+            $output .= "\n<div class='widgetopts-chldrn'>\n";
+        }
+
+        function end_lvl( &$output, $depth = 0, $args = array() ) {
+            $output .= "</div>\n";
+        }
+
+        function start_el( &$output, $page, $depth = 0, $args = array(), $current_page = 0 ) {
+            if ( $depth ){
+                $indent = str_repeat( '&mdash; ', $depth );
+            }else{
+                $indent = '';
+            }
+                
+        
+
+            if ( '' === $page->post_title ) {
+                $page->post_title = sprintf( __( '#%d (no title)', 'widget-options' ), $page->ID );
+            }
+
+            $pages_values = array();
+            if( isset( $args['params']['visibility']['pages'] ) ){
+                $pages_values = $args['params']['visibility']['pages'];
+            }
+
+            if( isset( $pages_values[ $page->ID ] ) && $pages_values[ $page->ID ] == '1' ){
+                $checked = 'checked="checked"';
+            }else{
+                $checked = '';
+            }
+
+            $output .= '<p>' . $indent;
+
+            $output .= '<input type="checkbox" name="'. $args['namespace'] .'[extended_widget_opts][visibility][pages]['. $page->ID .']" id="'. $args['id'] .'-opts-pages-'. $page->ID .'" value="1" '. $checked .'/>';
+
+            $output .= '<label for="'. $args['id'] .'-opts-pages-'. $page->ID .'">'. $page->post_title .'</label>';
+        }
+
+        function end_el( &$output, $page, $depth = 0, $args = array() ) {
+            $output .= "</p>\n";
+        }
+
+    }
+endif;
 ?>
