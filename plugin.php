@@ -180,7 +180,9 @@ final class WP_Widget_Options {
 
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/widgets/option-tabs/upsell.php';
 
-				if( isset( $widget_options['import_export'] ) && 'activate' == $widget_options['import_export'] ){
+				if( ( isset( $widget_options['import_export'] ) && 'activate' == $widget_options['import_export'] ) ||
+					( isset( $widget_options['widget_area'] ) && 'activate' == $widget_options['widget_area'] )
+				 ){
 					require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/import-export.php';
 				}
 			// }

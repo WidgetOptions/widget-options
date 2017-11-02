@@ -21,11 +21,18 @@ class WP_Widget_Options_Importer {
 
     function __construct(){
     	global $widget_options;
-    	if( isset( $widget_options['import_export'] ) && 'activate' == $widget_options['import_export'] ){
+    	if( ( isset( $widget_options['import_export'] ) && 'activate' == $widget_options['import_export'] ) ||
+    		( isset( $widget_options['widget_area'] ) && 'activate' == $widget_options['widget_area'] )
+    	 ){
     		add_action( 'admin_menu', array( &$this, 'options_page' ), 10 );
 	        add_action( 'wp_ajax_widgetopts_migrator', array( &$this, 'ajax_migration' ) );
 	        add_action( 'load-tools_page_widgetopts_migrator_settings', array( &$this, 'export_json_file' ) );
 	        add_action( 'load-tools_page_widgetopts_migrator_settings', array( &$this, 'import_json_file' ) );
+
+	        if( !isset( $widget_options['import_export'] ) || ( isset( $widget_options['import_export'] ) && 'activate' != $widget_options['import_export']  ) ){
+	        	add_action( 'admin_footer', array( &$this, 'admin_footer' ), 10 );
+	        }
+	        
     	}
     }
 
@@ -200,6 +207,14 @@ class WP_Widget_Options_Importer {
 				vertical-align: unset;
 			}
 		</style>
+    <?php }
+
+    function admin_footer(){ ?>
+    	<script type="text/javascript">
+    		jQuery( document ).ready( function(){
+    			jQuery( '#adminmenu .menu-icon-tools a[href="tools.php?page=widgetopts_migrator_settings"]' ).hide();
+    		} );
+    	</script>
     <?php }
 
     /**
