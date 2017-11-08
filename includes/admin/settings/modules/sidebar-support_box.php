@@ -33,6 +33,12 @@ if( !function_exists( 'widgetopts_settings_support_box' ) ):
 				<p>
 					<a class="button-secondary" href="http://widget-options.com/?utm_source=wordpressadmin&amp;utm_medium=widget&amp;utm_campaign=widgetoptsprocta" target="_blank"><?php _e( 'Get Extended Widget Options', 'widget-options' );?></a>
 				</p>
+				<p>
+					<?php _e( 'You can also join our community via Facebook Group.', 'widget-options' );?>
+				</p>
+				<p>
+					<a class="button-secondary" href="https://www.facebook.com/groups/WPwidgets/" target="_blank"><?php _e( 'Join Facebook Group', 'widget-options' );?></a>
+				</p>
 			</div>
 		</div>
 
