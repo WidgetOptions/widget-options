@@ -92,7 +92,7 @@ If you like to contribute, report issue or have suggestions, you can find the de
 <strong>More information</strong>
 
 * Follow the developer <a href="https://twitter.com/phpbits" target="_blank">@Twitter</a>
-* <a href="https://www.facebook.com/groups/WPwidgets/" target="_blank">Join Facebook Community</a>
+* <a href="https://www.facebook.com/groups/WPwidgets/" target="_blank">Join Facebook Community Group</a>
 * Other <a href="https://phpbits.net/plugins/">WordPress plugins</a>
 
 == Installation ==
@@ -134,8 +134,9 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 == Changelog ==
 
 = 3.5 =
-* Add Widget Importer & Exporter Feature
-* Add Specific Widget Area Backup Downloader
+* Go to <strong>Settings > Widget Options</strong> to enable the brand new features below. Thanks!
+* Add <strong>Widget Importer & Exporter Feature</strong>
+* Add <strong>Specific Widget Area Backup</strong> Downloader
 * Improve pages list and indent child pages
 * Option to remove all widgets assigned on widget area
 * Fix issues with Elementor and OceanWP integration
