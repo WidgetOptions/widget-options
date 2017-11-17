@@ -3,7 +3,7 @@ Contributors: phpbits
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FMKC2SLPTULP8
 Tags: widgets, restrict widgets, display widgets, widget logic, hide widgets, hide widget, sidebar, widget content, display widget, widget options, widget option, widget, widget css, CSS, widget classes, widget styling, widget ID, widget custom class, widget visibility, widget ninja, jetpack visibility, siteorigin, siteorigin pagebuilder, pagebuilder by siteorigin
 Requires at least: 4.0
-Tested up to: 4.8
+Tested up to: 4.9
 Stable tag: 1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -47,11 +47,17 @@ Increase administrator widget management by enabling live widget search box on y
 <h4>Easily Move WordPress Widgets without dragging</h4>
 Increase productivity and widgets management by moving any widgets easily by clicking a link and selecting the sidebar widget area instead of drag and drop! Elegant option specially on smaller screen devices such as mobile.
 
+<h4>Import & Export Widgets and Widget Area Backup</h4>
+You can now import and export WordPress widgets easily and create any backup of specific sidebar widget areas. Move widgets to another websites at ease.
+
 <h4>View your changes live!</h4>
 This plugin is customizer ready for easier customization. View your changes live before saving it, <strong>not just better control but a time saver plugin!</strong>
 
 <h3>Pagebuilder by SiteOrigin Plugin Compatible since version 3.1</h3>
 Extend your SiteOrigin Pagebuilder powered website's widget panels control and management using Widget Options! Restrict devices visibility, change alignments, hide widget panel title, add custom classes and control visibility using display widget logic option! <br /><strong>Pagebuilder by SiteOrigin Plugin + Widget Options = Total Freedom!</strong>
+
+<h3>Elementor Pagebuilder Ready</h3>
+Extend Widget Options visibility restrictions to elementor widgets! You can now have same widget management feature available to your Elementor powered websites.
 
 <blockquote>
 <p><strong>Upgrade to Extended Widget Options</strong><br />
@@ -72,6 +78,7 @@ For more widgets management and restriction options, upgrade to <a href="http://
 * Display Sidebars and Widgets using Shortcodes
 * Disable any WordPress Widgets
 * Permission Options
+* Target URLs and Wildcard Restrictions
 * Option for child page to inherit parent widget visibilities
 
 Check full <a href="http://widget-options.com/features/">Extended Widget Options features</a>.
@@ -85,6 +92,7 @@ If you like to contribute, report issue or have suggestions, you can find the de
 <strong>More information</strong>
 
 * Follow the developer <a href="https://twitter.com/phpbits" target="_blank">@Twitter</a>
+* <a href="https://www.facebook.com/groups/WPwidgets/" target="_blank">Join Facebook Community</a>
 * Other <a href="https://phpbits.net/plugins/">WordPress plugins</a>
 
 == Installation ==
@@ -121,8 +129,18 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 4. Widget CSS ID & Classes
 5. Display Widget Logic
 6. Pagebuilder by SiteOrigin Plugin Widget Options
+7. Widget Importer & Exporter Feature
 
 == Changelog ==
+
+= 3.5 =
+* Add Widget Importer & Exporter Feature
+* Add Specific Widget Area Backup Downloader
+* Improve pages list and indent child pages
+* Option to remove all widgets assigned on widget area
+* Fix issues with Elementor and OceanWP integration
+* Add Target URLs and Wildcard Restrictions module upgrade on settings page
+* Improvements for the upcoming Beaver Builder integration
 
 = 3.4 =
 * Add <strong>Move WordPress Widgets</strong> Feature
