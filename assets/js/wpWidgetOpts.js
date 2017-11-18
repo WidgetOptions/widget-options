@@ -67,6 +67,10 @@ wpWidgetOpts = {
 			//chooser for move and clone action
 			self.do_chooser( chooser, selectSidebar );
 
+			//add sidebar options
+			self.sidebarOptions();
+			self.removeSidebarWidgets();
+
 	},
 	loaded : function( widget, action ){
 		var widget_id,
@@ -347,6 +351,48 @@ wpWidgetOpts = {
 				}
 			});
 		}
+	},
+	sidebarOptions : function(){
+		var self = this;
+		if( widgetopts10n.sidebaropts.length > 0 ){
+			$( '#widgets-right .widgets-holder-wrap' ).each( function( index, element ) {
+				dl_link = widgetopts10n.sidebaropts.replace( '__sidebaropts__', $(this).find('.widgets-sortables').attr('id') );
+				dl_link = dl_link.replace( '__sidebar_opts__', $.trim( $(this).find('.widgets-sortables h2').text() ) );
+				$(this).append( dl_link );
+			});
+		}
+	},
+	removeSidebarWidgets : function(){
+		var self = this;
+		var $container 	= $( 'html,body' );
+		$document.on( 'click', '.sidebaropts-clear', function(e){
+			//show confirmation
+			$(this).parent().find( '.sidebaropts-confirm' ).addClass( 'sidebaropts-confirmed' );
+			$(this).parent().find( '.sidebaropts-confirm' ).slideToggle(250);
+
+			e.preventDefault();
+		});
+
+		$document.on( 'click', '.sidebaropts-confirmed .button', function(e){
+			sidebar_id = $(this).parent().parent().parent().find('.widgets-sortables');
+			
+			if( $(this).hasClass( 'button-primary' ) ){
+				var $scrollTo = sidebar_id;
+
+				$(this).parent().slideToggle(50);
+				$container.animate({ scrollTop: $scrollTo.offset().top - 50 }, 200 );
+
+				sidebar_id.find( '.widget' ).each( function( index, element ) {
+					$( element ).fadeOut();
+					wpWidgets.save( $( element ), 1, 1, 0 );
+				});
+
+			}else{
+				$(this).parent().slideToggle(250);
+			}
+
+			e.preventDefault();
+		});
 	}
 };
 

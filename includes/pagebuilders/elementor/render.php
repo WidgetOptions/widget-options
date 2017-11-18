@@ -94,14 +94,16 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	                return false;
 	            }
 			}elseif ( $is_tax && is_tax() ) {
+				$term = get_queried_object();
+				
 				//taxonomies page
 				if( !isset( $settings['widgetopts_taxonomies'] ) ){
 	                $settings['widgetopts_taxonomies'] = array();
 	            }
 				// print_r( $term_lists );
-	            if( in_array( 'community-category', $settings['widgetopts_taxonomies'] ) && $visibility_opts == 'hide' ){
+	            if( in_array( $term->taxonomy, $settings['widgetopts_taxonomies'] ) && $visibility_opts == 'hide' ){
 	                $hidden = true; //hide to all tags
-	            }elseif( !in_array( 'community-category', $settings['widgetopts_taxonomies'] ) && $visibility_opts == 'show' ){
+	            }elseif( !in_array( $term->taxonomy, $settings['widgetopts_taxonomies'] ) && $visibility_opts == 'show' ){
 	                $hidden = true; //hide to all tags
 	            }
 

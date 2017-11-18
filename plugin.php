@@ -3,7 +3,7 @@
  * Plugin Name: Widget Options
  * Plugin URI: https://widget-options.com/
  * Description: Additional Widget options for better widget control. Get <strong><a href="http://widget-options.com/" target="_blank" >Extended Widget Options for WordPress</a></strong> for complete widget controls. Thanks!
- * Version: 3.4
+ * Version: 3.5
  * Author: Phpbits Creative Studio
  * Author URI: https://phpbits.net/
  * Text Domain: widget-options
@@ -73,7 +73,7 @@ final class WP_Widget_Options {
 
 		// Plugin version.
 		if ( ! defined( 'WIDGETOPTS_VERSION' ) ) {
-			define( 'WIDGETOPTS_VERSION', ' 3.4' );
+			define( 'WIDGETOPTS_VERSION', ' 3.5' );
 		}
 
 		// Plugin Folder Path.
@@ -149,6 +149,9 @@ final class WP_Widget_Options {
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/move.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/clone.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/elementor.php';
+				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/import-export.php';
+				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/widget-area.php';
+				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/urls.php';
 			}
 
 			// if( in_array( $pagenow, array( 'widgets.php' ) ) ){
@@ -177,6 +180,12 @@ final class WP_Widget_Options {
 				}
 
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/widgets/option-tabs/upsell.php';
+
+				if( ( isset( $widget_options['import_export'] ) && 'activate' == $widget_options['import_export'] ) ||
+					( isset( $widget_options['widget_area'] ) && 'activate' == $widget_options['widget_area'] )
+				 ){
+					require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/import-export.php';
+				}
 			// }
 
 				//admin notices

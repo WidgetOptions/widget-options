@@ -17,7 +17,7 @@ if( !function_exists( 'widgetopts_elementor_section' ) ){
             global $widget_options;
 
             //filter the elements first to avoid conflicts that can cause pagebuilder not to load
-            if ( !in_array( $element->get_name(), array( 'global-settings', 'section', 'page-settings',  ) ) ) {
+            if ( !in_array( $element->get_name(), array( 'global-settings', 'section', 'page-settings', 'oew-blog-grid' ) ) ) {
 
                 //create array of section_id to set Widget Options Section to single section to avoid issues
                 $widgetopts_elementor_section_id = apply_filters( 'widgetopts_elementor_section_id', array(

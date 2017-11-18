@@ -78,6 +78,9 @@ function widgetopts_tabcontent_gopro( $args ){ ?>
                 <span class="dashicons dashicons-lock"></span> <?php _e( 'Disable Widgets and Permissions', 'widget-options' );?>
             </li>
             <li>
+                <span class="dashicons dashicons-lock"></span> <?php _e( 'Target URLs and Wildcard Restrictions', 'widget-options' );?>
+            </li>
+            <li>
                 <span class="dashicons dashicons-lock"></span> <?php _e( 'Pagebuilder by SiteOrigin Support', 'widget-options' );?>
             </li>
         </ul>

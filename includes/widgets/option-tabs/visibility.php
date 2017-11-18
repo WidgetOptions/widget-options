@@ -181,18 +181,13 @@ function widgetopts_tabcontent_visibility( $args ){
                     <div class="extended-widget-opts-inner-lists" style="height: 230px;padding: 5px;overflow:auto;">
                         <h4 id="extended-widget-opts-pages"><?php _e( 'Pages', 'widget-options' );?> +/-</h4>
                         <div class="extended-widget-opts-pages">
-                            <?php foreach ($pages as $page) {
-                                    if( isset( $pages_values[ $page->ID ] ) && $pages_values[ $page->ID ] == '1' ){
-                                        $checked = 'checked="checked"';
-                                    }else{
-                                        $checked = '';
-                                    }
-                                ?>
-                                <p>
-                                    <input type="checkbox" name="<?php echo $args['namespace'];?>[extended_widget_opts][visibility][pages][<?php echo $page->ID;?>]" id="<?php echo $args['id'];?>-opts-pages-<?php echo $page->ID;?>" value="1" <?php echo $checked;?> />
-                                    <label for="<?php echo $args['id'];?>-opts-pages-<?php echo $page->ID;?>"><?php echo $page->post_title;?></label>
-                                </p>
-                            <?php } ?>
+                            <?php 
+                            $page_class = new WidgetOpts_Pages_Checkboxes();
+                            $page_checkboxes = $page_class->walk( $widgetopts_pages, 0, $args );
+                            if ( $page_checkboxes ) {
+                                echo '<div class="widgetopts-ul-pages">' . $page_checkboxes . '</div>';
+                            }
+                            ?>
                         </div>
 
                         <h4 id="extended-widget-opts-types"><?php _e( 'Custom Post Types', 'widget-options' );?> +/-</h4>

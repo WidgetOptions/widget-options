@@ -903,3 +903,37 @@ div#widgets-right .widget-top:hover,
 .widgetsopts-chooser button {
 	margin-right: 5px;
 }
+
+/**
+ * Sidebar Options
+ */
+.widgetopts-sidebaropts{
+	display: block;
+	clear: both;
+	padding: 10px;
+	background: #eee;
+    border-top: 1px solid #e5e5e5;
+}
+.widgets-holder-wrap.closed .widgetopts-sidebaropts{
+	display: none;
+}
+.widgetopts-sidebaropts a{
+	text-decoration: none !important;
+	color:  #777 !important;
+	font-size:  11px !important;
+	padding-right: 2px !important;
+}
+.widgetopts-sidebaropts a .dashicons{
+	font-size: 15px !important;
+	line-height: 21px !important;
+    text-align: right !important;
+}
+.sidebaropts-confirm{
+	display: none;
+	background: #fff;
+	border: 1px solid #ccc;
+	color:  #a00;
+	padding: 15px 18px;
+	margin:  10px 0px 0px;
+	text-align: center;
+}

@@ -99,7 +99,9 @@ if( !function_exists( 'widgetopts_classes_generator' ) ){
 if( !function_exists( 'widgetopts_sidebars_widgets' ) ){
 	add_action( 'wp_loaded', 'widgetopts_sidebars_widgets_action' );
 	function widgetopts_sidebars_widgets_action() {
-		add_filter( 'sidebars_widgets', 'widgetopts_sidebars_widgets' );
+        if( apply_filters( 'widgetopts_is_active_sidebar_support', true ) ){
+    		add_filter( 'sidebars_widgets', 'widgetopts_sidebars_widgets' );
+        }
 	}
 	function widgetopts_sidebars_widgets( $sidebars ) {
 		if ( is_admin() ) {
