@@ -76,3 +76,46 @@
 .fl-builder-settings-section .select2-container--default .select2-selection--multiple, .fl-builder-settings .fl-builder-settings-section select, .fl-builder-settings .fl-builder-settings-section input[type="text"], .fl-builder-settings .fl-builder-settings-section textarea{
 	border: 1px solid #e6eaed !important;
 }
+
+.fl-builder-settings-section .extended-widget-opts-tabcontent-gopro{
+	padding: 20px;
+}
+.fl-builder-settings-section .extended-widget-opts-tabcontent-gopro ul{
+	margin-left: 20px;
+	padding:  0px;
+}
+.fl-builder-settings-section .extended-widget-opts-tabcontent-gopro li{
+	list-style: none;
+}
+.fl-builder-settings-section#fl-builder-settings-section-widgetopts-upgrade{
+	background-color: #FFF1B8 !important;
+    color: #444;
+}
+.fl-builder-settings-section .extended-widget-opts-tabcontent-gopro .widgetopts-unlock-features{
+	text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+}
+.fl-builder-settings-section .extended-widget-opts-tabcontent-gopro .widgetopts-unlock-features .dashicons{
+	font-size: 26px;
+    padding-right: 6px;
+}
+.fl-builder-settings-section .extended-widget-opts-tabcontent-gopro .button-primary{
+	background: #0085ba;
+    border-color: #0073aa #006799 #006799;
+    color: #fff;
+    display: inline-block;
+    text-decoration: none;
+    font-size: 13px;
+    line-height: 26px;
+    height: 28px;
+    margin: 0;
+    padding: 0 10px 1px;
+    cursor: pointer;
+    border-width: 1px;
+    border-style: solid;
+    -webkit-appearance: none;
+    border-radius: 3px;
+    white-space: nowrap;
+    box-sizing: border-box;
+}

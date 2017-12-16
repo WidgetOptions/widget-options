@@ -36,7 +36,8 @@ class WP_Widget_Options_Beaver {
     	add_action( 'fl_builder_control_widgetopts-beaver-tabnav', array( &$this, 'fl_widgetopts_beaver_tabnav' ), 1, 4 );
     	add_action( 'wp_enqueue_scripts', array( &$this, 'fl_widgetopts_beaver_scripts' ));
     	add_action( 'fl_builder_control_widgetopts-select2', array( &$this, 'fl_widgetopts_beaver_select2' ), 1, 4 );
-    	add_action( 'admin_notices', array( &$this, 'widgetopts_plugin_check' ) );
+    	add_action( 'fl_builder_control_widgetopts-upgrade', array( &$this, 'fl_widgetopts_upgrade' ), 1, 4 );
+    	// add_action( 'admin_notices', array( &$this, 'widgetopts_plugin_check' ) );
 
     	add_filter( 'fl_builder_is_node_visible', array( &$this, 'widgetopts_beaver_is_node_visible' ), 10, 2 );
     }
@@ -204,10 +205,19 @@ class WP_Widget_Options_Beaver {
 	                'label' 		=> __( 'Display Logic', 'widget-options' ),
 	                'description' 	=> __( '<small>PLEASE NOTE that the display logic you introduce is EVAL\'d directly. Anyone who has access to edit widget appearance will have the right to add any code, including malicious and possibly destructive functions. There is an optional filter "widget_options_logic_override" which you can use to bypass the EVAL with your own code if needed.</small>', 'widget-options' )
 	        	);
+
+	        	$sections[ 'widgetopts-settings' ] = array(
+					'fields' 	  =>  $settings_fld
+				);
 			}
 
-        	$sections[ 'widgetopts-settings' ] = array(
-				'fields' 	  =>  $settings_fld
+			$upgrade_fld = array();
+			$upgrade_fld['widgetopts_upgrade_section'] = array(
+				'type' 	=> 'widgetopts-upgrade'
+			);
+
+			$sections[ 'widgetopts-upgrade' ] = array(
+				'fields' 	  =>  $upgrade_fld
 			);
 
     		$form['widgetopts'] = array(
@@ -229,6 +239,7 @@ class WP_Widget_Options_Beaver {
 	    	<?php if( isset( $widget_options['logic'] ) && 'activate' == $widget_options['logic'] ){ ?>
 	    		<a href="#fl-builder-settings-section-widgetopts-settings" class="<?php echo ( isset( $widget_options['visibility'] ) && 'activate' == $widget_options['visibility'] ) ? '' : 'widgetopts-s-active';?>"><span class="dashicons dashicons-admin-generic"></span><?php _e( 'Settings', 'widget-options' );?></a>
 	    	<?php } ?>
+	    	<a href="#fl-builder-settings-section-widgetopts-upgrade"><span class="dashicons dashicons-plus"></span><?php _e( 'More', 'widget-options' );?></a>
 	    </div>
 	<?php }
 
@@ -342,6 +353,50 @@ class WP_Widget_Options_Beaver {
 					<option value="<?php echo $option_key; ?>" <?php echo $selected; ?>><?php echo $label; ?></option>
 				<?php endforeach; ?>
 		</select>
+	<?php }
+
+	function fl_widgetopts_upgrade( $name, $value, $field, $settings ) { ?>
+	<div class="extended-widget-opts-tabcontent extended-widget-opts-tabcontent-gopro">
+        <p class="widgetopts-unlock-features">
+            <span class="dashicons dashicons-lock"></span><?php _e( 'Unlock all Options', 'widget-options' );?>
+        </p>
+        <p>
+            <?php _e( 'Get the world\'s most complete widget management now with Beaver Builder integration! Upgrade to extended version to get:', 'widget-options' );?>
+        </p>
+        <ul>
+            <li>
+                <span class="dashicons dashicons-lock"></span> <?php _e( 'Animation Options', 'widget-options' );?>
+            </li>
+            <li>
+                <span class="dashicons dashicons-lock"></span> <?php _e( 'Custom Styling Options', 'widget-options' );?>
+            </li>
+            <li>
+                <span class="dashicons dashicons-lock"></span> <?php _e( 'Set Alignment per Devices', 'widget-options' );?>
+            </li>
+            <li>
+                <span class="dashicons dashicons-lock"></span> <?php _e( 'User Roles Visibility Restriction', 'widget-options' );?>
+            </li>
+            <li>
+                <span class="dashicons dashicons-lock"></span> <?php _e( 'Fixed/Sticky Widget Options', 'widget-options' );?>
+            </li>
+            <li>
+                <span class="dashicons dashicons-lock"></span> <?php _e( 'Days and Date Range Restriction', 'widget-options' );?>
+            </li>
+            <li>
+                <span class="dashicons dashicons-lock"></span> <?php _e( 'Link Module Block Options', 'widget-options' );?>
+            </li>
+            <li>
+                <span class="dashicons dashicons-lock"></span> <?php _e( 'Extended Taxonomy and Post Types Support', 'widget-options' );?>
+            </li>
+            <li>
+                <span class="dashicons dashicons-lock"></span> <?php _e( 'Target URLs and Wildcard Restrictions', 'widget-options' );?>
+            </li>
+            <li>
+                <span class="dashicons dashicons-lock"></span> <?php _e( 'Beaver Builder Support', 'widget-options' );?>
+            </li>
+        </ul>
+        <p><strong><a href="http://widget-options.com/?utm_source=beaverbuilder&utm_medium=learnmore&utm_campaign=widgetoptsprotab" class="button-primary" target="_blank"><?php _e( 'Learn More', 'widget-options' );?></a></strong></p>
+    </div>
 	<?php }
 
 	function widgetopts_beaver_is_node_visible( $is_visible, $node ){
