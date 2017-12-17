@@ -53,11 +53,14 @@ You can now import and export WordPress widgets easily and create any backup of 
 <h4>View your changes live!</h4>
 This plugin is customizer ready for easier customization. View your changes live before saving it, <strong>not just better control but a time saver plugin!</strong>
 
-<h3>Pagebuilder by SiteOrigin Plugin Compatible since version 3.1</h3>
+<h3>Pagebuilder by SiteOrigin Plugin Compatible/h3>
 Extend your SiteOrigin Pagebuilder powered website's widget panels control and management using Widget Options! Restrict devices visibility, change alignments, hide widget panel title, add custom classes and control visibility using display widget logic option! <br /><strong>Pagebuilder by SiteOrigin Plugin + Widget Options = Total Freedom!</strong>
 
-<h3>Elementor Pagebuilder Ready</h3>
+<h3>Elementor Pagebuilder Ready!</h3>
 Extend Widget Options visibility restrictions to elementor widgets! You can now have same widget management feature available to your Elementor powered websites.
+
+<h3>Beaver Builder Plugin Ready!</h3>
+Now with Beaver Builder plugin integration! You can fully manage each modules on many ways you want it too! Integrated smoothly to upgrade your website building workflow.
 
 <blockquote>
 <p><strong>Upgrade to Extended Widget Options</strong><br />
@@ -130,8 +133,13 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 5. Display Widget Logic
 6. Pagebuilder by SiteOrigin Plugin Widget Options
 7. Widget Importer & Exporter Feature
+8. Beaver Builder Integration
 
 == Changelog ==
+
+= 3.6 =
+* Add <strong>Beaver Builder Plugin Integration</strong>
+* Fixes and other improvements
 
 = 3.5 =
 * Go to <strong>Settings > Widget Options</strong> to enable the brand new features below. Thanks!
