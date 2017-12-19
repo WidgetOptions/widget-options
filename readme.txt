@@ -134,6 +134,7 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 6. Pagebuilder by SiteOrigin Plugin Widget Options
 7. Widget Importer & Exporter Feature
 8. Beaver Builder Integration
+8. Elementor Pagebuilder Integration
 
 == Changelog ==
 
