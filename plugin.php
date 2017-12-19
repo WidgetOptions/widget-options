@@ -3,7 +3,7 @@
  * Plugin Name: Widget Options
  * Plugin URI: https://widget-options.com/
  * Description: Additional Widget options for better widget control. Get <strong><a href="http://widget-options.com/" target="_blank" >Extended Widget Options for WordPress</a></strong> for complete widget controls. Thanks!
- * Version: 3.5
+ * Version: 3.6
  * Author: Phpbits Creative Studio
  * Author URI: https://phpbits.net/
  * Text Domain: widget-options
@@ -73,7 +73,7 @@ final class WP_Widget_Options {
 
 		// Plugin version.
 		if ( ! defined( 'WIDGETOPTS_VERSION' ) ) {
-			define( 'WIDGETOPTS_VERSION', ' 3.5' );
+			define( 'WIDGETOPTS_VERSION', ' 3.6' );
 		}
 
 		// Plugin Folder Path.
@@ -152,6 +152,7 @@ final class WP_Widget_Options {
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/import-export.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/widget-area.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/urls.php';
+				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/beaver_builder.php';
 			}
 
 			// if( in_array( $pagenow, array( 'widgets.php' ) ) ){
@@ -202,6 +203,9 @@ final class WP_Widget_Options {
 		if( defined( 'ELEMENTOR_VERSION' ) && isset( $widget_options['elementor'] ) && 'activate' == $widget_options['elementor'] ){
 			require_once WIDGETOPTS_PLUGIN_DIR . 'includes/pagebuilders/elementor/elementor.php';
 			require_once WIDGETOPTS_PLUGIN_DIR . 'includes/pagebuilders/elementor/render.php';
+		}
+		if( class_exists( 'FLBuilderLoader' ) && isset( $widget_options['beaver'] ) && 'activate' == $widget_options['beaver'] ){
+			require_once WIDGETOPTS_PLUGIN_DIR . 'includes/pagebuilders/beaver/beaver.php';
 		}
 
 		require_once WIDGETOPTS_PLUGIN_DIR . 'includes/install.php';

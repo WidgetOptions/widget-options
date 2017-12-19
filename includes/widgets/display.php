@@ -150,7 +150,9 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
                 return false;
             }
         }elseif ( is_single() && !is_page() ) {
-            $type = get_post_type();
+            global $post;
+            $type = $post->post_type;
+            
             if( !isset( $visibility['types'] ) ){
                 $visibility['types'] = array();
             }
