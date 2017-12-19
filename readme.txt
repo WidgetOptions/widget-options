@@ -138,7 +138,7 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 == Changelog ==
 
 = 3.6 =
-* Add <strong>Beaver Builder Plugin Integration</strong>
+* Add <strong>Beaver Builder Plugin Integration</strong>. Go to Settings > Widget Options to enable this brand new feature.
 * Fixes and other improvements
 
 = 3.5 =
