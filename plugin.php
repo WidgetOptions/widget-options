@@ -153,6 +153,7 @@ final class WP_Widget_Options {
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/widget-area.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/urls.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/beaver_builder.php';
+				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/gutenberg.php';
 			}
 
 			// if( in_array( $pagenow, array( 'widgets.php' ) ) ){
@@ -206,6 +207,10 @@ final class WP_Widget_Options {
 		}
 		if( class_exists( 'FLBuilderLoader' ) && isset( $widget_options['beaver'] ) && 'activate' == $widget_options['beaver'] ){
 			require_once WIDGETOPTS_PLUGIN_DIR . 'includes/pagebuilders/beaver/beaver.php';
+		}
+
+		if( function_exists( 'gutenberg_init' ) ){
+			require_once WIDGETOPTS_PLUGIN_DIR . 'includes/pagebuilders/gutenberg/block-options.php';
 		}
 
 		require_once WIDGETOPTS_PLUGIN_DIR . 'includes/install.php';

@@ -53,7 +53,7 @@ You can now import and export WordPress widgets easily and create any backup of 
 <h4>View your changes live!</h4>
 This plugin is customizer ready for easier customization. View your changes live before saving it, <strong>not just better control but a time saver plugin!</strong>
 
-<h3>Pagebuilder by SiteOrigin Plugin Compatible/h3>
+<h3>Pagebuilder by SiteOrigin Plugin Compatible</h3>
 Extend your SiteOrigin Pagebuilder powered website's widget panels control and management using Widget Options! Restrict devices visibility, change alignments, hide widget panel title, add custom classes and control visibility using display widget logic option! <br /><strong>Pagebuilder by SiteOrigin Plugin + Widget Options = Total Freedom!</strong>
 
 <h3>Elementor Pagebuilder Ready!</h3>
