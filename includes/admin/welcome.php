@@ -88,7 +88,7 @@ if( !class_exists( 'WIDGETOPS_Welcome' ) ){
 		<?php }
 
 		function redirect($plugin){
-			if($plugin=='widget-options/plugin.php') {
+			if( $plugin=='widget-options/plugin.php' && !isset( $_GET['activate-multi'] ) ) {
 				wp_redirect(admin_url('index.php?page=widget-opts-getting-started'));
 				die();
 			}
