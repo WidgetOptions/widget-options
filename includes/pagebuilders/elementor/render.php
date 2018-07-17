@@ -289,6 +289,30 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 									}
 								}
 							break;
+
+							case 'empty':
+								if( 'show' == $acf_visibility && empty( $acf['value'] ) ){
+									$hidden = false;
+								}else if( 'show' == $acf_visibility && !empty( $acf['value'] ) ){
+									$hidden = true;
+								}elseif( 'hide' == $acf_visibility && empty( $acf['value'] ) ){
+									$hidden = true;
+								}else if( 'hide' == $acf_visibility && !empty( $acf['value'] ) ){
+									$hidden = false;
+								}
+							break;
+
+							case 'not_empty':
+								if( 'show' == $acf_visibility && empty( $acf['value'] ) ){
+									$hidden = true;
+								}else if( 'show' == $acf_visibility && !empty( $acf['value'] ) ){
+									$hidden = false;
+								}elseif( 'hide' == $acf_visibility && empty( $acf['value'] ) ){
+									$hidden = false;
+								}else if( 'hide' == $acf_visibility && !empty( $acf['value'] ) ){
+									$hidden = true;
+								}
+							break;
 							
 							default:
 								# code...
