@@ -77,6 +77,7 @@ function widgetopts_tabcontent_visibility( $args ){
     $cat_values     = array();
     $tax_values     = array();
     $terms_values   = array();
+    $acf_values   = array();
     if( isset( $args['params'] ) && isset( $args['params']['visibility'] ) ){
         if( isset( $args['params']['visibility']['options'] ) ){
             $options_values = $args['params']['visibility']['options'];
@@ -104,6 +105,10 @@ function widgetopts_tabcontent_visibility( $args ){
 
         if( isset( $args['params']['visibility']['tax_terms'] ) ){
             $terms_values = $args['params']['visibility']['tax_terms'];
+        }
+
+        if( isset( $args['params']['visibility']['acf'] ) ){
+            $acf_values = $args['params']['visibility']['acf'];
         }
 
         if( isset( $args['params']['visibility']['selected'] ) ){
@@ -279,7 +284,45 @@ function widgetopts_tabcontent_visibility( $args ){
             </div><!-- End WordPress Pages tab -->
 
             <div id="extended-widget-opts-visibility-tab-<?php echo $args['id'];?>-acf" class="extended-widget-opts-visibility-tabcontent extended-widget-opts-inner-tabcontent">
-                
+                <?php
+                $fields = array();
+
+                $groups = apply_filters( 'acf/get_field_groups', array() );
+                if ( is_array( $groups ) ) {
+                    foreach ( $groups as $group ) {
+                        $fields[ $group['id'] ] = array( 'title' => $group['title'], 'fields' => apply_filters( 'acf/field_group/get_fields', array(), $group['id'] ) );
+                    }
+                }
+                ?>
+                <p><strong><?php _e( 'Choose ACF Field', 'widget-options' );?></strong>
+                <select class="widefat" name="<?php echo $args['namespace'];?>[extended_widget_opts][visibility][acf][field]">
+                    <option value=""><?php _e( 'Select Field', 'widget-options' );?></option>
+                    <?php foreach( $fields as $k => $field ){?>
+                        <optgroup label="<?php echo $field['title'];?>">
+                            <?php foreach( $field['fields'] as $key => $f ){ ?>
+                                <option value="<?php echo $f['key'];?>" <?php echo ( isset( $acf_values['field'] ) && $acf_values['field'] == $f['key'] ) ? 'selected="selected"' : ''?> ><?php echo $f['label'];?></option>
+                            <?php } ?>
+                        </optgroup>
+                    <?php } ?>
+                </select>
+                </p>
+                <p><strong><?php _e( 'Show/Hide IF', 'widget-options' );?></strong>
+                    <select class="widefat" name="<?php echo $args['namespace'];?>[extended_widget_opts][visibility][acf][condition]">
+                        <option value=""><?php _e( 'Select Condition', 'widget-options' );?></option>
+                        <optgroup label="<?php _e( 'Conditional', 'widget-options' );?>">
+                            <option value="equal" <?php echo ( isset( $acf_values['condition'] ) && $acf_values['condition'] == 'equal' ) ? 'selected="selected"' : ''?> ><?php _e( 'Equal to', 'widget-options' );?></option>
+                            <option value="not_equal" <?php echo ( isset( $acf_values['condition'] ) && $acf_values['condition'] == 'not_equal' ) ? 'selected="selected"' : ''?> ><?php _e( 'Not Equal to', 'widget-options' );?></option>
+                            <option value="contains" <?php echo ( isset( $acf_values['condition'] ) && $acf_values['condition'] == 'contains' ) ? 'selected="selected"' : ''?> ><?php _e( 'Contains', 'widget-options' );?></option>
+                        </optgroup>
+                        <optgroup label="<?php _e( 'Value Based', 'widget-options' );?>">
+                            <option value="empty" <?php echo ( isset( $acf_values['condition'] ) && $acf_values['condition'] == 'empty' ) ? 'selected="selected"' : ''?> ><?php _e( 'Is Empty', 'widget-options' );?></option>
+                            <option value="not_empty" <?php echo ( isset( $acf_values['condition'] ) && $acf_values['condition'] == 'not_empty' ) ? 'selected="selected"' : ''?> ><?php _e( 'Is Not Empty', 'widget-options' );?></option>
+                        </optgroup>
+                    </select>
+                </p>
+                <p><strong><?php _e( 'Conditional Value', 'widget-options' );?></strong>
+                    <input type="text" name="<?php echo $args['namespace'];?>[extended_widget_opts][visibility][acf][value]" id="<?php echo $args['id'];?>-opts-acf-value" class="widefat widgetopts-acf-conditional" value="<?php echo (isset( $acf_values['value'] )) ? $acf_values['value'] : ''?>"/>
+                </p>
             </div>
         </div><!--  end main tab -->
 
