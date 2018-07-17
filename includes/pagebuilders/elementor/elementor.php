@@ -364,7 +364,7 @@ if( !function_exists( 'widgetopts_elementor_tab_settings' ) ){
                 [
                     'type' => Elementor\Controls_Manager::RAW_HTML,
                     'separator'         => 'before',
-                    'raw' => '<h3>'. __( 'Advance Custom Fields', 'widget-options' ) .'</h3>',
+                    'raw' => '<h3>'. __( 'Advanced Custom Fields', 'widget-options' ) .'</h3>',
                 ],
                 [
                     'overwrite'         => true

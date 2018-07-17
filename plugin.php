@@ -153,6 +153,7 @@ final class WP_Widget_Options {
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/widget-area.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/urls.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/beaver_builder.php';
+				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/acf.php';
 			}
 
 			// if( in_array( $pagenow, array( 'widgets.php' ) ) ){
