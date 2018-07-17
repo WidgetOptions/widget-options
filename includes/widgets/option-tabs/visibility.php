@@ -294,6 +294,13 @@ function widgetopts_tabcontent_visibility( $args ){
                     }
                 }
                 ?>
+                <p><strong><?php _e( 'Hide/Show', 'widget-options' );?></strong>
+                <select class="widefat" name="<?php echo $args['namespace'];?>[extended_widget_opts][visibility][acf][visibility]">
+                    <option value="hide" <?php echo ( isset( $acf_values['visibility'] ) && $acf_values['visibility'] == 'hide' ) ? 'selected="selected"' : ''?> ><?php _e( 'Hide when Condition\'s met', 'widget-options' );?></option>
+                    <option value="show" <?php echo ( isset( $acf_values['visibility'] ) && $acf_values['visibility'] == 'show' ) ? 'selected="selected"' : ''?>><?php _e( 'Show when Condition\'s met', 'widget-options' );?></option>
+                </select>
+                </p>
+
                 <p><strong><?php _e( 'Choose ACF Field', 'widget-options' );?></strong>
                 <select class="widefat" name="<?php echo $args['namespace'];?>[extended_widget_opts][visibility][acf][field]">
                     <option value=""><?php _e( 'Select Field', 'widget-options' );?></option>
@@ -306,12 +313,12 @@ function widgetopts_tabcontent_visibility( $args ){
                     <?php } ?>
                 </select>
                 </p>
-                <p><strong><?php _e( 'Show/Hide IF', 'widget-options' );?></strong>
+                <p><strong><?php _e( 'Condition', 'widget-options' );?></strong>
                     <select class="widefat" name="<?php echo $args['namespace'];?>[extended_widget_opts][visibility][acf][condition]">
                         <option value=""><?php _e( 'Select Condition', 'widget-options' );?></option>
                         <optgroup label="<?php _e( 'Conditional', 'widget-options' );?>">
-                            <option value="equal" <?php echo ( isset( $acf_values['condition'] ) && $acf_values['condition'] == 'equal' ) ? 'selected="selected"' : ''?> ><?php _e( 'Equal to', 'widget-options' );?></option>
-                            <option value="not_equal" <?php echo ( isset( $acf_values['condition'] ) && $acf_values['condition'] == 'not_equal' ) ? 'selected="selected"' : ''?> ><?php _e( 'Not Equal to', 'widget-options' );?></option>
+                            <option value="equal" <?php echo ( isset( $acf_values['condition'] ) && $acf_values['condition'] == 'equal' ) ? 'selected="selected"' : ''?> ><?php _e( 'Is Equal to', 'widget-options' );?></option>
+                            <option value="not_equal" <?php echo ( isset( $acf_values['condition'] ) && $acf_values['condition'] == 'not_equal' ) ? 'selected="selected"' : ''?> ><?php _e( 'Is Not Equal to', 'widget-options' );?></option>
                             <option value="contains" <?php echo ( isset( $acf_values['condition'] ) && $acf_values['condition'] == 'contains' ) ? 'selected="selected"' : ''?> ><?php _e( 'Contains', 'widget-options' );?></option>
                         </optgroup>
                         <optgroup label="<?php _e( 'Value Based', 'widget-options' );?>">
@@ -321,7 +328,7 @@ function widgetopts_tabcontent_visibility( $args ){
                     </select>
                 </p>
                 <p><strong><?php _e( 'Conditional Value', 'widget-options' );?></strong>
-                    <input type="text" name="<?php echo $args['namespace'];?>[extended_widget_opts][visibility][acf][value]" id="<?php echo $args['id'];?>-opts-acf-value" class="widefat widgetopts-acf-conditional" value="<?php echo (isset( $acf_values['value'] )) ? $acf_values['value'] : ''?>"/>
+                    <textarea name="<?php echo $args['namespace'];?>[extended_widget_opts][visibility][acf][value]" id="<?php echo $args['id'];?>-opts-acf-value" class="widefat widgetopts-acf-conditional"><?php echo (isset( $acf_values['value'] )) ? $acf_values['value'] : ''?></textarea>
                 </p>
             </div>
         </div><!--  end main tab -->
