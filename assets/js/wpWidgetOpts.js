@@ -76,15 +76,18 @@ wpWidgetOpts = {
 		var widget_id,
 		selected 			= 0,
 		selected_styling 	= 0,
+		selected_main 		= 0,
 		selected_visibility = 0,
 		selected_settings 	= 0,
 		in_customizer 		= false,
 		tabs 				= '.extended-widget-opts-tabs',
 		styling_tabs 		= '.extended-widget-opts-styling-tabs',
+		visibility_main 	= '.extended-widget-opts-visibility-m-tabs',
 		visibility_tabs 	= '.extended-widget-opts-visibility-tabs',
 		settings_tabs 		= '.extended-widget-opts-settings-tabs',
 		selectedtab			= '#extended-widget-opts-selectedtab',
 		selectedstyling		= '#extended-widget-opts-styling-selectedtab',
+		selectedmain		= '#extended-widget-opts-visibility-m-selectedtab',
 		selectedvisibility	= '#extended-widget-opts-visibility-selectedtab',
 		selectedsettings	= '#extended-widget-opts-settings-selectedtab';
 
@@ -105,6 +108,11 @@ wpWidgetOpts = {
 				selected_visibility = parseInt( selected_visibility );
 			}
 
+			if( $( widget_id ).find( selectedmain ).length > 0 ){
+				selected_main = $( '#' + widget.attr('id') ).find( selectedmain ).val();
+				selected_main = parseInt( selected_main );
+			}
+
 			if( $( widget_id ).find( selectedsettings ).length > 0 ){
 				selected_settings = $( '#' + widget.attr('id') ).find( selectedsettings ).val();
 				selected_settings = parseInt( selected_settings );
@@ -113,6 +121,7 @@ wpWidgetOpts = {
 		}
 		if( action == 'added' ){
 			selected 			= 0;
+			selected_main 		= 0,
 			selected_visibility = 0;
 			selected_settings 	= 0;
 		}
@@ -120,6 +129,9 @@ wpWidgetOpts = {
 	    if( '' != widget ){
 	    	if( $( widget_id ).find( tabs ).length > 0 ){
 	    		$( widget_id ).find( tabs ).tabs({ active: selected });
+	    	}
+	    	if( $( widget_id ).find( visibility_main ).length > 0 ){
+	    		$( widget_id ).find( visibility_main ).tabs({ active: selected_main });
 	    	}
 	    	if( $( widget_id ).find( visibility_tabs ).length > 0 ){
 	    		$( widget_id ).find( visibility_tabs ).tabs({ active: selected_visibility });
@@ -130,6 +142,7 @@ wpWidgetOpts = {
 	    }else{
 	    	$( tabs ).tabs({ active: selected });
 	    	$( styling_tabs ).tabs({ active: selected_styling });
+	    	$( visibility_main ).tabs({ active: selected_main });
 	    	$( visibility_tabs ).tabs({ active: selected_visibility });
 	    	$( settings_tabs ).tabs({ active: selected_settings });
 	    }
@@ -143,6 +156,12 @@ wpWidgetOpts = {
 		$( visibility_tabs ).click('tabsselect', function (event, ui) {
 			if( $(this).find( selectedvisibility ).length > 0 ){
 				$(this).find( selectedvisibility ).val( $(this).tabs('option', 'active') );
+			}
+		});
+
+		$( visibility_main ).click('tabsselect', function (event, ui) {
+			if( $(this).find( selectedmain ).length > 0 ){
+				$(this).find( selectedmain ).val( $(this).tabs('option', 'active') );
 			}
 		});
 
