@@ -65,7 +65,9 @@ class WP_Widget_Options_Beaver {
 	            foreach ( $widget_options['settings']['taxonomies'] as $tax_opt => $vall ) {
 	                $tax_name = 'widgetopts_taxonomy_'. str_replace( '-', '__', $tax_opt );
 	                // global $$tax_name;
-	                $get_terms[ $tax_opt ] = $GLOBALS[ $tax_name ];
+	                if( isset( $GLOBALS[ $tax_name ] ) ){
+	                	$get_terms[ $tax_opt ] = $GLOBALS[ $tax_name ];
+	                }
 	            }
 	        }
 
