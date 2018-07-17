@@ -328,6 +328,7 @@ if( !function_exists( 'widgetopts_elementor_tab_settings' ) ){
         }
 
         if( 'activate' == $widget_options['logic'] ){
+
             $element->add_control(
                 'widgetopts_logic',
                 [
@@ -341,6 +342,103 @@ if( !function_exists( 'widgetopts_elementor_tab_settings' ) ){
                 ]
             );
         }
+
+
+        if( 'activate' == $widget_options['logic'] ){
+            $fields = array();
+
+            $groups = apply_filters( 'acf/get_field_groups', array() );
+            if ( is_array( $groups ) ) {
+                foreach ( $groups as $group ) {
+                    $fields_group = apply_filters( 'acf/field_group/get_fields', array(), $group['id'] );
+                    if( !empty( $fields_group ) ){
+                        foreach ( $fields_group as $k => $fg ) {
+                               $fields[ $fg['key'] ] = $fg['label'];
+                           }   
+                    }
+                }
+            }
+
+            $element->add_control(
+                'widgetopts_ACF',
+                [
+                    'type' => Elementor\Controls_Manager::RAW_HTML,
+                    'separator'         => 'before',
+                    'raw' => '<h3>'. __( 'Advance Custom Fields', 'widget-options' ) .'</h3>',
+                ],
+                [
+                    'overwrite'         => true
+                ]
+            );
+
+            $element->add_control(
+                'widgetopts_acf_visibility',
+                    [
+                        'label'         => __( 'Show/Hide', 'widget-options' ),
+                        'type'          => Elementor\Controls_Manager::SELECT,
+                        'default'       => 'hide',
+                        'options'       => [
+                                                'show' => __( 'Show when Condition\'s Met' ),
+                                                'hide' => __( 'Hide when Condition\'s Met' )
+                                            ],
+                        'separator'         => 'before',
+                    ],
+                    [
+                        'overwrite'         => true
+                    ]
+            );
+
+            $element->add_control(
+                'widgetopts_acf_field',
+                [
+                    'label'             => __( 'Select ACF Field', 'widget-options' ),
+                    'type'              => Elementor\Controls_Manager::SELECT2,
+                    'multiple'          => false,
+                    'label_block'       => true,
+                    'options'           => $fields,
+                    'render_type'       => 'none',
+                    'description'       => __( 'Select ACF field.', 'widget-options' )
+                ],
+                [
+                    'overwrite'         => true
+                ]
+            );
+
+            $element->add_control(
+                'widgetopts_acf_if',
+                [
+                    'label'             => __( 'Condition', 'widget-options' ),
+                    'type'              => Elementor\Controls_Manager::SELECT2,
+                    'multiple'          => false,
+                    'label_block'       => true,
+                    'options'           => [
+                        'equal'      =>  __( 'Is Equal To', 'widget-options' ),
+                        'not_equal'  =>  __( 'Is Not Equal To', 'widget-options' ),
+                        'contains'   =>  __( 'Contains', 'widget-options' ),
+                        'empty'      =>  __( 'Is Empty', 'widget-options' ),
+                        'not_empty'  =>  __( 'Is Not Empty', 'widget-options' )
+                    ],
+                    'render_type'       => 'none',
+                    'description'       => __( 'Select your condition for this widget visibility.', 'widget-options' )
+                ],
+                [
+                    'overwrite'         => true
+                ]
+            );
+            $element->add_control(
+                'widgetopts_acf',
+                [
+                    'type'          => Elementor\Controls_Manager::TEXTAREA,
+                    'label'         => __( 'Conditional Value', 'widget-options' ),
+                    'description'   => __( 'Add your Conditional Value here if you selected Equal to, Not Equal To or Contains on the selection above.', 'widget-options' ),
+                    // 'separator'     => 'none',
+                ],
+                [
+                    'overwrite'         => true
+                ]
+            );
+        }
+
         $element->end_controls_tab();
     }
 }
