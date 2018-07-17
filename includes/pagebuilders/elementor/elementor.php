@@ -344,7 +344,7 @@ if( !function_exists( 'widgetopts_elementor_tab_settings' ) ){
         }
 
 
-        if( 'activate' == $widget_options['logic'] ){
+        if( 'activate' == $widget_options['acf'] ){
             $fields = array();
 
             $groups = apply_filters( 'acf/get_field_groups', array() );
@@ -360,7 +360,7 @@ if( !function_exists( 'widgetopts_elementor_tab_settings' ) ){
             }
 
             $element->add_control(
-                'widgetopts_ACF',
+                'widgetopts_acf_title',
                 [
                     'type' => Elementor\Controls_Manager::RAW_HTML,
                     'separator'         => 'before',
@@ -405,7 +405,7 @@ if( !function_exists( 'widgetopts_elementor_tab_settings' ) ){
             );
 
             $element->add_control(
-                'widgetopts_acf_if',
+                'widgetopts_acf_condition',
                 [
                     'label'             => __( 'Condition', 'widget-options' ),
                     'type'              => Elementor\Controls_Manager::SELECT2,
@@ -415,6 +415,7 @@ if( !function_exists( 'widgetopts_elementor_tab_settings' ) ){
                         'equal'      =>  __( 'Is Equal To', 'widget-options' ),
                         'not_equal'  =>  __( 'Is Not Equal To', 'widget-options' ),
                         'contains'   =>  __( 'Contains', 'widget-options' ),
+                        'not_contains'   =>  __( 'Does Not Contain', 'widget-options' ),
                         'empty'      =>  __( 'Is Empty', 'widget-options' ),
                         'not_empty'  =>  __( 'Is Not Empty', 'widget-options' )
                     ],

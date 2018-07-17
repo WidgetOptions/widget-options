@@ -227,6 +227,83 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	            }
 			}
 
+			//ACF
+			if( 'activate' == $widget_options['acf'] ){
+				if( isset( $settings['widgetopts_acf_field'] ) && !empty( $settings['widgetopts_acf_field'] ) ){
+					$acf = get_field_object( $settings['widgetopts_acf_field'] );
+					if( $acf && is_array( $acf ) ){
+						$acf_visibility    = isset( $settings['widgetopts_acf_visibility'] ) ? $settings['widgetopts_acf_visibility'] : 'hide';
+						switch ( $settings['widgetopts_acf_condition'] ) {
+							case 'equal':
+								if( isset( $acf['value'] ) ){
+									if( 'show' == $acf_visibility && $acf['value'] == $settings['widgetopts_acf'] ){
+										$hidden = false;
+									}else if( 'show' == $acf_visibility && $acf['value'] != $settings['widgetopts_acf'] ){
+										$hidden = true;
+									}else if( 'hide' == $acf_visibility && $acf['value'] == $settings['widgetopts_acf'] ){
+										$hidden = true;
+									}else if( 'hide' == $acf_visibility && $acf['value'] != $settings['widgetopts_acf'] ){
+										$hidden = false;
+									}
+								}
+							break;
+
+							case 'not_equal':
+								if( isset( $acf['value'] ) ){
+									if( 'show' == $acf_visibility && $acf['value'] == $settings['widgetopts_acf'] ){
+										$hidden = true;
+									}else if( 'show' == $acf_visibility && $acf['value'] != $settings['widgetopts_acf'] ){
+										$hidden = false;
+									}else if( 'hide' == $acf_visibility && $acf['value'] == $settings['widgetopts_acf'] ){
+										$hidden = false;
+									}else if( 'hide' == $acf_visibility && $acf['value'] != $settings['widgetopts_acf'] ){
+										$hidden = true;
+									}
+								}
+							break;
+
+							case 'contains':
+								if( isset( $acf['value'] ) ){
+									if( 'show' == $acf_visibility && strpos( $acf['value'], $settings['widgetopts_acf'] ) !== false ){
+										$hidden = false;
+									}else if( 'show' == $acf_visibility && strpos( $acf['value'], $settings['widgetopts_acf'] ) === false ){
+										$hidden = true;
+									}else if( 'hide' == $acf_visibility && strpos( $acf['value'], $settings['widgetopts_acf'] ) !== false ){
+										$hidden = true;
+									}else if( 'hide' == $acf_visibility && strpos( $acf['value'], $settings['widgetopts_acf'] ) === false ){
+										$hidden = false;
+									}
+								}
+							break;
+
+							case 'not_contains':
+								if( isset( $acf['value'] ) ){
+									if( 'show' == $acf_visibility && strpos( $acf['value'], $settings['widgetopts_acf'] ) !== false ){
+										$hidden = true;
+									}else if( 'show' == $acf_visibility && strpos( $acf['value'], $settings['widgetopts_acf'] ) === false ){
+										$hidden = false;
+									}else if( 'hide' == $acf_visibility && strpos( $acf['value'], $settings['widgetopts_acf'] ) !== false ){
+										$hidden = false;
+									}else if( 'hide' == $acf_visibility && strpos( $acf['value'], $settings['widgetopts_acf'] ) === false ){
+										$hidden = true;
+									}
+								}
+							break;
+							
+							default:
+								# code...
+								break;
+						}
+
+						// //do return to bypass other conditions
+			            $hidden = apply_filters( 'widgetopts_elementor_visibility_acf', $hidden );
+			            if( $hidden ){
+			                return false;
+			            }
+					}
+				}
+			}
+
 			//widget logic
 			if( 'activate' == $widget_options['logic'] ){
 				if( isset( $settings['widgetopts_logic'] ) && !empty( $settings['widgetopts_logic'] ) ){
