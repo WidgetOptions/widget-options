@@ -752,7 +752,7 @@ class WP_Widget_Options_Beaver {
 					}
 
 					// //do return to bypass other conditions
-		            $hidden = apply_filters( 'widgetopts_elementor_visibility_acf', $hidden );
+		            $hidden = apply_filters( 'widgetopts_beaver_visibility_acf', $hidden );
 		            if( $hidden ){
 		                return false;
 		            }
