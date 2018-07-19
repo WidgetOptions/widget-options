@@ -83,6 +83,10 @@ if( !function_exists( 'widgetopts_elementor_section' ) ){
                             widgetopts_elementor_tab_visibility( $element, $section_id, $args );
                         }
 
+                        if( isset( $widget_options['state'] ) && 'activate' == $widget_options['state'] ){
+                            widgetopts_elementor_tab_state( $element, $section_id, $args );
+                        }
+
                         if( 'activate' == $widget_options['logic'] || ( isset( $widget_options['sliding'] ) && 'activate' == $widget_options['sliding'] && in_array( $element->get_name(), array( 'button', 'button_plus', 'eael-creative-button', 'cta' ) ) ) ){
                             widgetopts_elementor_tab_settings( $element, $section_id, $args );
                         }
@@ -293,6 +297,42 @@ if( !function_exists( 'widgetopts_elementor_tab_visibility' ) ){
                     ]
                 );
             }
+        $element->end_controls_tab();
+    }
+}
+
+if( !function_exists( 'widgetopts_elementor_tab_state' ) ){
+    function widgetopts_elementor_tab_state( $element, $section_id, $args ){
+        global $widget_options;
+
+        $element->start_controls_tab(
+            'widgetopts_tab_state',
+            [
+                 'label' => __( '<i class="fa fa-user"></i>', 'widget-options' )
+            ],
+            [
+                'overwrite'         => true
+            ]
+        );
+
+        $element->add_control(
+            'widgetopts_roles_state',
+                [
+                    'label'         => __( 'User Login State', 'widget-options' ),
+                    'type'          => Elementor\Controls_Manager::SELECT,
+                    'default'       => 'hide',
+                    'options'       => [
+                                            ''     => __( 'Select Visibility Option' ),
+                                            'in' => __( 'Show only for Logged-in Users' ),
+                                            'out' => __( 'Show only for Logged-out Users' )
+                                        ],
+                    'description'   => __( 'Restrict widget visibility for logged-in and logged-out users.', 'widget-options' )
+                ],
+                [
+                    'overwrite'         => true
+                ]
+            );
+
         $element->end_controls_tab();
     }
 }

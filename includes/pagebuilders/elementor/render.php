@@ -329,6 +329,18 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 			}
 
 			//widget logic
+			if( isset( $widget_options['state'] ) && 'activate' == $widget_options['state'] ){
+				if( isset( $settings['widgetopts_roles_state'] ) && !empty( $settings['widgetopts_roles_state'] ) ){
+					//do state action here
+	                if( $settings['widgetopts_roles_state'] == 'out' && is_user_logged_in() ){
+	                    return false;
+	                }else if( $settings['widgetopts_roles_state'] == 'in' && !is_user_logged_in() ){
+	                    return false;
+	                }
+				}
+			}
+
+			//widget logic
 			if( 'activate' == $widget_options['logic'] ){
 				if( isset( $settings['widgetopts_logic'] ) && !empty( $settings['widgetopts_logic'] ) ){
 					//do widget logic
