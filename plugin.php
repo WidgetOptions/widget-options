@@ -154,6 +154,7 @@ final class WP_Widget_Options {
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/urls.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/beaver_builder.php';
 				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/acf.php';
+				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/modules/state.php';
 			}
 
 			// if( in_array( $pagenow, array( 'widgets.php' ) ) ){
@@ -172,6 +173,11 @@ final class WP_Widget_Options {
 				//add alignment tab if activated
 				if( $widget_options['alignment'] == 'activate' ){
 					require_once WIDGETOPTS_PLUGIN_DIR . 'includes/widgets/option-tabs/alignment.php';
+				}
+
+				//add alignment tab if activated
+				if( isset( $widget_options['state'] ) && $widget_options['state'] == 'activate' ){
+					require_once WIDGETOPTS_PLUGIN_DIR . 'includes/widgets/option-tabs/state.php';
 				}
 
 				//add settings tab if activated

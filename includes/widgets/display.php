@@ -319,6 +319,18 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
             }
         }
 
+        //login state
+        if( isset( $widget_options['state'] ) && 'activate' == $widget_options['state'] && isset( $opts['roles'] ) ){
+            if( isset( $opts['roles']['state'] ) && !empty( $opts['roles']['state'] ) ){
+                //do state action here
+                if( $opts['roles']['state'] == 'out' && is_user_logged_in() ){
+                    return false;
+                }else if( $opts['roles']['state'] == 'in' && !is_user_logged_in() ){
+                    return false;
+                }
+            }
+        }
+
         if( 'activate' == $widget_options['logic'] ){
             // display widget logic
             if( isset( $opts['class'] ) && isset( $opts['class']['logic'] ) && !empty( $opts['class']['logic'] ) ){
