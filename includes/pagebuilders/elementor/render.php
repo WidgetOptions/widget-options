@@ -16,7 +16,8 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 			global $widget_options;
 			$settings 	= $widget->get_settings();
 
-			$hidden     = false;
+			$hidden     		= false;
+			$placeholder 		= '<div class="widgetopts-placeholder-e"></div>';
 			$visibility_opts    = isset( $settings['widgetopts_visibility'] ) ? $settings['widgetopts_visibility'] : 'hide';
 
 			$tax_opts   = ( isset( $widget_options['settings'] ) && isset( $widget_options['settings']['taxonomies_keys'] ) ) ? $widget_options['settings']['taxonomies_keys'] : array();
@@ -35,7 +36,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	            //do return to bypass other conditions
 	            $hidden = apply_filters( 'widgetopts_elementor_visibility_home', $hidden );
 	            if( $hidden ){
-	                return false;
+	                return $placeholder;
 	            }
 	        }elseif ( $is_misc && is_home() ) {
 				if( isset( $settings['widgetopts_misc'] ) && is_array( $settings['widgetopts_misc'] ) && in_array( 'blog', $settings['widgetopts_misc'] ) && $visibility_opts == 'hide' ){
@@ -47,7 +48,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	            //do return to bypass other conditions
 	            $hidden = apply_filters( 'widgetopts_elementor_visibility_blog', $hidden );
 	            if( $hidden ){
-	                return false;
+	                return $placeholder;
 	            }
 			}elseif ( $is_tax && is_category() ) {
 				//category page
@@ -72,7 +73,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	            // //do return to bypass other conditions
 	            $hidden = apply_filters( 'widgetopts_elementor_visibility_categories', $hidden );
 	            if( $hidden ){
-	                return false;
+	                return $placeholder;
 	            }
 			}elseif ( $is_tax && is_tag() ) {
 				if( !isset( $settings['widgetopts_tax_post_tag'] ) ){
@@ -91,7 +92,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	            // //do return to bypass other conditions
 	            $hidden = apply_filters( 'widgetopts_elementor_visibility_tags', $hidden );
 	            if( $hidden ){
-	                return false;
+	                return $placeholder;
 	            }
 			}elseif ( $is_tax && is_tax() ) {
 				$term = get_queried_object();
@@ -110,7 +111,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	            //do return to bypass other conditions
 	            $hidden = apply_filters( 'widgetopts_elementor_visibility_taxonomies', $hidden );
 	            if( $hidden ){
-	                return false;
+	                return $placeholder;
 	            }
 			}elseif ( $is_misc && is_archive() ) {
 				//archives page
@@ -123,7 +124,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	            //do return to bypass other conditions
 	            $hidden = apply_filters( 'widgetopts_elementor_visibility_archives', $hidden );
 	            if( $hidden ){
-	                return false;
+	                return $placeholder;
 	            }
 			}elseif ( $is_misc && is_404() ) {
 				//404 page
@@ -136,7 +137,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	            //do return to bypass other conditions
 	            $hidden = apply_filters( 'widget_options_visibility_404', $hidden );
 	            if( $hidden ){
-	                return false;
+	                return $placeholder;
 	            }
 			}elseif ( $is_misc && is_search() ) {
 				if( isset( $settings['widgetopts_misc'] ) && is_array( $settings['widgetopts_misc'] ) && in_array( 'search', $settings['widgetopts_misc'] ) && $visibility_opts == 'hide' ){
@@ -148,7 +149,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	            //do return to bypass other conditions
 	            $hidden = apply_filters( 'widgetopts_elementor_visibility_search', $hidden );
 	            if( $hidden ){
-	                return false;
+	                return $placeholder;
 	            }
 			}elseif ( is_single() && !is_page() ) {
 				global $wp_query;
@@ -192,7 +193,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 				}
 
 	            if( $hidden ){
-	                return false;
+	                return $placeholder;
 	            }
 			}elseif ( $is_types && is_page() ) {
 				global $wp_query;
@@ -223,7 +224,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	            // //do return to bypass other conditions
 	            $hidden = apply_filters( 'widgetopts_elementor_visibility_page', $hidden );
 	            if( $hidden ){
-	                return false;
+	                return $placeholder;
 	            }
 			}
 
@@ -322,7 +323,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 						// //do return to bypass other conditions
 			            $hidden = apply_filters( 'widgetopts_elementor_visibility_acf', $hidden );
 			            if( $hidden ){
-			                return false;
+			                return $placeholder;
 			            }
 					}
 				}
@@ -333,9 +334,9 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 				if( isset( $settings['widgetopts_roles_state'] ) && !empty( $settings['widgetopts_roles_state'] ) ){
 					//do state action here
 	                if( $settings['widgetopts_roles_state'] == 'out' && is_user_logged_in() ){
-	                    return false;
+	                    return $placeholder;
 	                }else if( $settings['widgetopts_roles_state'] == 'in' && !is_user_logged_in() ){
-	                    return false;
+	                    return $placeholder;
 	                }
 				}
 			}
@@ -348,7 +349,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	                $display_logic = apply_filters( 'widget_options_logic_override', $display_logic );
 	                $display_logic = apply_filters( 'extended_widget_options_logic_override', $display_logic );
 	                if ( $display_logic === false ){
-	                    return false;
+	                    return $placeholder;
 	                }
 	                if ( $display_logic === true ){
 	                    return $content;
@@ -357,7 +358,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	                    $display_logic="return (" . $display_logic . ");";
 	                }
 	                if ( !eval( $display_logic ) ){
-	                    return false;
+	                    return $placeholder;
 	                }
 				}
 			}
@@ -381,5 +382,24 @@ if( !function_exists( 'widgetopts_elementor_before_render' ) ){
 			}
 		}
 	}
+}
+
+if( !function_exists( 'widgetopts_elementor_extra_js' ) ){
+	add_action( 'wp_footer', 'widgetopts_elementor_extra_js' );
+	function widgetopts_elementor_extra_js(){ ?>
+		<script type="text/javascript">
+			(function( $, window, document, undefined ) {
+				if( jQuery('.widgetopts-placeholder-e').length > 0 ){
+					jQuery('.elementor-column-wrap:has(.widgetopts-placeholder-e)').hide();
+
+					jQuery('.elementor-section.elementor-top-section:has(.widgetopts-placeholder-e)').each( function(){
+						if( jQuery( this ).height() < 5 ){
+							jQuery( this ).hide();
+						}
+					} );
+				}
+			})( jQuery, window, document );
+		</script>
+	<?php }	
 }
 ?>
