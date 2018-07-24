@@ -47,7 +47,7 @@ if( !function_exists( 'widgetopts_load_admin_scripts' ) ):
 
             wp_enqueue_style( 'widgetopts-admin-styles', $css_dir . 'admin.css' , array(), null );
 
-            if( !in_array( $hook, apply_filters( 'widgetopts_exclude_jqueryui', array( 'toplevel_page_et_divi_options', 'toplevel_page_wpcf7' ) ) ) ){
+            if( !in_array( $hook, apply_filters( 'widgetopts_exclude_jqueryui', array( 'toplevel_page_et_divi_options', 'toplevel_page_wpcf7', 'edit.php' ) ) ) ){
                   wp_enqueue_style( 'widgetopts-jquery-ui', $css_dir . 'jqueryui/1.11.4/themes/ui-lightness/jquery-ui.css' , array(), null );
                   wp_enqueue_style( 'jquery-ui' );
             }
