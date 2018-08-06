@@ -224,6 +224,17 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
                 $acf = get_field_object( $visibility['acf']['field'] );
                 if( $acf && is_array( $acf ) ){
                     $acf_visibility    = ( isset( $visibility['acf'] ) && isset( $visibility['acf']['visibility'] ) ) ? $visibility['acf']['visibility'] : 'hide';
+
+                    //handle repeater fields
+                    if( isset( $acf['value'] ) ){
+                        if( is_array( $acf['value'] ) ){
+                            $acf['value'] = implode(', ', array_map(function ( $acf_array_value ) {
+                                $acf_implode = implode( ',', array_filter($acf_array_value) );
+                              return $acf_implode;
+                            }, $acf['value']));
+                        }
+                    }
+
                     switch ( $visibility['acf']['condition'] ) {
                         case 'equal':
                             if( isset( $acf['value'] ) ){
