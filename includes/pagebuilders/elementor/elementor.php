@@ -387,14 +387,28 @@ if( !function_exists( 'widgetopts_elementor_tab_settings' ) ){
         if( 'activate' == $widget_options['acf'] ){
             $fields = array();
 
-            $groups = apply_filters( 'acf/get_field_groups', array() );
-            if ( is_array( $groups ) ) {
-                foreach ( $groups as $group ) {
-                    $fields_group = apply_filters( 'acf/field_group/get_fields', array(), $group['id'] );
-                    if( !empty( $fields_group ) ){
-                        foreach ( $fields_group as $k => $fg ) {
-                               $fields[ $fg['key'] ] = $fg['label'];
-                           }   
+            if ( defined( 'ACF_PRO' ) ) {
+                $groups = acf_get_field_groups();
+                if ( is_array( $groups ) ) {
+                    foreach ( $groups as $group ) {
+                        $fields_group = acf_get_fields( $group );
+                        if( !empty( $fields_group ) ){
+                            foreach ( $fields_group as $k => $fg ) {
+                                   $fields[ $fg['key'] ] = $fg['label'];
+                               }   
+                        }
+                    }
+                }
+            }else{
+                $groups = apply_filters( 'acf/get_field_groups', array() );
+                if ( is_array( $groups ) ) {
+                    foreach ( $groups as $group ) {
+                        $fields_group = apply_filters( 'acf/field_group/get_fields', array(), $group['id'] );
+                        if( !empty( $fields_group ) ){
+                            foreach ( $fields_group as $k => $fg ) {
+                                   $fields[ $fg['key'] ] = $fg['label'];
+                               }   
+                        }
                     }
                 }
             }

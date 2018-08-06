@@ -290,10 +290,19 @@ function widgetopts_tabcontent_visibility( $args ){
                     <?php
                     $fields = array();
 
-                    $groups = apply_filters( 'acf/get_field_groups', array() );
-                    if ( is_array( $groups ) ) {
-                        foreach ( $groups as $group ) {
-                            $fields[ $group['id'] ] = array( 'title' => $group['title'], 'fields' => apply_filters( 'acf/field_group/get_fields', array(), $group['id'] ) );
+                    if ( defined( 'ACF_PRO' ) ) {
+                        $groups = acf_get_field_groups();
+                        if ( is_array( $groups ) ) {
+                            foreach ( $groups as $group ) {
+                                $fields[ $group['ID'] ] = array( 'title' => $group['title'], 'fields' => acf_get_fields( $group ) );
+                            }
+                        }
+                    }else{
+                        $groups = apply_filters( 'acf/get_field_groups', array() );
+                        if ( is_array( $groups ) ) {
+                            foreach ( $groups as $group ) {
+                                $fields[ $group['id'] ] = array( 'title' => $group['title'], 'fields' => apply_filters( 'acf/field_group/get_fields', array(), $group['id'] ) );
+                            }
                         }
                     }
                     ?>

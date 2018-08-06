@@ -215,16 +215,30 @@ class WP_Widget_Options_Beaver {
 				if( isset( $widget_options['acf'] ) && 'activate' == $widget_options['acf'] ){
 					$fields = array( '' => __( 'Select Field', 'widget-options' ) );
 
-		            $groups = apply_filters( 'acf/get_field_groups', array() );
-		            if ( is_array( $groups ) ) {
-		                foreach ( $groups as $group ) {
-		                    $fields_group = apply_filters( 'acf/field_group/get_fields', array(), $group['id'] );
-		                    if( !empty( $fields_group ) ){
-		                        foreach ( $fields_group as $k => $fg ) {
-		                               $fields[ $fg['key'] ] = $fg['label'];
-		                           }   
+					if ( defined( 'ACF_PRO' ) ) {
+		                $groups = acf_get_field_groups();
+		                if ( is_array( $groups ) ) {
+		                    foreach ( $groups as $group ) {
+		                        $fields_group = acf_get_fields( $group );
+		                        if( !empty( $fields_group ) ){
+		                            foreach ( $fields_group as $k => $fg ) {
+		                                   $fields[ $fg['key'] ] = $fg['label'];
+		                               }   
+		                        }
 		                    }
 		                }
+		            }else{
+		            	$groups = apply_filters( 'acf/get_field_groups', array() );
+			            if ( is_array( $groups ) ) {
+			                foreach ( $groups as $group ) {
+			                    $fields_group = apply_filters( 'acf/field_group/get_fields', array(), $group['id'] );
+			                    if( !empty( $fields_group ) ){
+			                        foreach ( $fields_group as $k => $fg ) {
+			                               $fields[ $fg['key'] ] = $fg['label'];
+			                           }   
+			                    }
+			                }
+			            }
 		            }
 
 					$settings_fld['widgetopts_acf_visibility'] = array(
