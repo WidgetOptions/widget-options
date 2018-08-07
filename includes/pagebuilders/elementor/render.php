@@ -407,8 +407,8 @@ if( !function_exists( 'widgetopts_elementor_extra_js' ) ){
 
 					jQuery('.elementor-section.elementor-top-section:has(.widgetopts-placeholder-e)').each( function(){
 						var pTop 	= jQuery( this ).find('.elementor-element-populated').css('padding-top');
-						var pBot 	= jQuery( this ).find('.elementor-element-populated').css('padding-top');
-						var pHeight = jQuery( this ).find('.elementor-element-populated').height();
+						var pBot 	= jQuery( this ).find('.elementor-element-populated').css('padding-bottom');
+						var pHeight = jQuery( this ).find('.elementor-element-populated').innerHeight();
 						var vert	= pHeight - ( parseFloat( pTop ) + parseFloat( pBot ) );
 						
 						if( typeof vert !== 'undefined' && vert < 5 ){
@@ -421,6 +421,15 @@ if( !function_exists( 'widgetopts_elementor_extra_js' ) ){
 								var countHolder = jQuery( this ).closest( '.elementor-column' ).find('.widgetopts-placeholder-e').length;
 								if( countEl == countHolder ){
 									jQuery( this ).closest( '.elementor-column' ).hide();
+								}
+							}).promise().done( function(){
+								var sTop 	= jQuery( this ).closest('.elementor-section.elementor-top-section').css('padding-top');
+								var sBot 	= jQuery( this ).closest('.elementor-section.elementor-top-section').css('padding-bottom');
+								var sHeight = jQuery( this ).closest('.elementor-section.elementor-top-section').innerHeight();
+								var svert	= sHeight - ( parseFloat( sTop ) + parseFloat( sBot ) );
+								
+								if( typeof svert !== 'undefined' && svert < 5 ){
+									jQuery( this ).closest('.elementor-section.elementor-top-section').hide();
 								}
 							});
 						}
