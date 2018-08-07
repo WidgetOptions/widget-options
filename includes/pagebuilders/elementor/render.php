@@ -403,12 +403,22 @@ if( !function_exists( 'widgetopts_elementor_extra_js' ) ){
 		<script type="text/javascript">
 			(function( $, window, document, undefined ) {
 				if( jQuery('.widgetopts-placeholder-e').length > 0 ){
-					jQuery('.elementor-column-wrap:has(.widgetopts-placeholder-e)').hide();
+					// jQuery('.elementor-column-wrap:has(.widgetopts-placeholder-e)').hide();
 
 					jQuery('.elementor-section.elementor-top-section:has(.widgetopts-placeholder-e)').each( function(){
-						if( jQuery( this ).height() < 5 ){
+						var pTop 	= jQuery( this ).find('.elementor-element-populated').css('padding-top');
+						var pBot 	= jQuery( this ).find('.elementor-element-populated').css('padding-top');
+						var pHeight = jQuery( this ).find('.elementor-element-populated').height();
+						var vert	= pHeight - ( parseFloat( pTop ) + parseFloat( pBot ) );
+						
+						if( typeof vert !== 'undefined' && vert < 5 ){
 							jQuery( this ).hide();
+						}else{
+							jQuery( this ).find( '.widgetopts-placeholder-e' ).each(function(){
+								jQuery( this ).closest( '.elementor-element' ).hide();
+							});
 						}
+
 					} );
 				}
 			})( jQuery, window, document );
