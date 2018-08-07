@@ -405,7 +405,7 @@ if( !function_exists( 'widgetopts_elementor_extra_js' ) ){
 				if( jQuery('.widgetopts-placeholder-e').length > 0 ){
 					// jQuery('.elementor-column-wrap:has(.widgetopts-placeholder-e)').hide();
 
-					jQuery('.elementor-section.elementor-top-section:has(.widgetopts-placeholder-e)').each( function(){
+					jQuery('.elementor-section:has(.widgetopts-placeholder-e)').each( function(){
 						var pTop 	= jQuery( this ).find('.elementor-element-populated').css('padding-top');
 						var pBot 	= jQuery( this ).find('.elementor-element-populated').css('padding-bottom');
 						var pHeight = jQuery( this ).find('.elementor-element-populated').innerHeight();
@@ -423,13 +423,13 @@ if( !function_exists( 'widgetopts_elementor_extra_js' ) ){
 									jQuery( this ).closest( '.elementor-column' ).hide();
 								}
 							}).promise().done( function(){
-								var sTop 	= jQuery( this ).closest('.elementor-section.elementor-top-section').css('padding-top');
-								var sBot 	= jQuery( this ).closest('.elementor-section.elementor-top-section').css('padding-bottom');
-								var sHeight = jQuery( this ).closest('.elementor-section.elementor-top-section').innerHeight();
+								var sTop 	= jQuery( this ).closest('.elementor-section').css('padding-top');
+								var sBot 	= jQuery( this ).closest('.elementor-section').css('padding-bottom');
+								var sHeight = jQuery( this ).closest('.elementor-section').innerHeight();
 								var svert	= sHeight - ( parseFloat( sTop ) + parseFloat( sBot ) );
 								
 								if( typeof svert !== 'undefined' && svert < 5 ){
-									jQuery( this ).closest('.elementor-section.elementor-top-section').hide();
+									jQuery( this ).closest('.elementor-section').hide();
 								}
 							});
 						}
