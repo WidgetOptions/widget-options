@@ -416,7 +416,30 @@ if( !function_exists( 'widgetopts_elementor_extra_js' ) ){
 						}else{
 							jQuery( this ).find( '.widgetopts-placeholder-e' ).each(function(){
 								jQuery( this ).closest( '.elementor-element' ).hide();
-							});
+								
+								var countEl 	= jQuery( this ).closest( '.elementor-column' ).find('.elementor-element').length;
+								var countHolder = jQuery( this ).closest( '.elementor-column' ).find('.widgetopts-placeholder-e').length;
+								if( countEl == countHolder ){
+									jQuery( this ).closest( '.elementor-column' ).hide();
+								}
+							}).promise().done( function(){ 
+								//fix width after hidden columns
+								var totalW = 0;
+								var parentW = jQuery( this ).closest( '.elementor-section.elementor-top-section' ).width();
+								var lastEl = '';
+
+								jQuery( this ).closest( '.elementor-row' ).find( '.elementor-column' ).each( function(){
+									if( jQuery( this ).is(':visible') ){
+										totalW += jQuery( this ).innerWidth();
+										lastEl = jQuery( this );
+									}
+								} );
+
+								if( totalW < parentW ){
+									var w = lastEl.width();
+									lastEl.css({ width: w + ( parentW - totalW ) });
+								}
+							} );;
 						}
 
 					} );
