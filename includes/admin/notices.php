@@ -19,7 +19,7 @@ if( !function_exists( 'widgetopts_admin_notices' ) ):
 
         //show rating notice to page that matters most
         global $pagenow;
-        if( !in_array( $pagenow, array( 'index.php', 'widgets.php', 'options-general.php' ) ) ){
+        if( !in_array( $pagenow, array( 'widgets.php', 'options-general.php' ) ) ){
             return;
         }
 

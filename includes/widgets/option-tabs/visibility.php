@@ -36,6 +36,7 @@ function widgetopts_tabcontent_visibility( $args ){
     global $widget_options, $widgetopts_taxonomies, $widgetopts_pages, $widgetopts_types, $widgetopts_categories;
 
     $checked    = "";
+    $main       = "";
     $selected   = 0;
     $tax_opts   = (array) get_option( 'extwopts_taxonomy_settings' );
     $pages      = ( !empty( $widgetopts_pages ) )       ? $widgetopts_pages         : array();
