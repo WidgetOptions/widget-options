@@ -16,7 +16,8 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 			global $widget_options;
 			$settings 	= $widget->get_settings();
 
-			$hidden     = false;
+			$hidden     		= false;
+			$placeholder 		= '<div class="widgetopts-placeholder-e"></div>';
 			$visibility_opts    = isset( $settings['widgetopts_visibility'] ) ? $settings['widgetopts_visibility'] : 'hide';
 
 			$tax_opts   = ( isset( $widget_options['settings'] ) && isset( $widget_options['settings']['taxonomies_keys'] ) ) ? $widget_options['settings']['taxonomies_keys'] : array();
@@ -35,7 +36,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	            //do return to bypass other conditions
 	            $hidden = apply_filters( 'widgetopts_elementor_visibility_home', $hidden );
 	            if( $hidden ){
-	                return false;
+	                return $placeholder;
 	            }
 	        }elseif ( $is_misc && is_home() ) {
 				if( isset( $settings['widgetopts_misc'] ) && is_array( $settings['widgetopts_misc'] ) && in_array( 'blog', $settings['widgetopts_misc'] ) && $visibility_opts == 'hide' ){
@@ -47,7 +48,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	            //do return to bypass other conditions
 	            $hidden = apply_filters( 'widgetopts_elementor_visibility_blog', $hidden );
 	            if( $hidden ){
-	                return false;
+	                return $placeholder;
 	            }
 			}elseif ( $is_tax && is_category() ) {
 				//category page
@@ -72,7 +73,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	            // //do return to bypass other conditions
 	            $hidden = apply_filters( 'widgetopts_elementor_visibility_categories', $hidden );
 	            if( $hidden ){
-	                return false;
+	                return $placeholder;
 	            }
 			}elseif ( $is_tax && is_tag() ) {
 				if( !isset( $settings['widgetopts_tax_post_tag'] ) ){
@@ -91,7 +92,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	            // //do return to bypass other conditions
 	            $hidden = apply_filters( 'widgetopts_elementor_visibility_tags', $hidden );
 	            if( $hidden ){
-	                return false;
+	                return $placeholder;
 	            }
 			}elseif ( $is_tax && is_tax() ) {
 				$term = get_queried_object();
@@ -110,7 +111,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	            //do return to bypass other conditions
 	            $hidden = apply_filters( 'widgetopts_elementor_visibility_taxonomies', $hidden );
 	            if( $hidden ){
-	                return false;
+	                return $placeholder;
 	            }
 			}elseif ( $is_misc && is_archive() ) {
 				//archives page
@@ -123,7 +124,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	            //do return to bypass other conditions
 	            $hidden = apply_filters( 'widgetopts_elementor_visibility_archives', $hidden );
 	            if( $hidden ){
-	                return false;
+	                return $placeholder;
 	            }
 			}elseif ( $is_misc && is_404() ) {
 				//404 page
@@ -136,7 +137,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	            //do return to bypass other conditions
 	            $hidden = apply_filters( 'widget_options_visibility_404', $hidden );
 	            if( $hidden ){
-	                return false;
+	                return $placeholder;
 	            }
 			}elseif ( $is_misc && is_search() ) {
 				if( isset( $settings['widgetopts_misc'] ) && is_array( $settings['widgetopts_misc'] ) && in_array( 'search', $settings['widgetopts_misc'] ) && $visibility_opts == 'hide' ){
@@ -148,7 +149,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	            //do return to bypass other conditions
 	            $hidden = apply_filters( 'widgetopts_elementor_visibility_search', $hidden );
 	            if( $hidden ){
-	                return false;
+	                return $placeholder;
 	            }
 			}elseif ( is_single() && !is_page() ) {
 				global $wp_query;
@@ -192,7 +193,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 				}
 
 	            if( $hidden ){
-	                return false;
+	                return $placeholder;
 	            }
 			}elseif ( $is_types && is_page() ) {
 				global $wp_query;
@@ -223,8 +224,134 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	            // //do return to bypass other conditions
 	            $hidden = apply_filters( 'widgetopts_elementor_visibility_page', $hidden );
 	            if( $hidden ){
-	                return false;
+	                return $placeholder;
 	            }
+			}
+
+			//ACF
+			if( 'activate' == $widget_options['acf'] ){
+				if( isset( $settings['widgetopts_acf_field'] ) && !empty( $settings['widgetopts_acf_field'] ) ){
+					$acf = get_field_object( $settings['widgetopts_acf_field'] );
+					if( $acf && is_array( $acf ) ){
+						$acf_visibility    = isset( $settings['widgetopts_acf_visibility'] ) ? $settings['widgetopts_acf_visibility'] : 'hide';
+
+						//handle repeater fields
+	                    if( isset( $acf['value'] ) ){
+	                        if( is_array( $acf['value'] ) ){
+	                            $acf['value'] = implode(', ', array_map(function ( $acf_array_value ) {
+	                            	$acf_implode = '';
+	                            	if( is_array( $acf_array_value ) ){
+	                            		$acf_implode = implode( ',', array_filter($acf_array_value) );
+	                            	}
+	                              	return $acf_implode;
+	                            }, $acf['value']));
+	                        }
+	                    }
+						switch ( $settings['widgetopts_acf_condition'] ) {
+							case 'equal':
+								if( isset( $acf['value'] ) ){
+									if( 'show' == $acf_visibility && $acf['value'] == $settings['widgetopts_acf'] ){
+										$hidden = false;
+									}else if( 'show' == $acf_visibility && $acf['value'] != $settings['widgetopts_acf'] ){
+										$hidden = true;
+									}else if( 'hide' == $acf_visibility && $acf['value'] == $settings['widgetopts_acf'] ){
+										$hidden = true;
+									}else if( 'hide' == $acf_visibility && $acf['value'] != $settings['widgetopts_acf'] ){
+										$hidden = false;
+									}
+								}
+							break;
+
+							case 'not_equal':
+								if( isset( $acf['value'] ) ){
+									if( 'show' == $acf_visibility && $acf['value'] == $settings['widgetopts_acf'] ){
+										$hidden = true;
+									}else if( 'show' == $acf_visibility && $acf['value'] != $settings['widgetopts_acf'] ){
+										$hidden = false;
+									}else if( 'hide' == $acf_visibility && $acf['value'] == $settings['widgetopts_acf'] ){
+										$hidden = false;
+									}else if( 'hide' == $acf_visibility && $acf['value'] != $settings['widgetopts_acf'] ){
+										$hidden = true;
+									}
+								}
+							break;
+
+							case 'contains':
+								if( isset( $acf['value'] ) ){
+									if( 'show' == $acf_visibility && strpos( $acf['value'], $settings['widgetopts_acf'] ) !== false ){
+										$hidden = false;
+									}else if( 'show' == $acf_visibility && strpos( $acf['value'], $settings['widgetopts_acf'] ) === false ){
+										$hidden = true;
+									}else if( 'hide' == $acf_visibility && strpos( $acf['value'], $settings['widgetopts_acf'] ) !== false ){
+										$hidden = true;
+									}else if( 'hide' == $acf_visibility && strpos( $acf['value'], $settings['widgetopts_acf'] ) === false ){
+										$hidden = false;
+									}
+								}
+							break;
+
+							case 'not_contains':
+								if( isset( $acf['value'] ) ){
+									if( 'show' == $acf_visibility && strpos( $acf['value'], $settings['widgetopts_acf'] ) !== false ){
+										$hidden = true;
+									}else if( 'show' == $acf_visibility && strpos( $acf['value'], $settings['widgetopts_acf'] ) === false ){
+										$hidden = false;
+									}else if( 'hide' == $acf_visibility && strpos( $acf['value'], $settings['widgetopts_acf'] ) !== false ){
+										$hidden = false;
+									}else if( 'hide' == $acf_visibility && strpos( $acf['value'], $settings['widgetopts_acf'] ) === false ){
+										$hidden = true;
+									}
+								}
+							break;
+
+							case 'empty':
+								if( 'show' == $acf_visibility && empty( $acf['value'] ) ){
+									$hidden = false;
+								}else if( 'show' == $acf_visibility && !empty( $acf['value'] ) ){
+									$hidden = true;
+								}elseif( 'hide' == $acf_visibility && empty( $acf['value'] ) ){
+									$hidden = true;
+								}else if( 'hide' == $acf_visibility && !empty( $acf['value'] ) ){
+									$hidden = false;
+								}
+							break;
+
+							case 'not_empty':
+								if( 'show' == $acf_visibility && empty( $acf['value'] ) ){
+									$hidden = true;
+								}else if( 'show' == $acf_visibility && !empty( $acf['value'] ) ){
+									$hidden = false;
+								}elseif( 'hide' == $acf_visibility && empty( $acf['value'] ) ){
+									$hidden = false;
+								}else if( 'hide' == $acf_visibility && !empty( $acf['value'] ) ){
+									$hidden = true;
+								}
+							break;
+							
+							default:
+								# code...
+								break;
+						}
+
+						// //do return to bypass other conditions
+			            $hidden = apply_filters( 'widgetopts_elementor_visibility_acf', $hidden );
+			            if( $hidden ){
+			                return $placeholder;
+			            }
+					}
+				}
+			}
+
+			//widget logic
+			if( isset( $widget_options['state'] ) && 'activate' == $widget_options['state'] ){
+				if( isset( $settings['widgetopts_roles_state'] ) && !empty( $settings['widgetopts_roles_state'] ) ){
+					//do state action here
+	                if( $settings['widgetopts_roles_state'] == 'out' && is_user_logged_in() ){
+	                    return $placeholder;
+	                }else if( $settings['widgetopts_roles_state'] == 'in' && !is_user_logged_in() ){
+	                    return $placeholder;
+	                }
+				}
 			}
 
 			//widget logic
@@ -235,7 +362,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	                $display_logic = apply_filters( 'widget_options_logic_override', $display_logic );
 	                $display_logic = apply_filters( 'extended_widget_options_logic_override', $display_logic );
 	                if ( $display_logic === false ){
-	                    return false;
+	                    return $placeholder;
 	                }
 	                if ( $display_logic === true ){
 	                    return $content;
@@ -244,7 +371,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	                    $display_logic="return (" . $display_logic . ");";
 	                }
 	                if ( !eval( $display_logic ) ){
-	                    return false;
+	                    return $placeholder;
 	                }
 				}
 			}
@@ -268,5 +395,49 @@ if( !function_exists( 'widgetopts_elementor_before_render' ) ){
 			}
 		}
 	}
+}
+
+if( !function_exists( 'widgetopts_elementor_extra_js' ) ){
+	add_action( 'wp_footer', 'widgetopts_elementor_extra_js' );
+	function widgetopts_elementor_extra_js(){ ?>
+		<script type="text/javascript">
+			(function( $, window, document, undefined ) {
+				if( jQuery('.widgetopts-placeholder-e').length > 0 ){
+					// jQuery('.elementor-column-wrap:has(.widgetopts-placeholder-e)').hide();
+
+					jQuery('.elementor-section:has(.widgetopts-placeholder-e)').each( function(){
+						var pTop 	= jQuery( this ).find('.elementor-element-populated').css('padding-top');
+						var pBot 	= jQuery( this ).find('.elementor-element-populated').css('padding-bottom');
+						var pHeight = jQuery( this ).find('.elementor-element-populated').innerHeight();
+						var vert	= pHeight - ( parseFloat( pTop ) + parseFloat( pBot ) );
+						
+						if( typeof vert !== 'undefined' && vert < 5 ){
+							jQuery( this ).hide();
+						}else{
+							jQuery( this ).find( '.widgetopts-placeholder-e' ).each(function(){
+								jQuery( this ).closest( '.elementor-element' ).hide();
+								
+								var countEl 	= jQuery( this ).closest( '.elementor-column' ).find('.elementor-element').length;
+								var countHolder = jQuery( this ).closest( '.elementor-column' ).find('.widgetopts-placeholder-e').length;
+								if( countEl == countHolder ){
+									jQuery( this ).closest( '.elementor-column' ).hide();
+								}
+							}).promise().done( function(){
+								var sTop 	= jQuery( this ).closest('.elementor-section').css('padding-top');
+								var sBot 	= jQuery( this ).closest('.elementor-section').css('padding-bottom');
+								var sHeight = jQuery( this ).closest('.elementor-section').innerHeight();
+								var svert	= sHeight - ( parseFloat( sTop ) + parseFloat( sBot ) );
+								
+								if( typeof svert !== 'undefined' && svert < 5 ){
+									jQuery( this ).closest('.elementor-section').hide();
+								}
+							});
+						}
+
+					} );
+				}
+			})( jQuery, window, document );
+		</script>
+	<?php }	
 }
 ?>

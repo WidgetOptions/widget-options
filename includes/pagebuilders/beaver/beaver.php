@@ -65,7 +65,9 @@ class WP_Widget_Options_Beaver {
 	            foreach ( $widget_options['settings']['taxonomies'] as $tax_opt => $vall ) {
 	                $tax_name = 'widgetopts_taxonomy_'. str_replace( '-', '__', $tax_opt );
 	                // global $$tax_name;
-	                $get_terms[ $tax_opt ] = $GLOBALS[ $tax_name ];
+	                if( isset( $GLOBALS[ $tax_name ] ) ){
+	                	$get_terms[ $tax_opt ] = $GLOBALS[ $tax_name ];
+	                }
 	            }
 	        }
 
@@ -197,14 +199,82 @@ class WP_Widget_Options_Beaver {
 				);
 			}
 
-			if( isset( $widget_options['logic'] ) && 'activate' == $widget_options['logic'] ){
+			if( isset( $widget_options['logic'] ) && 'activate' == $widget_options['logic'] || 
+			 	isset( $widget_options['acf'] ) && 'activate' == $widget_options['acf'] ){
 				$settings_fld = array();
 
-				$settings_fld['widgetopts_settings_logic'] = array(
-	                'type'          => 'textarea',
-	                'label' 		=> __( 'Display Logic', 'widget-options' ),
-	                'description' 	=> __( '<small>PLEASE NOTE that the display logic you introduce is EVAL\'d directly. Anyone who has access to edit widget appearance will have the right to add any code, including malicious and possibly destructive functions. There is an optional filter "widget_options_logic_override" which you can use to bypass the EVAL with your own code if needed.</small>', 'widget-options' )
-	        	);
+				if( isset( $widget_options['logic'] ) && 'activate' == $widget_options['logic'] ){
+					$settings_fld['widgetopts_settings_logic'] = array(
+		                'type'          => 'textarea',
+		                'label' 		=> __( 'Display Logic', 'widget-options' ),
+		                'description' 	=> __( '<small>PLEASE NOTE that the display logic you introduce is EVAL\'d directly. Anyone who has access to edit widget appearance will have the right to add any code, including malicious and possibly destructive functions. There is an optional filter "widget_options_logic_override" which you can use to bypass the EVAL with your own code if needed.</small>', 'widget-options' )
+		        	);
+				}
+
+				//ACF
+				if( isset( $widget_options['acf'] ) && 'activate' == $widget_options['acf'] ){
+					$fields = array( '' => __( 'Select Field', 'widget-options' ) );
+
+					if ( defined( 'ACF_PRO' ) ) {
+		                $groups = acf_get_field_groups();
+		                if ( is_array( $groups ) ) {
+		                    foreach ( $groups as $group ) {
+		                        $fields_group = acf_get_fields( $group );
+		                        if( !empty( $fields_group ) ){
+		                            foreach ( $fields_group as $k => $fg ) {
+		                                   $fields[ $fg['key'] ] = $fg['label'];
+		                               }   
+		                        }
+		                    }
+		                }
+		            }else{
+		            	$groups = apply_filters( 'acf/get_field_groups', array() );
+			            if ( is_array( $groups ) ) {
+			                foreach ( $groups as $group ) {
+			                    $fields_group = apply_filters( 'acf/field_group/get_fields', array(), $group['id'] );
+			                    if( !empty( $fields_group ) ){
+			                        foreach ( $fields_group as $k => $fg ) {
+			                               $fields[ $fg['key'] ] = $fg['label'];
+			                           }   
+			                    }
+			                }
+			            }
+		            }
+
+					$settings_fld['widgetopts_acf_visibility'] = array(
+		                'type'          => 'select',
+		                'label' 		=> __( 'Show or Hide based on Advanced Custom Field', 'widget-options' ),
+		                'options'       => array(
+						        'hide'      => __( 'Hide when Condition\'s Met', 'widget-options' ),
+						        'show'      => __( 'Show when Condition\'s Met', 'widget-options' )
+						    )
+		        	);
+
+		        	$settings_fld['widgetopts_acf_field'] = array(
+							'type'				=> 'select',
+							'label'				=> __( 'Select ACF Field', 'widget-options' ),
+							'options'			=> $fields
+					);
+
+					$settings_fld['widgetopts_acf_condition'] = array(
+		                'type'          => 'select',
+		                'label' 		=> __( 'Select Condition', 'widget-options' ),
+		                'options'       => array(
+						        ''      	 =>  __( 'Select Condition', 'widget-options' ),
+						        'equal'      =>  __( 'Is Equal To', 'widget-options' ),
+		                        'not_equal'  =>  __( 'Is Not Equal To', 'widget-options' ),
+		                        'contains'   =>  __( 'Contains', 'widget-options' ),
+		                        'not_contains'   =>  __( 'Does Not Contain', 'widget-options' ),
+		                        'empty'      =>  __( 'Is Empty', 'widget-options' ),
+		                        'not_empty'  =>  __( 'Is Not Empty', 'widget-options' )
+						    )
+		        	);
+		        	$settings_fld['widgetopts_acf_value'] = array(
+		                'type'          => 'textarea',
+		                'label' 		=> __( 'Conditional Value', 'widget-options' ),
+		                'description' 	=> __( 'Add your Conditional Value here if you selected Equal to, Not Equal To or Contains on the selection above.', 'widget-options' )
+		        	);
+				}
 
 	        	$sections[ 'widgetopts-settings' ] = array(
 					'fields' 	  =>  $settings_fld
@@ -601,6 +671,121 @@ class WP_Widget_Options_Beaver {
             if( $hidden ){
                 return false;
             }
+		}
+
+		//ACF
+		if( isset( $widget_options['acf'] ) && 'activate' == $widget_options['acf'] ){
+			if( isset( $settings->widgetopts_acf_field ) && !empty( $settings->widgetopts_acf_field ) ){
+				$acf = get_field_object( $settings->widgetopts_acf_field );
+				if( $acf && is_array( $acf ) ){
+					$acf_visibility    = isset( $settings->widgetopts_acf_visibility ) ? $settings->widgetopts_acf_visibility : 'hide';
+
+					//handle repeater fields
+                    if( isset( $acf['value'] ) ){
+                        if( is_array( $acf['value'] ) ){
+                            $acf['value'] = implode(', ', array_map(function ( $acf_array_value ) {
+                            	$acf_implode = '';
+                            	if( is_array( $acf_array_value ) ){
+                            		$acf_implode = implode( ',', array_filter($acf_array_value) );
+                            	}
+                              	return $acf_implode;
+                            }, $acf['value']));
+                        }
+                    }
+                    
+					switch ( $settings->widgetopts_acf_condition ) {
+						case 'equal':
+							if( isset( $acf['value'] ) ){
+								if( 'show' == $acf_visibility && $acf['value'] == $settings->widgetopts_acf_value ){
+									$hidden = false;
+								}else if( 'show' == $acf_visibility && $acf['value'] != $settings->widgetopts_acf_value ){
+									$hidden = true;
+								}else if( 'hide' == $acf_visibility && $acf['value'] == $settings->widgetopts_acf_value ){
+									$hidden = true;
+								}else if( 'hide' == $acf_visibility && $acf['value'] != $settings->widgetopts_acf_value ){
+									$hidden = false;
+								}
+							}
+						break;
+
+						case 'not_equal':
+							if( isset( $acf['value'] ) ){
+								if( 'show' == $acf_visibility && $acf['value'] == $settings->widgetopts_acf_value ){
+									$hidden = true;
+								}else if( 'show' == $acf_visibility && $acf['value'] != $settings->widgetopts_acf_value ){
+									$hidden = false;
+								}else if( 'hide' == $acf_visibility && $acf['value'] == $settings->widgetopts_acf_value ){
+									$hidden = false;
+								}else if( 'hide' == $acf_visibility && $acf['value'] != $settings->widgetopts_acf_value ){
+									$hidden = true;
+								}
+							}
+						break;
+
+						case 'contains':
+							if( isset( $acf['value'] ) ){
+								if( 'show' == $acf_visibility && strpos( $acf['value'], $settings->widgetopts_acf_value ) !== false ){
+									$hidden = false;
+								}else if( 'show' == $acf_visibility && strpos( $acf['value'], $settings->widgetopts_acf_value ) === false ){
+									$hidden = true;
+								}else if( 'hide' == $acf_visibility && strpos( $acf['value'], $settings->widgetopts_acf_value ) !== false ){
+									$hidden = true;
+								}else if( 'hide' == $acf_visibility && strpos( $acf['value'], $settings->widgetopts_acf_value ) === false ){
+									$hidden = false;
+								}
+							}
+						break;
+
+						case 'not_contains':
+							if( isset( $acf['value'] ) ){
+								if( 'show' == $acf_visibility && strpos( $acf['value'], $settings->widgetopts_acf_value ) !== false ){
+									$hidden = true;
+								}else if( 'show' == $acf_visibility && strpos( $acf['value'], $settings->widgetopts_acf_value ) === false ){
+									$hidden = false;
+								}else if( 'hide' == $acf_visibility && strpos( $acf['value'], $settings->widgetopts_acf_value ) !== false ){
+									$hidden = false;
+								}else if( 'hide' == $acf_visibility && strpos( $acf['value'], $settings->widgetopts_acf_value ) === false ){
+									$hidden = true;
+								}
+							}
+						break;
+
+						case 'empty':
+							if( 'show' == $acf_visibility && empty( $acf['value'] ) ){
+								$hidden = false;
+							}else if( 'show' == $acf_visibility && !empty( $acf['value'] ) ){
+								$hidden = true;
+							}elseif( 'hide' == $acf_visibility && empty( $acf['value'] ) ){
+								$hidden = true;
+							}else if( 'hide' == $acf_visibility && !empty( $acf['value'] ) ){
+								$hidden = false;
+							}
+						break;
+
+						case 'not_empty':
+							if( 'show' == $acf_visibility && empty( $acf['value'] ) ){
+								$hidden = true;
+							}else if( 'show' == $acf_visibility && !empty( $acf['value'] ) ){
+								$hidden = false;
+							}elseif( 'hide' == $acf_visibility && empty( $acf['value'] ) ){
+								$hidden = false;
+							}else if( 'hide' == $acf_visibility && !empty( $acf['value'] ) ){
+								$hidden = true;
+							}
+						break;
+						
+						default:
+							# code...
+							break;
+					}
+
+					// //do return to bypass other conditions
+		            $hidden = apply_filters( 'widgetopts_beaver_visibility_acf', $hidden );
+		            if( $hidden ){
+		                return false;
+		            }
+				}
+			}
 		}
 
 		//widget logic

@@ -83,6 +83,10 @@ if( !function_exists( 'widgetopts_elementor_section' ) ){
                             widgetopts_elementor_tab_visibility( $element, $section_id, $args );
                         }
 
+                        if( isset( $widget_options['state'] ) && 'activate' == $widget_options['state'] ){
+                            widgetopts_elementor_tab_state( $element, $section_id, $args );
+                        }
+
                         if( 'activate' == $widget_options['logic'] || ( isset( $widget_options['sliding'] ) && 'activate' == $widget_options['sliding'] && in_array( $element->get_name(), array( 'button', 'button_plus', 'eael-creative-button', 'cta' ) ) ) ){
                             widgetopts_elementor_tab_settings( $element, $section_id, $args );
                         }
@@ -297,6 +301,42 @@ if( !function_exists( 'widgetopts_elementor_tab_visibility' ) ){
     }
 }
 
+if( !function_exists( 'widgetopts_elementor_tab_state' ) ){
+    function widgetopts_elementor_tab_state( $element, $section_id, $args ){
+        global $widget_options;
+
+        $element->start_controls_tab(
+            'widgetopts_tab_state',
+            [
+                 'label' => __( '<i class="fa fa-user"></i>', 'widget-options' )
+            ],
+            [
+                'overwrite'         => true
+            ]
+        );
+
+        $element->add_control(
+            'widgetopts_roles_state',
+                [
+                    'label'         => __( 'User Login State', 'widget-options' ),
+                    'type'          => Elementor\Controls_Manager::SELECT,
+                    'default'       => 'hide',
+                    'options'       => [
+                                            ''     => __( 'Select Visibility Option' ),
+                                            'in' => __( 'Show only for Logged-in Users' ),
+                                            'out' => __( 'Show only for Logged-out Users' )
+                                        ],
+                    'description'   => __( 'Restrict widget visibility for logged-in and logged-out users.', 'widget-options' )
+                ],
+                [
+                    'overwrite'         => true
+                ]
+            );
+
+        $element->end_controls_tab();
+    }
+}
+
 if( !function_exists( 'widgetopts_elementor_tab_settings' ) ){
     function widgetopts_elementor_tab_settings( $element, $section_id, $args ){
         global $widget_options;
@@ -328,6 +368,7 @@ if( !function_exists( 'widgetopts_elementor_tab_settings' ) ){
         }
 
         if( 'activate' == $widget_options['logic'] ){
+
             $element->add_control(
                 'widgetopts_logic',
                 [
@@ -341,6 +382,118 @@ if( !function_exists( 'widgetopts_elementor_tab_settings' ) ){
                 ]
             );
         }
+
+
+        if( 'activate' == $widget_options['acf'] ){
+            $fields = array();
+
+            if ( defined( 'ACF_PRO' ) ) {
+                $groups = acf_get_field_groups();
+                if ( is_array( $groups ) ) {
+                    foreach ( $groups as $group ) {
+                        $fields_group = acf_get_fields( $group );
+                        if( !empty( $fields_group ) ){
+                            foreach ( $fields_group as $k => $fg ) {
+                                   $fields[ $fg['key'] ] = $fg['label'];
+                               }   
+                        }
+                    }
+                }
+            }else{
+                $groups = apply_filters( 'acf/get_field_groups', array() );
+                if ( is_array( $groups ) ) {
+                    foreach ( $groups as $group ) {
+                        $fields_group = apply_filters( 'acf/field_group/get_fields', array(), $group['id'] );
+                        if( !empty( $fields_group ) ){
+                            foreach ( $fields_group as $k => $fg ) {
+                                   $fields[ $fg['key'] ] = $fg['label'];
+                               }   
+                        }
+                    }
+                }
+            }
+
+            $element->add_control(
+                'widgetopts_acf_title',
+                [
+                    'type' => Elementor\Controls_Manager::RAW_HTML,
+                    'separator'         => 'before',
+                    'raw' => '<h3>'. __( 'Advanced Custom Fields', 'widget-options' ) .'</h3>',
+                ],
+                [
+                    'overwrite'         => true
+                ]
+            );
+
+            $element->add_control(
+                'widgetopts_acf_visibility',
+                    [
+                        'label'         => __( 'Show/Hide', 'widget-options' ),
+                        'type'          => Elementor\Controls_Manager::SELECT,
+                        'default'       => 'hide',
+                        'options'       => [
+                                                'show' => __( 'Show when Condition\'s Met' ),
+                                                'hide' => __( 'Hide when Condition\'s Met' )
+                                            ],
+                        'separator'         => 'before',
+                    ],
+                    [
+                        'overwrite'         => true
+                    ]
+            );
+
+            $element->add_control(
+                'widgetopts_acf_field',
+                [
+                    'label'             => __( 'Select ACF Field', 'widget-options' ),
+                    'type'              => Elementor\Controls_Manager::SELECT2,
+                    'multiple'          => false,
+                    'label_block'       => true,
+                    'options'           => $fields,
+                    'render_type'       => 'none',
+                    'description'       => __( 'Select ACF field.', 'widget-options' )
+                ],
+                [
+                    'overwrite'         => true
+                ]
+            );
+
+            $element->add_control(
+                'widgetopts_acf_condition',
+                [
+                    'label'             => __( 'Condition', 'widget-options' ),
+                    'type'              => Elementor\Controls_Manager::SELECT2,
+                    'multiple'          => false,
+                    'label_block'       => true,
+                    'options'           => [
+                        'equal'      =>  __( 'Is Equal To', 'widget-options' ),
+                        'not_equal'  =>  __( 'Is Not Equal To', 'widget-options' ),
+                        'contains'   =>  __( 'Contains', 'widget-options' ),
+                        'not_contains'   =>  __( 'Does Not Contain', 'widget-options' ),
+                        'empty'      =>  __( 'Is Empty', 'widget-options' ),
+                        'not_empty'  =>  __( 'Is Not Empty', 'widget-options' )
+                    ],
+                    'render_type'       => 'none',
+                    'description'       => __( 'Select your condition for this widget visibility.', 'widget-options' )
+                ],
+                [
+                    'overwrite'         => true
+                ]
+            );
+            $element->add_control(
+                'widgetopts_acf',
+                [
+                    'type'          => Elementor\Controls_Manager::TEXTAREA,
+                    'label'         => __( 'Conditional Value', 'widget-options' ),
+                    'description'   => __( 'Add your Conditional Value here if you selected Equal to, Not Equal To or Contains on the selection above.', 'widget-options' ),
+                    // 'separator'     => 'none',
+                ],
+                [
+                    'overwrite'         => true
+                ]
+            );
+        }
+
         $element->end_controls_tab();
     }
 }

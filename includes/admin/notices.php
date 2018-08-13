@@ -17,6 +17,19 @@ if( !function_exists( 'widgetopts_admin_notices' ) ):
         if( !current_user_can( 'update_plugins' ) )
             return;
 
+        //show rating notice to page that matters most
+        global $pagenow;
+        if( !in_array( $pagenow, array( 'widgets.php', 'options-general.php' ) ) ){
+            return;
+        }
+
+        if( $pagenow == 'options-general.php' && function_exists( 'get_current_screen' ) ){
+            $screen = get_current_screen();
+            if( isset( $screen->base ) && $screen->base != 'settings_page_widgetopts_plugin_settings' ){
+                return;
+            }
+        }
+
         $install_date   = get_option( 'widgetopts_installDate' );
         $saved          = get_option( 'widgetopts_RatingDiv' );
         $display_date   = date( 'Y-m-d h:i:s' );

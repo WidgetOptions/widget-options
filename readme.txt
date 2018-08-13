@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: widgets, restrict widgets, display widgets, widget logic, hide widgets, hide widget, sidebar, widget content, display widget, widget options, widget option, widget, widget css, CSS, widget classes, widget styling, widget ID, widget custom class, widget visibility, widget ninja, jetpack visibility, siteorigin, siteorigin pagebuilder, pagebuilder by siteorigin
 Requires at least: 4.0
 Tested up to: 4.9
-Stable tag: 1.0
+Stable tag: 3.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,7 +53,7 @@ You can now import and export WordPress widgets easily and create any backup of 
 <h4>View your changes live!</h4>
 This plugin is customizer ready for easier customization. View your changes live before saving it, <strong>not just better control but a time saver plugin!</strong>
 
-<h3>Pagebuilder by SiteOrigin Plugin Compatible/h3>
+<h3>Pagebuilder by SiteOrigin Plugin Compatible</h3>
 Extend your SiteOrigin Pagebuilder powered website's widget panels control and management using Widget Options! Restrict devices visibility, change alignments, hide widget panel title, add custom classes and control visibility using display widget logic option! <br /><strong>Pagebuilder by SiteOrigin Plugin + Widget Options = Total Freedom!</strong>
 
 <h3>Elementor Pagebuilder Ready!</h3>
@@ -61,6 +61,18 @@ Extend Widget Options visibility restrictions to elementor widgets! You can now 
 
 <h3>Beaver Builder Plugin Ready!</h3>
 Now with Beaver Builder plugin integration! You can fully manage each modules on many ways you want it too! Integrated smoothly to upgrade your website building workflow.
+
+<h3>Advanced Custom Fields (ACF) Support!</h3>
+Easily show or hide any widgets using your ACF fields and conditions. You can restric widget with the following conditions:
+
+* Equal To
+* Not Equal To
+* Contains
+* Does Not Contain
+* Is Empty
+* Is Not Empty
+
+ACF integration is also available on Elementor and Beaver Builder integration.
 
 <blockquote>
 <p><strong>Upgrade to Extended Widget Options</strong><br />
@@ -134,9 +146,17 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 6. Pagebuilder by SiteOrigin Plugin Widget Options
 7. Widget Importer & Exporter Feature
 8. Beaver Builder Integration
-8. Elementor Pagebuilder Integration
+9. Elementor Pagebuilder Integration
+10. Advanced Custom Fields ( ACF ) Support
 
 == Changelog ==
+
+= 3.7 =
+* Add <strong>Advanced Custom Fields ( ACF )</strong> support
+* Integrate ACF conditions on Elementor and Beaver Builder integration too
+* Add <strong>User Logged-in State</strong> feature to easily restrict widget on loggedin or loggedout users
+* Add <strong>User Logged-in State</strong> to Elementor integration as well
+* Fixes and other improvements
 
 = 3.6 =
 * Add <strong>Beaver Builder Plugin Integration</strong>. Go to Settings > Widget Options to enable this brand new feature.

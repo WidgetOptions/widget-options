@@ -218,6 +218,130 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
 
         //end wordpress pages
 
+        //ACF
+        if( 'activate' == $widget_options['acf'] ){
+            if( isset( $visibility['acf']['field'] ) && !empty( $visibility['acf']['field'] ) ){
+                $acf = get_field_object( $visibility['acf']['field'] );
+                if( $acf && is_array( $acf ) ){
+                    $acf_visibility    = ( isset( $visibility['acf'] ) && isset( $visibility['acf']['visibility'] ) ) ? $visibility['acf']['visibility'] : 'hide';
+
+                    //handle repeater fields
+                    if( isset( $acf['value'] ) ){
+                        if( is_array( $acf['value'] ) ){
+                            $acf['value'] = implode(', ', array_map(function ( $acf_array_value ) {
+                                $acf_implode = implode( ',', array_filter($acf_array_value) );
+                              return $acf_implode;
+                            }, $acf['value']));
+                        }
+                    }
+
+                    switch ( $visibility['acf']['condition'] ) {
+                        case 'equal':
+                            if( isset( $acf['value'] ) ){
+                                if( 'show' == $acf_visibility && $acf['value'] == $visibility['acf']['value'] ){
+                                    $hidden = false;
+                                }else if( 'show' == $acf_visibility && $acf['value'] != $visibility['acf']['value'] ){
+                                    $hidden = true;
+                                }else if( 'hide' == $acf_visibility && $acf['value'] == $visibility['acf']['value'] ){
+                                    $hidden = true;
+                                }else if( 'hide' == $acf_visibility && $acf['value'] != $visibility['acf']['value'] ){
+                                    $hidden = false;
+                                }
+                            }
+                        break;
+
+                        case 'not_equal':
+                            if( isset( $acf['value'] ) ){
+                                if( 'show' == $acf_visibility && $acf['value'] == $visibility['acf']['value'] ){
+                                    $hidden = true;
+                                }else if( 'show' == $acf_visibility && $acf['value'] != $visibility['acf']['value'] ){
+                                    $hidden = false;
+                                }else if( 'hide' == $acf_visibility && $acf['value'] == $visibility['acf']['value'] ){
+                                    $hidden = false;
+                                }else if( 'hide' == $acf_visibility && $acf['value'] != $visibility['acf']['value'] ){
+                                    $hidden = true;
+                                }
+                            }
+                        break;
+
+                        case 'contains':
+                            if( isset( $acf['value'] ) ){
+                                if( 'show' == $acf_visibility && strpos( $acf['value'], $visibility['acf']['value'] ) !== false ){
+                                    $hidden = false;
+                                }else if( 'show' == $acf_visibility && strpos( $acf['value'], $visibility['acf']['value'] ) === false ){
+                                    $hidden = true;
+                                }else if( 'hide' == $acf_visibility && strpos( $acf['value'], $visibility['acf']['value'] ) !== false ){
+                                    $hidden = true;
+                                }else if( 'hide' == $acf_visibility && strpos( $acf['value'], $visibility['acf']['value'] ) === false ){
+                                    $hidden = false;
+                                }
+                            }
+                        break;
+
+                        case 'not_contains':
+                            if( isset( $acf['value'] ) ){
+                                if( 'show' == $acf_visibility && strpos( $acf['value'], $visibility['acf']['value'] ) !== false ){
+                                    $hidden = true;
+                                }else if( 'show' == $acf_visibility && strpos( $acf['value'], $visibility['acf']['value'] ) === false ){
+                                    $hidden = false;
+                                }else if( 'hide' == $acf_visibility && strpos( $acf['value'], $visibility['acf']['value'] ) !== false ){
+                                    $hidden = false;
+                                }else if( 'hide' == $acf_visibility && strpos( $acf['value'], $visibility['acf']['value'] ) === false ){
+                                    $hidden = true;
+                                }
+                            }
+                        break;
+
+                        case 'empty':
+                            if( 'show' == $acf_visibility && empty( $acf['value'] ) ){
+                                $hidden = false;
+                            }else if( 'show' == $acf_visibility && !empty( $acf['value'] ) ){
+                                $hidden = true;
+                            }elseif( 'hide' == $acf_visibility && empty( $acf['value'] ) ){
+                                $hidden = true;
+                            }else if( 'hide' == $acf_visibility && !empty( $acf['value'] ) ){
+                                $hidden = false;
+                            }
+                        break;
+
+                        case 'not_empty':
+                            if( 'show' == $acf_visibility && empty( $acf['value'] ) ){
+                                $hidden = true;
+                            }else if( 'show' == $acf_visibility && !empty( $acf['value'] ) ){
+                                $hidden = false;
+                            }elseif( 'hide' == $acf_visibility && empty( $acf['value'] ) ){
+                                $hidden = false;
+                            }else if( 'hide' == $acf_visibility && !empty( $acf['value'] ) ){
+                                $hidden = true;
+                            }
+                        break;
+                        
+                        default:
+                            # code...
+                            break;
+                    }
+
+                    // //do return to bypass other conditions
+                    $hidden = apply_filters( 'widget_options_visibility_acf', $hidden );
+                    if( $hidden ){
+                        return false;
+                    }
+                }
+            }
+        }
+
+        //login state
+        if( isset( $widget_options['state'] ) && 'activate' == $widget_options['state'] && isset( $opts['roles'] ) ){
+            if( isset( $opts['roles']['state'] ) && !empty( $opts['roles']['state'] ) ){
+                //do state action here
+                if( $opts['roles']['state'] == 'out' && is_user_logged_in() ){
+                    return false;
+                }else if( $opts['roles']['state'] == 'in' && !is_user_logged_in() ){
+                    return false;
+                }
+            }
+        }
+
         if( 'activate' == $widget_options['logic'] ){
             // display widget logic
             if( isset( $opts['class'] ) && isset( $opts['class']['logic'] ) && !empty( $opts['class']['logic'] ) ){

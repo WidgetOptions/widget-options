@@ -76,7 +76,7 @@ function widgetopts_in_widget_form( $widget, $return, $instance ){
 
     <input type="hidden" name="extended_widget_opts_name" value="extended_widget_opts-<?php echo $widget->id;?>">
     <input type="hidden" name="<?php echo $args['namespace'];?>[extended_widget_opts][id_base]" value="<?php echo $widget->id;?>" />
-    <div class="extended-widget-opts-form <?php if( $width > 390 ){ echo 'extended-widget-opts-form-large'; }else if( $width <= 390 ){ echo 'extended-widget-opts-form-small'; }?>">
+    <div class="extended-widget-opts-form <?php if( $width > 480 ){ echo 'extended-widget-opts-form-large'; }else if( $width <= 480 ){ echo 'extended-widget-opts-form-small'; }?>">
         <div class="extended-widget-opts-tabs">
             <ul class="extended-widget-opts-tabnav-ul">
                 <?php do_action( 'extended_widget_opts_tabs', $args );?>
