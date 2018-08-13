@@ -156,6 +156,7 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 * Integrate ACF conditions on Elementor and Beaver Builder integration too
 * Add <strong>User Logged-in State</strong> feature to easily restrict widget on loggedin or loggedout users
 * Add <strong>User Logged-in State</strong> to Elementor integration as well
+* Show rating notice on widget dashboard and Widget Options settings page only
 * Fixes and other improvements
 
 = 3.6 =
