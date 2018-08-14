@@ -229,7 +229,7 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 			}
 
 			//ACF
-			if( 'activate' == $widget_options['acf'] ){
+			if( isset( $widget_options['acf'] ) && 'activate' == $widget_options['acf'] ){
 				if( isset( $settings['widgetopts_acf_field'] ) && !empty( $settings['widgetopts_acf_field'] ) ){
 					$acf = get_field_object( $settings['widgetopts_acf_field'] );
 					if( $acf && is_array( $acf ) ){

@@ -130,7 +130,7 @@ function widgetopts_tabcontent_visibility( $args ){
                 <li class="extended-widget-opts-visibility-tab-main">
                     <a href="#extended-widget-opts-visibility-tab-<?php echo $args['id'];?>-main" title="<?php _e( 'Home, Blog, Search, etc..', 'widget-options' );?>" ><?php _e( 'WordPress Pages', 'widget-options' );?></a>
                 </li>
-                <?php if( 'activate' == $widget_options['acf'] ):?>
+                <?php if( isset( $widget_options['acf'] ) && 'activate' == $widget_options['acf'] ):?>
                     <li class="extended-widget-opts-visibility-tab-main">
                         <a href="#extended-widget-opts-visibility-tab-<?php echo $args['id'];?>-acf" title="<?php _e( 'Advanced Custom Fields', 'widget-options' );?>" ><?php _e( 'ACF', 'widget-options' );?></a>
                     </li>
@@ -286,7 +286,7 @@ function widgetopts_tabcontent_visibility( $args ){
                     </div><!--  end .extended-widget-opts-visibility-tabs -->
             </div><!-- End WordPress Pages tab -->
 
-            <?php if( 'activate' == $widget_options['acf'] ):?>
+            <?php if( isset( $widget_options['acf'] ) && 'activate' == $widget_options['acf'] ):?>
                 <div id="extended-widget-opts-visibility-tab-<?php echo $args['id'];?>-acf" class="extended-widget-opts-visibility-tabcontent extended-widget-opts-inner-tabcontent">
                     <?php
                     $fields = array();
