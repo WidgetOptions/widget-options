@@ -387,7 +387,7 @@ if( !function_exists( 'widgetopts_elementor_tab_settings' ) ){
         if( isset( $widget_options['acf'] ) && 'activate' == $widget_options['acf'] ){
             $fields = array();
 
-            if ( defined( 'ACF_PRO' ) ) {
+            if ( function_exists( 'acf_get_field_groups' ) ) {
                 $groups = acf_get_field_groups();
                 if ( is_array( $groups ) ) {
                     foreach ( $groups as $group ) {
