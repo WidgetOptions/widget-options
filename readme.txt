@@ -151,6 +151,9 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 
 == Changelog ==
 
+= 3.7.2 =
+* Fix issue with latest ACF version
+
 = 3.7.1 =
 * Add fixes for https://wordpress.org/support/topic/php-errors-after-upgrade-to-3-7/
 

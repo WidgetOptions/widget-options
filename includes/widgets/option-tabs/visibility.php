@@ -291,7 +291,7 @@ function widgetopts_tabcontent_visibility( $args ){
                     <?php
                     $fields = array();
 
-                    if ( defined( 'ACF_PRO' ) ) {
+                    if ( function_exists( 'acf_get_field_groups' ) ) {
                         $groups = acf_get_field_groups();
                         if ( is_array( $groups ) ) {
                             foreach ( $groups as $group ) {
