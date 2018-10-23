@@ -219,7 +219,7 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
         //end wordpress pages
 
         //ACF
-        if( 'activate' == $widget_options['acf'] ){
+        if( isset( $widget_options['acf'] ) && 'activate' == $widget_options['acf'] ){
             if( isset( $visibility['acf']['field'] ) && !empty( $visibility['acf']['field'] ) ){
                 $acf = get_field_object( $visibility['acf']['field'] );
                 if( $acf && is_array( $acf ) ){
