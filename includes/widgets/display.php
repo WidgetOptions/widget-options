@@ -355,7 +355,7 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
                     return true;
                 }
                 if ( stristr($display_logic,"return")===false ){
-                    $display_logic="return (" . $display_logic . ");";
+                    $display_logic="return (" . html_entity_decode($display_logic, ENT_COMPAT | ENT_HTML401 | ENT_QUOTES) . ");";
                 }
                 if ( !eval( $display_logic ) ){
                     return false;
