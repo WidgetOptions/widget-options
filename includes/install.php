@@ -26,6 +26,11 @@ if( !function_exists( 'widgetopts_upgraded' ) ){
 if( !function_exists( 'widgetopts_filter_plugin_actions' ) ){
   add_action( 'plugin_action_links_' . plugin_basename( WIDGETOPTS_PLUGIN_FILE ) , 'widgetopts_filter_plugin_actions' );
   function widgetopts_filter_plugin_actions($links){
+
+  	if( !is_array( $links ) ){
+  		$links = array();
+  	}
+
     $links[]  = '<a href="'. esc_url( admin_url( 'options-general.php?page=widgetopts_plugin_settings' ) ) .'">' . __( 'Settings', 'widget-options' ) . '</a>';
     $links[]  = '<a href="'. esc_url( 'https://widget-options.com/pricing/?utm_source=upgradebtn&utm_medium=plugins&utm_campaign=widgetoptspluginlink' ) .'" target="_blank" style="color: #3db634">' . __( 'Upgrade', 'widget-options' ) . '</a>';
     return $links;
