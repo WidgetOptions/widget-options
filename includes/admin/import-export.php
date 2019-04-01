@@ -352,6 +352,7 @@ class WP_Widget_Options_Importer {
 		if ( !empty( $_POST ) && isset( $_POST['action'] ) && 'import' == sanitize_text_field( $_POST['action']  ) && check_admin_referer( 'widgeopts_import', 'widgeopts_nonce_import' ) ) {
 
 			//allow .json upload
+			add_filter( 'wp_check_filetype_and_ext', array( &$this, 'disable_real_mime_check' ), 10 , 4 );
 			add_filter( 'upload_mimes', array( &$this, 'add_mime_types' ) );
 			
 			$uploaded_file  = $_FILES['widgeopts_file'];
@@ -678,6 +679,19 @@ class WP_Widget_Options_Importer {
 
 		return $mime_types;
 
+	}
+
+	function disable_real_mime_check( $data, $file, $filename, $mimes ) {
+		$wp_version = get_bloginfo( 'version' );
+		
+		if ( version_compare( $wp_version, '4.7', '<=' ) ) {
+			return $data;
+		}
+		$wp_filetype = wp_check_filetype( $filename, $mimes );
+		$ext             = $wp_filetype['ext'];
+		$type            = $wp_filetype['type'];
+		$proper_filename = $data['proper_filename'];
+		return compact( 'ext', 'type', 'proper_filename' );
 	}
 }
 
