@@ -1,5 +1,5 @@
 === Widget Options ===
-Contributors: phpbits
+Contributors: phpbits, flowdee
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FMKC2SLPTULP8
 Tags: widgets, restrict widgets, display widgets, widget logic, hide widgets, hide widget, sidebar, widget content, display widget, widget options, widget option, widget, widget css, CSS, widget classes, widget styling, widget ID, widget custom class, widget visibility, widget ninja, jetpack visibility, siteorigin, siteorigin pagebuilder, pagebuilder by siteorigin
 Requires at least: 4.0
@@ -152,6 +152,9 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 
 == Changelog ==
 
+= 3.7.4 =
+* Update readme and plugin info.
+
 = 3.7.3 =
 * Fix import and export invalid file error
 * Fix several instances of widget lock up issue
@@ -264,4 +267,4 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 
 == Contact and Credits ==
 
-Widget Options for WordPress is maintained and developed by <a href="https://phpbits.net/">Phpbits Creative Studio</a>.
+Widget Options for WordPress is maintained and developed by <a href="https://widget-options.com/">Widget Options Team</a>.
