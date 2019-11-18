@@ -3,15 +3,15 @@
  * Plugin Name: Widget Options
  * Plugin URI: https://widget-options.com/
  * Description: Additional Widget options for better widget control. Get <strong><a href="http://widget-options.com/" target="_blank" >Extended Widget Options for WordPress</a></strong> for complete widget controls. Thanks!
- * Version: 3.7.3
- * Author: Phpbits Creative Studio
- * Author URI: https://phpbits.net/
+ * Version: 3.7.4
+ * Author: Widget Options Team
+ * Author URI: https://widget-options.com/
  * Text Domain: widget-options
  * Domain Path: languages
  *
  * @category Widgets
- * @author Jeffrey Carandang
- * @version 3.2
+ * @author Widget Options Team
+ * @version 3.7.4
  */
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -73,7 +73,7 @@ final class WP_Widget_Options {
 
 		// Plugin version.
 		if ( ! defined( 'WIDGETOPTS_VERSION' ) ) {
-			define( 'WIDGETOPTS_VERSION', ' 3.7.3' );
+			define( 'WIDGETOPTS_VERSION', ' 3.7.4' );
 		}
 
 		// Plugin Folder Path.
