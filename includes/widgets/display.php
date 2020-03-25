@@ -411,13 +411,16 @@ endif;
 
         if( isset( $wp_registered_widget_controls[ $params[0]['widget_id'] ]['params'][0]['number'] ) ){
             $num = $wp_registered_widget_controls[ $params[0]['widget_id'] ]['params'][0]['number'];
-        }elseif( isset( $wp_registered_widget_controls[ $params[0]['widget_id'] ]['callback'][0]->number ) ){
-            $num = $wp_registered_widget_controls[ $params[0]['widget_id'] ]['callback'][0]->number;
+        }elseif( is_array( $wp_registered_widget_controls[ $params[0]['widget_id'] ]['callback'] ) ){
+            if ( isset( $wp_registered_widget_controls[ $params[0]['widget_id'] ]['callback'][0]->number ) &&
+                is_int( $wp_registered_widget_controls[ $params[0]['widget_id'] ]['callback'][0]->number ) ){
+	            $num = $wp_registered_widget_controls[ $params[0]['widget_id'] ]['callback'][0]->number;
+            }
         }else{
             $num = substr( $params[0]['widget_id'], -1 );
         }
         if( isset( $instance[ $num ] ) ){
-            $opts           = ( isset( $instance[ $num ][ 'extended_widget_opts-'. $params[0]['widget_id'] ] ) ) ? $instance[ $num ][ 'extended_widget_opts-'. $params[0]['widget_id'] ] : array();
+            $opts = ( isset( $instance[ $num ][ 'extended_widget_opts-'. $params[0]['widget_id'] ] ) ) ? $instance[ $num ][ 'extended_widget_opts-'. $params[0]['widget_id'] ] : array();
         }else{
             $opts = array();
         }
