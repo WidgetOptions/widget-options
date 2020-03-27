@@ -411,7 +411,8 @@ endif;
 
         if( isset( $wp_registered_widget_controls[ $params[0]['widget_id'] ]['params'][0]['number'] ) ){
             $num = $wp_registered_widget_controls[ $params[0]['widget_id'] ]['params'][0]['number'];
-        }elseif( is_array( $wp_registered_widget_controls[ $params[0]['widget_id'] ]['callback'] ) ){
+        }elseif( isset( $wp_registered_widget_controls[ $params[0]['widget_id'] ]['callback'] ) &&
+		is_array( $wp_registered_widget_controls[ $params[0]['widget_id'] ]['callback'] ) ){
             if ( isset( $wp_registered_widget_controls[ $params[0]['widget_id'] ]['callback'][0]->number ) &&
                 is_int( $wp_registered_widget_controls[ $params[0]['widget_id'] ]['callback'][0]->number ) ){
 	            $num = $wp_registered_widget_controls[ $params[0]['widget_id'] ]['callback'][0]->number;
