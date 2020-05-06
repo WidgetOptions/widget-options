@@ -128,7 +128,7 @@ if( !function_exists( 'widgetopts_sidebars_widgets' ) ){
 					$opts = $wp_registered_widgets[ $widget ];
 					$id_base = is_array( $opts['callback'] ) || $opts['callback'] instanceof ArrayAccess ? $opts['callback'][0]->id_base : $opts['callback'];
 
-					if ( ! $id_base ) {
+					if ( ! is_string( $id_base ) ) {
 						continue;
 					}
 
