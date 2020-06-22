@@ -8,9 +8,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/phpbits/widget-options"
+    "url": "https://github.com/flowdee/widget-options"
   },
-  "author": "phpbits",
+  "author": "flowdee",
   "license": "BSD-2-Clause",
   "devDependencies": {
     "browser-sync": "^2.26.3",

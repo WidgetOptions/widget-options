@@ -4,13 +4,13 @@
  * Plugin URI: https://widget-options.com/
  * Description: <strong>Requires <a href="https://wordpress.org/plugins/widget-options/" target="_blank">Widget Options Plugin</a></strong>! Extend functionalities to Beaver Builder for more visibility restriction options.
  * Version: 1.0
- * Author: Phpbits Creative Studio
- * Author URI: https://phpbits.net/
+ * Author: Widget Options Team
+ * Author URI: https://widget-options.com/
  * Text Domain: widget-options
  * Domain Path: languages
  *
  * @category Widgets
- * @author Jeffrey Carandang
+ * @author Widget Options Team
  * @version 1.0
  */
 // Exit if accessed directly.

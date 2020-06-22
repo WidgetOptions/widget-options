@@ -1,5 +1,5 @@
 === Widget Options ===
-Contributors: phpbits, flowdee
+Contributors: flowdee
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FMKC2SLPTULP8
 Tags: widgets, restrict widgets, display widgets, widget logic, hide widgets, hide widget, sidebar, widget content, display widget, widget options, widget option, widget, widget css, CSS, widget classes, widget styling, widget ID, widget custom class, widget visibility, widget ninja, jetpack visibility, siteorigin, siteorigin pagebuilder, pagebuilder by siteorigin
 Requires at least: 4.0
@@ -103,13 +103,13 @@ Check full <a href="http://widget-options.com/features/">Extended Widget Options
 
 In need of <a href="https://widget-options.com/modal-pop-up-and-sliding-widget-options/" target="_blank">WordPress Sliding Panel</a> for your widgets? Check out <a href="https://widget-options.com/modal-pop-up-and-sliding-widget-options/" target="_blank">Sliding Widget Options</a> add-on and transform any of your widgets to modal pop-up, slide in and/or sliding widget panel; and increase your website's user engagement!
 
-If you like to contribute, report issue or have suggestions, you can find the development version on <a href="https://github.com/phpbits/widget-options" target="_blank">Github</a>.
+If you like to contribute, report issue or have suggestions, you can find the development version on <a href="https://github.com/flowdee/widget-options" target="_blank">Github</a>.
 
 <strong>More information</strong>
 
-* Follow the developer <a href="https://twitter.com/phpbits" target="_blank">@Twitter</a>
+* Follow the developer <a href="https://twitter.com/flowdee" target="_blank">@Twitter</a>
 * <a href="https://www.facebook.com/groups/WPwidgets/" target="_blank">Join Facebook Community Group</a>
-* Other <a href="https://phpbits.net/plugins/">WordPress plugins</a>
+* Other <a href="https://kryptonitewp.com/downloads/category/plugins/">WordPress plugins</a>
 
 == Installation ==
 
@@ -220,15 +220,15 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 
 = 3.1 =
 * Add Pagebuilder by SiteOrigin Plugin Widgets Compatibility
-* Fixes for https://github.com/phpbits/widget-options/issues/6
+* Fixes for https://github.com/flowdee/widget-options/issues/6
 * Performance enhancement
 
 = 3.0.2 =
-* Fix reported issue : https://github.com/phpbits/widget-options/issues/7
+* Fix reported issue : https://github.com/flowdee/widget-options/issues/7
 * Fix DIVI jQuery UI styling issues
 
 = 3.0.1 =
-* Fix reported issue : https://github.com/phpbits/widget-options/issues/4
+* Fix reported issue : https://github.com/flowdee/widget-options/issues/4
 
 = 3.0 =
 * Improve settings page and add modular options inspired by iThemes Security Plugin
@@ -247,7 +247,7 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 * Update pro tabs with additional features added on Extended Widget Options 2.0
 
 = 1.2 =
-* Add Widget CSS ID and Classes tab options. <a href="https://phpbits.net/widget-options-improved-control-adding-id-classes-options">Learn more about this update</a>
+* Add Widget CSS ID and Classes tab options. <a href="https://widget-options.com/features/custom-wordpress-widget-id-classes/">Learn more about this update</a>
 * Add Blog Page Visibility for Widgets as per @cfabrice & @fljdave request
 
 = 1.1.1 =
