@@ -20,7 +20,7 @@ if( !function_exists( 'widgetopts_settings_styling' ) ):
 	function widgetopts_settings_styling(){ ?>
 		<li class="widgetopts-module-card widgetopts-module-type-pro" data-module-id="styling">
 			<div class="widgetopts-module-card-content">
-				<a href="https://widget-options.com/features/wordpress-widgets-styling/" target="_blank" class="widgetopts-pro-upsell"></a>
+				<a href="<?php echo apply_filters('widget_options_site_url', trailingslashit(WIDGETOPTS_PLUGIN_WEBSITE).'features/wordpress-widgets-styling/');?>" target="_blank" class="widgetopts-pro-upsell"></a>
 				<h2><?php _e( 'Custom Styling', 'widget-options' );?></h2>
 				<div class="widgetopts-pro-label"><span class="dashicons dashicons-lock"></span></div>
 				<p class="widgetopts-module-desc">

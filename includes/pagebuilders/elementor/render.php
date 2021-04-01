@@ -370,9 +370,14 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 	                if ( stristr($display_logic,"return")===false ){
 	                    $display_logic="return (" . $display_logic . ");";
 	                }
-	                if ( !eval( $display_logic ) ){
-	                    return $placeholder;
-	                }
+					$display_logic = htmlspecialchars_decode($display_logic, ENT_QUOTES);
+					try {
+						if ( !eval( $display_logic ) ){
+							return $placeholder;
+						}
+					} catch (ParseError $e) {
+						return $placeholder;
+					}
 				}
 			}
 		}
@@ -384,10 +389,10 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 if( !function_exists( 'widgetopts_elementor_before_render' ) ){
 	add_action( 'elementor/frontend/widget/before_render', 'widgetopts_elementor_before_render', 10, 2 );
 	function widgetopts_elementor_before_render( $element ){
-		global $widget_options;
 		$enabled = array( 'button', 'button_plus', 'eael-creative-button', 'cta' );
 		if ( in_array( $element->get_name(), $enabled ) ) {
-			if( isset( $widget_options['sliding'] ) && 'activate' == $widget_options['sliding'] ){
+			global $widget_options;
+			if( 'activate' == $widget_options['sliding'] ){
 				$settings = $element->get_settings();
 				if( isset( $settings['widgetopts_open_sliding'] ) && 'on' == $settings['widgetopts_open_sliding'] ){
 					$element->add_render_attribute( 'button', 'class', 'sl-widgetopts-open' );

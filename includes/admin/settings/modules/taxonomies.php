@@ -20,7 +20,7 @@ if( !function_exists( 'widgetopts_settings_taxonomies' ) ):
 	function widgetopts_settings_taxonomies(){ ?>
 		<li class="widgetopts-module-card widgetopts-module-type-pro" data-module-id="taxonomies">
 			<div class="widgetopts-module-card-content">
-				<a href="http://widget-options.com/features/post-types-taxonomies-widget-visibility/" target="_blank" class="widgetopts-pro-upsell"></a>
+				<a href="<?php echo apply_filters('widget_options_site_url', trailingslashit(WIDGETOPTS_PLUGIN_WEBSITE).'features/post-types-taxonomies-widget-visibility/');?>" target="_blank" class="widgetopts-pro-upsell"></a>
 				<h2><?php _e( 'Extended Taxonomy Terms', 'widget-options' );?></h2>
 				<div class="widgetopts-pro-label"><span class="dashicons dashicons-lock"></span></div>
 				<p class="widgetopts-module-desc">

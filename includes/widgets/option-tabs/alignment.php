@@ -39,6 +39,7 @@ function widgetopts_tabcontent_alignment( $args ){
             $desktop = $args['params']['alignment']['desktop'];
         }
     }
+	$upgrade_link = apply_filters('widget_options_site_url', trailingslashit(WIDGETOPTS_PLUGIN_WEBSITE));
     ?>
     <div id="extended-widget-opts-tab-<?php echo $args['id'];?>-alignment" class="extended-widget-opts-tabcontent extended-widget-opts-tabcontent-alignment">
         <table class="form-table">
@@ -60,7 +61,7 @@ function widgetopts_tabcontent_alignment( $args ){
                     </td>
                 </tr>
                 <tr valign="top" class="widgetopts-topro">
-                        <td colspan="2"><small><?php _e( '<em>Upgrade to <a href="https://widget-options.com/" target="_blank">Pro Version</a> for Multiple Devices Alignment and Additional Widget Options.</em>', 'widget-options' );?></small></td>
+                        <td colspan="2"><small><?php _e( '<em>Upgrade to <a href="'.$upgrade_link.'" target="_blank">Pro Version</a> for Multiple Devices Alignment and Additional Widget Options.</em>', 'widget-options' );?></small></td>
                     </tr>
             </tbody>
         </table>

@@ -82,7 +82,7 @@ if( !class_exists( 'WIDGETOPS_Welcome' ) ){
 				<div class="feature-section two-col">
 					<h3><?php _e( 'Extend Plugin Features', 'widget-options' ); ?></h3>
 					<p><?php _e( 'Unlock more features by upgrading to Extended Widget Options to get the full plugin functionalities! We have tons of helpful features that will let you fully manage your widgets and extend functionalities.', 'widget-options' ); ?></p>
-					<p><a href="http://widget-options.com/features/" target="_blank" class="widgetopts-features-button button button-primary"><?php _e( 'See all Features', 'widget-options' ); ?></a></p>
+					<p><a href="<?php echo apply_filters('widget_options_site_url', trailingslashit(WIDGETOPTS_PLUGIN_WEBSITE).'features/');?>" target="_blank" class="widgetopts-features-button button button-primary"><?php _e( 'See all Features', 'widget-options' ); ?></a></p>
 				</div>
 			</div>
 		<?php }

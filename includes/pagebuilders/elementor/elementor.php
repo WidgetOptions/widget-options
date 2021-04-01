@@ -102,6 +102,7 @@ if( !function_exists( 'widgetopts_elementor_section' ) ){
                                     'overwrite'         => true
                                 ] 
                             );
+							$upgrade_link = apply_filters('widget_options_site_url', trailingslashit(WIDGETOPTS_PLUGIN_WEBSITE).'?utm_source=elementor&utm_medium=upgrade&utm_campaign=upgradebtn');
                             $element->add_control(
                     			'widgetopts_pro',
                     			[
@@ -114,7 +115,7 @@ if( !function_exists( 'widgetopts_elementor_section' ) ){
                     						<div class="elementor-panel-nerd-box-message">' .
                     							__( 'Upgrade to Extended Widget Options to unlock all options to easily control and manage each Elementor widget.', 'widget-options' ) .
                     						'</div>
-                    						<a href="http://widget-options.com/?utm_source=elementor&utm_medium=upgrade&utm_campaign=upgradebtn" class="elementor-panel-nerd-box-link elementor-button elementor-button-default elementor-go-pro" target="_blank">' .
+                    						<a href="'.$upgrade_link.'" class="elementor-panel-nerd-box-link elementor-button elementor-button-default elementor-go-pro" target="_blank">' .
                     							__( 'Upgrade Now!', 'widget-options' ) .
                     						'</a>
                     						</div>',
