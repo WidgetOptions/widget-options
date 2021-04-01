@@ -1,15 +1,15 @@
-=== Widget Options ===
-Contributors: flowdee
+=== Widget Options - Add Context To WordPress Widgets ===
+Contributors: expresstech, phpbits, flowdee
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FMKC2SLPTULP8
 Tags: widgets, restrict widgets, display widgets, widget logic, hide widgets, hide widget, sidebar, widget content, display widget, widget options, widget option, widget, widget css, CSS, widget classes, widget styling, widget ID, widget custom class, widget visibility, widget ninja, jetpack visibility, siteorigin, siteorigin pagebuilder, pagebuilder by siteorigin
 Requires at least: 4.0
-Tested up to: 5.2
+Tested up to: 5.5
 Requires PHP: 5.6
-Stable tag: 3.6.1
+Stable tag: 3.7.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Get Better Control over your Widgets. Easily show or hide WordPress widgets on specified pages & devices and/or assign custom alignment.
+Get Better Control over your WordPress Widgets. Easily show or hide WordPress widgets on specific pages, for specific user roles, taxonomy or devices. Elementor supported.
 
 == Description ==
 
@@ -19,7 +19,7 @@ Get Better Control over your Widgets. Easily show or hide WordPress widgets on s
 
 Built with seamlessly integration with WordPress, Widget Options is the world's most complete widget management plugin solution yet.
 
-[vimeo https://vimeo.com/190057410]
+[youtube https://www.youtube.com/watch?v=GNawoUZ_t18]
 
 <h4>Show or hide widgets on specific WordPress pages</h4>
 With Widget Options Plugin, you can easily assign pages visibility and restrict each widgets on different pages, posts, custom post types, categories, tags and custom taxonomies.
@@ -103,13 +103,13 @@ Check full <a href="http://widget-options.com/features/">Extended Widget Options
 
 In need of <a href="https://widget-options.com/modal-pop-up-and-sliding-widget-options/" target="_blank">WordPress Sliding Panel</a> for your widgets? Check out <a href="https://widget-options.com/modal-pop-up-and-sliding-widget-options/" target="_blank">Sliding Widget Options</a> add-on and transform any of your widgets to modal pop-up, slide in and/or sliding widget panel; and increase your website's user engagement!
 
-If you like to contribute, report issue or have suggestions, you can find the development version on <a href="https://github.com/flowdee/widget-options" target="_blank">Github</a>.
+If you like to contribute, report issue or have suggestions, you can find the development version on <a href="https://github.com/WidgetOptions/widget-options" target="_blank">Github</a>.
 
 <strong>More information</strong>
 
-* Follow the developer <a href="https://twitter.com/flowdee" target="_blank">@Twitter</a>
-* <a href="https://www.facebook.com/groups/WPwidgets/" target="_blank">Join Facebook Community Group</a>
-* Other <a href="https://kryptonitewp.com/downloads/category/plugins/">WordPress plugins</a>
+* Follow the developer <a href="https://twitter.com/WidgetOptions" target="_blank">@Twitter</a>
+* <a href="https://www.facebook.com/WidgetOptions/" target="_blank">Join Facebook Community Group</a>
+* <a href="https://www.youtube.com/channel/UCgKC5IAqoz4Q7nW0WzueQFw" target="_blank">Youtube Channel</a>
 
 == Installation ==
 
@@ -151,6 +151,26 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 10. Advanced Custom Fields ( ACF ) Support
 
 == Changelog ==
+
+= 3.7.8 =
+* Compatible with Latest WordPress.
+* Updated dependency security vulnerability
+
+= 3.7.7 =
+* Compatible with Latest WordPress.
+* Fixed deprecated jQuery functions.
+* Fixed Logic option issue.
+* Fixed Mobile restrictions issues.
+* Update plugin page descriptions.
+* Updated admin options page details.
+* Added affiliate URL support via hooks.
+
+= 3.7.6 =
+* Fix blank page issue in admin widget page.
+
+= 3.7.5 =
+* Compatible with Latest WordPress.
+* Other improvements.
 
 = 3.7.4 =
 * Update readme and plugin info.
@@ -220,15 +240,15 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 
 = 3.1 =
 * Add Pagebuilder by SiteOrigin Plugin Widgets Compatibility
-* Fixes for https://github.com/flowdee/widget-options/issues/6
+* Fixes for https://github.com/WidgetOptions/widget-options/issues/6
 * Performance enhancement
 
 = 3.0.2 =
-* Fix reported issue : https://github.com/flowdee/widget-options/issues/7
+* Fix reported issue : https://github.com/WidgetOptions/widget-options/issues/7
 * Fix DIVI jQuery UI styling issues
 
 = 3.0.1 =
-* Fix reported issue : https://github.com/flowdee/widget-options/issues/4
+* Fix reported issue : https://github.com/WidgetOptions/widget-options/issues/4
 
 = 3.0 =
 * Improve settings page and add modular options inspired by iThemes Security Plugin
@@ -247,7 +267,7 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 * Update pro tabs with additional features added on Extended Widget Options 2.0
 
 = 1.2 =
-* Add Widget CSS ID and Classes tab options. <a href="https://widget-options.com/features/custom-wordpress-widget-id-classes/">Learn more about this update</a>
+* Add Widget CSS ID and Classes tab options. <a href="https://widget-options.com/blog/add-wordpress-widget-css-classes-id/">Learn more about this update</a>
 * Add Blog Page Visibility for Widgets as per @cfabrice & @fljdave request
 
 = 1.1.1 =

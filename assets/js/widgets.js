@@ -61,7 +61,7 @@
 		}
 
 		//add live filter
-		if ( typeof $.fn.liveFilter !== 'undefined' && $.isFunction( $.fn.liveFilter ) && $( '#widgetopts-widgets-search' ).length > 0 ) {
+		if ( typeof $.fn.liveFilter !== 'undefined' && $( '#widgetopts-widgets-search' ).length > 0 ) {
 			// Add separator to distinguish between visible and hidden widgets
 			$('.widget:last-of-type').after('<div class="widgetopts-separator" />');
 

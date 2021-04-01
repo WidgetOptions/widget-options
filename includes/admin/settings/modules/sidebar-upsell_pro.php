@@ -22,7 +22,9 @@ if( !function_exists( 'widgetopts_settings_upgrade_pro' ) ):
 			<h3 class="hndle ui-sortable-handle"><span><?php _e( 'Get Extended Widget Options', 'widget-options' );?></span></h3>
 			<div class="inside">
 				<p>
-					<?php _e( '<strong>Unlock all features!</strong> Get the world\'s most complete widget management and get best out of your widgets with <a href="http://widget-options.com/" target="_blank">Extended Widget Options</a> including: ', 'widget-options' );?>
+					<?php 
+					$site_url = apply_filters('widget_options_site_url', trailingslashit(WIDGETOPTS_PLUGIN_WEBSITE));
+					_e( '<strong>Unlock all features!</strong> Get the world\'s most complete widget management and get best out of your widgets with <a href="'.$site_url.'" target="_blank">Extended Widget Options</a> including: ', 'widget-options' );?>
 				</p>
 				<ul style="list-style: outside; padding-left: 15px;">
 					<li>
@@ -54,7 +56,7 @@ if( !function_exists( 'widgetopts_settings_upgrade_pro' ) ):
 					</li>
 				</ul>
 				<p>
-					<a class="button-primary" href="http://widget-options.com/?utm_source=wordpressadmin&amp;utm_medium=widget&amp;utm_campaign=widgetoptsprocta" target="_blank"><?php _e( 'Get Extended Widget Options', 'widget-options' );?></a>
+					<a class="button-primary" href="<?php echo apply_filters('widget_options_site_url', trailingslashit(WIDGETOPTS_PLUGIN_WEBSITE).'?utm_source=wordpressadmin&amp;utm_medium=widget&amp;utm_campaign=widgetoptsprocta');?>" target="_blank"><?php _e( 'Get Extended Widget Options', 'widget-options' );?></a>
 				</p>
 			</div>
 		</div>

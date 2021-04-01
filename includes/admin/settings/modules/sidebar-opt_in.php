@@ -55,6 +55,6 @@ if( !function_exists( 'widgetopts_settings_sidebar_opt_in' ) ):
 
 	    <?php
 	}
-	add_action( 'widgetopts_module_sidebar', 'widgetopts_settings_sidebar_opt_in', 20 );
+	//add_action( 'widgetopts_module_sidebar', 'widgetopts_settings_sidebar_opt_in', 20 );
 endif;
 ?>

@@ -172,7 +172,7 @@ wpWidgetOpts = {
 		});
 	},
 	live_search : function(){
-		if ( typeof $.fn.liveFilter !== 'undefined' && $.isFunction( $.fn.liveFilter ) && $( '#widgetopts-widgets-search' ).length > 0 ) {
+		if ( typeof $.fn.liveFilter !== 'undefined' && $( '#widgetopts-widgets-search' ).length > 0 ) {
 			// Add separator to distinguish between visible and hidden widgets
 			$('.widget:last-of-type').after('<div class="widgetopts-separator" />');
 
@@ -260,7 +260,7 @@ wpWidgetOpts = {
 			var $element 	= $( element ),
 				name 		= $element.find( '.sidebar-name h2' ).text(),
 				id 			= $element.find( '.widgets-sortables' ).attr( 'id' ),
-				li 			= $('<li tabindex="0">').text( $.trim( name ) );
+				li 			= $('<li tabindex="0">').text(name.trim());
 
 			if ( index === 0 ) {
 				li.addClass( 'widgetopts-chooser-selected' );
@@ -375,8 +375,9 @@ wpWidgetOpts = {
 		var self = this;
 		if( widgetopts10n.sidebaropts.length > 0 ){
 			$( '#widgets-right .widgets-holder-wrap' ).each( function( index, element ) {
+				var sidebar_opts_h2 = $(this).find('.widgets-sortables h2').text();
 				dl_link = widgetopts10n.sidebaropts.replace( '__sidebaropts__', $(this).find('.widgets-sortables').attr('id') );
-				dl_link = dl_link.replace( '__sidebar_opts__', $.trim( $(this).find('.widgets-sortables h2').text() ) );
+				dl_link = dl_link.replace( '__sidebar_opts__', sidebar_opts_h2.trim() );
 				$(this).append( dl_link );
 			});
 		}

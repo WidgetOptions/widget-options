@@ -46,12 +46,14 @@ class WP_Widget_Options_Importer {
 		);
 	}
 
-    function settings_page(){ ?>
+    function settings_page(){
+		$upgrade_url = apply_filters('widget_options_site_url', trailingslashit(WIDGETOPTS_PLUGIN_WEBSITE).'?utm_source=wordpressadmin&utm_medium=importexport&utm_campaign=titlelink');
+		?>
         <div class="wrap">
 			<h1>
 				<?php _e( 'Import or Export Widgets', 'widget-options' ); ?>
 				<a href="<?php echo esc_url( admin_url( 'options-general.php?page=widgetopts_plugin_settings' ) );?>" class="page-title-action"><?php _e( 'Manage Widget Options', 'widget-options' );?></a>
-				<a href="<?php echo esc_url( apply_filters( 'widget_options_upgrade_url', 'http://widget-options.com/?utm_source=wordpressadmin&utm_medium=importexport&utm_campaign=titlelink' ) ); ?>" target="_blank" class="page-title-action"><?php _e( 'Upgrade', 'widget-options' ); ?></a>
+				<a href="<?php echo esc_url( apply_filters( 'widget_options_upgrade_url', $upgrade_url ) ); ?>" target="_blank" class="page-title-action"><?php _e( 'Upgrade', 'widget-options' ); ?></a>
 			</h1>
 			<div class="widgetopts-imex">
 				<?php if( !empty( $this->imported ) ){ 

@@ -84,7 +84,7 @@ function widgetopts_tabcontent_gopro( $args ){ ?>
                 <span class="dashicons dashicons-lock"></span> <?php _e( 'Pagebuilder by SiteOrigin Support', 'widget-options' );?>
             </li>
         </ul>
-        <p><strong><a href="http://widget-options.com/?utm_source=wordpressadmin&utm_medium=widgettabs&utm_campaign=widgetoptsprotab" class="button-primary" target="_blank"><?php _e( 'Learn More', 'widget-options' );?></a></strong></p>
+        <p><strong><a href="<?php echo apply_filters('widget_options_site_url', trailingslashit(WIDGETOPTS_PLUGIN_WEBSITE).'?utm_source=wordpressadmin&utm_medium=widgettabs&utm_campaign=widgetoptsprotab');?>" class="button-primary" target="_blank"><?php _e( 'Learn More', 'widget-options' );?></a></strong></p>
     </div>
 <?php
 }

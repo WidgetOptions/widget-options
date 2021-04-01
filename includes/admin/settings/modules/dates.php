@@ -21,7 +21,7 @@ if( !function_exists( 'widgetopts_settings_dates' ) ):
 	function widgetopts_settings_dates(){ ?>
 		<li class="widgetopts-module-card widgetopts-module-type-pro" data-module-id="dates">
 			<div class="widgetopts-module-card-content">
-				<a href="http://widget-options.com/features/restrict-wordpress-widgets-per-days-date-range/" target="_blank" class="widgetopts-pro-upsell"></a>
+				<a href="<?php echo apply_filters('widget_options_site_url', trailingslashit(WIDGETOPTS_PLUGIN_WEBSITE).'features/restrict-wordpress-widgets-per-days-date-range/');?>" target="_blank" class="widgetopts-pro-upsell"></a>
 				<h2><?php _e( 'Days & Date Range', 'widget-options' );?></h2>
 				<div class="widgetopts-pro-label"><span class="dashicons dashicons-lock"></span></div>
 				<p class="widgetopts-module-desc">

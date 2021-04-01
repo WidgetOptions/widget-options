@@ -36,10 +36,15 @@ if( !function_exists( 'widgetopts_siteorigin_panels_data' ) ){
                                 if ( stristr($display_logic,"return")===false ){
                                     $display_logic="return (" . $display_logic . ");";
                                 }
-                                if ( !eval( $display_logic ) ){
-                                    unset( $panels_data['widgets'][$key]);
-                                }
-                            }
+								$display_logic = htmlspecialchars_decode($display_logic, ENT_QUOTES);
+								try {
+									if (!eval($display_logic)) {
+										unset($panels_data['widgets'][$key]);
+									}
+								} catch (ParseError $e) {
+									unset($panels_data['widgets'][$key]);
+								}
+							}
                         }
 
                     }

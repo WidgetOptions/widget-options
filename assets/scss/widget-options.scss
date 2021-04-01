@@ -27,7 +27,7 @@ body{
 	}
 	@media screen and (min-width: $desktop) {
 		.extendedwopts-hide.extendedwopts-desktop{
-			display: none;
+			display: none !important;
 		}
 		.extendedwopts-show.extendedwopts-desktop{
 			display: block;
@@ -39,7 +39,7 @@ body{
 	@media screen and (max-width: $tablet)
 	and (min-width: $mobile + 1) {
 		.extendedwopts-hide.extendedwopts-tablet{
-			display: none;
+			display: none !important;
 		}
 		.extendedwopts-show.extendedwopts-tablet{
 			display: block;
@@ -53,7 +53,7 @@ body{
 	}
 	@media screen and (max-width: $mobile) {
 		.extendedwopts-hide.extendedwopts-mobile{
-			display: none;
+			display: none !important;
 		}
 		.extendedwopts-show.extendedwopts-mobile{
 			display: block;
