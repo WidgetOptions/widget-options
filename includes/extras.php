@@ -67,21 +67,20 @@ function widgetopts_addhttp($url) {
  }
 
  function widgetopts_global_types() {
- 	$types = get_option( 'widgetopts_global_types' );
-
+ 	/*$types = get_option( 'widgetopts_global_types' );
  	if( empty( $types ) ) {
-
          $types  = get_post_types( array(
                                 'public' => true,
                             ), 'object' );
-
         // Let's let devs alter that value coming in
         $types = apply_filters( 'widgetopts_update_global_types', $types );
         update_option( 'widgetopts_global_types', $types );
+ 	}*/
+	
+	$types = get_post_types(array('public' => true), 'object');
+	$types = apply_filters('widgetopts_update_global_types', $types);
 
- 	}
-
- 	return apply_filters( 'widgetopts_get_global_types', $types );
+	return apply_filters( 'widgetopts_get_global_types', $types );
  }
 
  function widgetopts_global_pages() {
