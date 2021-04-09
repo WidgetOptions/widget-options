@@ -253,4 +253,3 @@ if( !function_exists( 'WIDGETOPTS' ) ){
 		WIDGETOPTS();
 	}
 }
-?>
