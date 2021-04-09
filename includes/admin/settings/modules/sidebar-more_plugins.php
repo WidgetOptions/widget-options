@@ -30,6 +30,6 @@ if( !function_exists( 'widgetopts_settings_more_plugins' ) ):
 
 	    <?php
 	}
-	add_action( 'widgetopts_module_sidebar', 'widgetopts_settings_more_plugins', 25 );
+	//add_action( 'widgetopts_module_sidebar', 'widgetopts_settings_more_plugins', 25 );
 endif;
 ?>
