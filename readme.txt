@@ -154,7 +154,9 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 
 = 3.7.8 =
 * Compatible with Latest WordPress.
-* Updated dependency security vulnerability
+* Updated dependency security vulnerability.
+* Fixed Multisite warning issues.
+* Fixed custom post type list in display condition.
 
 = 3.7.7 =
 * Compatible with Latest WordPress.
