@@ -3,7 +3,7 @@ Contributors: expresstech, phpbits, flowdee
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FMKC2SLPTULP8
 Tags: widgets, restrict widgets, display widgets, widget logic, hide widgets, hide widget, sidebar, widget content, display widget, widget options, widget option, widget, widget css, CSS, widget classes, widget styling, widget ID, widget custom class, widget visibility, widget ninja, jetpack visibility, siteorigin, siteorigin pagebuilder, pagebuilder by siteorigin
 Requires at least: 4.0
-Tested up to: 5.5
+Tested up to: 5.7
 Requires PHP: 5.6
 Stable tag: 3.7.8
 License: GPLv2 or later

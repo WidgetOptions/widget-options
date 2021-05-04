@@ -172,7 +172,7 @@ if( !function_exists( 'widgetopts_get_settings' ) ):
 			update_option( 'widgetopts_settings', $settings );
 		}
 
-		$default = array('settings' => array(), 'visibility' => '', 'devices' => '', 'alignment' => '', 'columns' => '', 'dates' => '', 'styling' => '', 'roles' => '', 'hide_title' => '', 'classes' => '', 'logic' => '', 'links' => '', 'fixed' => '', 'taxonomies' => '', 'animation' => '', 'shortcodes' => '', 'cache' => '', 'siteorigin' => '', 'search' => '', 'disable_widgets' => '', 'permission' => '', 'move' => '', 'clone' => '', 'elementor' => '', 'widget_area' => '', 'import_export' => '', 'urls' => '', 'beaver' => '', 'acf' => '', 'state' => '');
+		$default = array('settings' => array(), 'visibility' => '', 'devices' => '', 'alignment' => '', 'columns' => '', 'dates' => '', 'styling' => '', 'roles' => '', 'hide_title' => '', 'classes' => '', 'logic' => '', 'links' => '', 'fixed' => '', 'taxonomies' => '', 'animation' => '', 'shortcodes' => '', 'cache' => '', 'siteorigin' => '', 'search' => '', 'disable_widgets' => '', 'permission' => '', 'move' => '', 'clone' => '', 'elementor' => '', 'widget_area' => '', 'import_export' => '', 'urls' => '', 'beaver' => '', 'acf' => '', 'state' => '', 'sliding' => '');
 		$settings = shortcode_atts($default, $settings);
 
 		return apply_filters( 'widgetopts_get_settings', $settings );
