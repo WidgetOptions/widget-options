@@ -58,6 +58,7 @@ if( !function_exists( 'widgetopts_register_defaults' ) ){
 				add_option( 'widgetopts_tabmodule-classes', 'activate' );
 				add_option( 'widgetopts_tabmodule-logic', 'activate' );
 				add_option( 'widgetopts_tabmodule-state', 'activate' );
+				add_option( 'widgetopts_tabmodule-classic_widgets_screen', 'activate' );
 				//add free version settings
 				$defaults = array(
 						'visibility' 	=> 	array(
