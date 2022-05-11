@@ -4,8 +4,8 @@
  *
  * Process Managing of Widget Options.
  *
- * @copyright   Copyright (c) 2016, Jeffrey Carandang
- * @since       2.0
+ * @copyright   Copyright (c) 2022, Marketing Fire
+ * @since       3.0
  */
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
