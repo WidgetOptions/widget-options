@@ -3,7 +3,7 @@
  * Plugin Name: Widget Options
  * Plugin URI: https://widget-options.com/
  * Description: Additional Widget options for better widget control. Get <strong><a href="http://widget-options.com/" target="_blank" >Extended Widget Options for WordPress</a></strong> for complete widget controls. Thanks!
- * Version: 3.7.10
+ * Version: 3.7.11
  * Author: Widget Options Team
  * Author URI: https://widget-options.com/
  * Text Domain: widget-options
