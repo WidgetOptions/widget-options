@@ -345,7 +345,7 @@ if( !function_exists( 'widgetopts_elementor_tab_settings' ) ){
         $element->start_controls_tab( 
             'widgetopts_tab_settings', 
             [ 
-                'label' => __( '<i class="fa fa-gear"></i>', 'widget-options' ) 
+                'label' => __( '<i class="fa fa-cog"></i>', 'widget-options' ) 
             ],
             [
                 'overwrite'         => true
