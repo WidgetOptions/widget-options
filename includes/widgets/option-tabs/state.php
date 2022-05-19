@@ -49,6 +49,59 @@ function widgetopts_tabcontent_state( $args ){
             </select>
         </p>
         <p><small><?php _e( 'Restrict widget visibility for logged-in and logged-out users. ', 'widget-options' );?></small></p> 
+
+        <div class="extended-widget-opts-demo-feature">
+            <div class="extended-widget-opts-demo-warning">
+                <p class="widgetopts-unlock-features">
+                    <span class="dashicons dashicons-lock"></span><br>
+                    Unlock all Features<br>
+                    <a href="https://widget-options.com/?utm_source=wordpressadmin&amp;utm_medium=widgettabs&amp;utm_campaign=widgetoptsprotab" class="button-primary" target="_blank">Learn More</a>
+                </p>
+            </div>
+            <p class="widgetopts-subtitle"><?php _e( 'User Roles', 'widget-options' );?></p>
+            <p>
+                <strong><?php _e( 'Hide/Show', 'widget-options' );?></strong>
+                <select class="widefat" readonly>
+                    <option value="hide" <?php if( $options_role == 'hide' ){ echo 'selected="selected"'; }?> ><?php _e( 'Hide on checked roles', 'widget-options' );?></option>
+                    <option value="show" <?php if( $options_role == 'show' ){ echo 'selected="selected"'; }?>><?php _e( 'Show on checked roles', 'widget-options' );?></option>
+                </select>
+            </p>
+            <div class="extended-widget-opts-inner-roles" style="max-height: 230px;padding: 5px;overflow:auto;">
+                <table class="form-table">
+                    <tbody>
+                         <tr valign="top">
+                            <td scope="row"><strong><?php _e( 'Roles', 'widget-options' );?></strong></td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <?php foreach ( $roles as $role_name => $role_info ) {
+                            if( isset( $args['params'] ) && isset( $args['params']['roles'] ) ){
+                                if( isset( $args['params']['roles'][ $role_name ] ) ){
+                                    $checked = 'checked="checked"';
+                                }else{
+                                    $checked = '';
+                                }
+                            }else{
+                                $checked = '';
+                            }
+                            ?>
+                            <tr valign="top">
+                                <td scope="row"><label for="extended_widget_opts-<?php echo $args['id'];?>-role-<?php echo $role_name;?>"><?php echo $role_info['name'];?></label></td>
+                                <td>
+                                    <input type="checkbox" value="1" readonly />
+                                </td>
+                            </tr>
+                        <?php } ?>
+                        <tr valign="top">
+                            <td scope="row"><?php _e( 'Guests', 'widget-options' );?></td>
+                            <td>
+                                <input type="checkbox" value="1" readonly />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p><small><?php _e( 'Restrict widget visibility per user roles.', 'widget-options' );?></small></p> 
+        </div>
     </div>
 <?php
 }

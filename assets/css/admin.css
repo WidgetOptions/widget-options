@@ -189,10 +189,11 @@ body .extended-widget-opts-tabs .extended-widget-gopro-tab-alignment a{
 	text-align: center;
 	font-size: 16px;
     font-weight: bold;
+    line-height: 28px;
 }
 .widgetopts-unlock-features .dashicons{
-	font-size: 25px;
-	margin-right: 4px;
+	font-size: 23px;
+	margin-right: 10px;
 }
 
 /* customizer fix */
@@ -936,4 +937,47 @@ div#widgets-right .widget-top:hover,
 	padding: 15px 18px;
 	margin:  10px 0px 0px;
 	text-align: center;
+}
+
+/* DEMO Options */
+.extended-widget-opts-tabcontent .extended-widget-opts-demo-feature {
+	margin-top: 1em;
+}
+.extended-widget-opts-demo-feature {
+	position: relative;
+}
+
+.extended-widget-opts-demo-feature > * {
+	z-index: 1;
+}
+.extended-widget-opts-demo-feature:before {
+	content: '';
+	display: block;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	z-index: 2;
+	background: #FFF1B8;
+    opacity: 0.85;
+}
+.extended-widget-opts-demo-feature .extended-widget-opts-demo-warning {
+	display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    left: 0px;
+    right: 0px;
+    z-index: 3;
+    flex-wrap: wrap;
+    transform: translate(0, -50%);
+}
+.extended-widget-opts-demo-feature .extended-widget-opts-demo-warning > * {
+	width: 100%;
+}
+.extended-widget-opts-feature-warning {
+	background: #FFF1B8;
+	padding: 15px;
 }

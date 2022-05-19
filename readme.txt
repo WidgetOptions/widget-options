@@ -5,7 +5,11 @@ Tags: widgets, restrict widgets, display widgets, widget logic, hide widgets, hi
 Requires at least: 4.0
 Tested up to: 5.8
 Requires PHP: 5.6
+<<<<<<< Updated upstream
 Stable tag: 3.7.9
+=======
+Stable tag: 3.8
+>>>>>>> Stashed changes
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -152,6 +156,32 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 
 == Changelog ==
 
+<<<<<<< Updated upstream
+=======
+= 3.8 =
+
+* Added option to upgrade to PRO version.
+
+= 3.7.14 =
+
+* Fixed PHP Recoverable fatal error – when switching AMP mode
+
+= 3.7.13 =
+
+* Fixed issue in versioning
+
+= 3.7.12 =
+
+* Fixed jQuery UI styles
+
+= 3.7.11 =
+* Fixed visibility issue for WooCommerce taxonomies.
+
+= 3.7.10 =
+* Fixed CSS issue with other plugins.
+* Fixed missing icons on Elementor page builder.
+
+>>>>>>> Stashed changes
 = 3.7.9 =
 * Compatible with Latest WordPress.
 * Added option to revert Classic Widgets Screen.

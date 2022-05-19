@@ -61,7 +61,11 @@ function widgetopts_tabcontent_alignment( $args ){
                     </td>
                 </tr>
                 <tr valign="top" class="widgetopts-topro">
-                        <td colspan="2"><small><?php _e( '<em>Upgrade to <a href="'.$upgrade_link.'" target="_blank">Pro Version</a> for Multiple Devices Alignment and Additional Widget Options.</em>', 'widget-options' );?></small></td>
+                        <td colspan="2">
+                            <div class="extended-widget-opts-feature-warning">
+                                <small><?php _e( '<em>Upgrade to <a href="'.$upgrade_link.'" target="_blank">Pro Version</a> for Multiple Devices Alignment and Additional Widget Options.</em>', 'widget-options' );?></small>
+                            </div>
+                        </td>
                     </tr>
             </tbody>
         </table>

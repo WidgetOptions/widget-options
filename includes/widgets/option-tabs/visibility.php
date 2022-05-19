@@ -281,6 +281,10 @@ function widgetopts_tabcontent_visibility( $args ){
                                     <?php } ?>
                                 </div>
                             </div>
+                            <?php $upgrade_link = apply_filters('widget_options_site_url', trailingslashit(WIDGETOPTS_PLUGIN_WEBSITE)); ?>
+                            <div class="extended-widget-opts-feature-warning">
+                                <small><?php _e( '<em>Upgrade to <a href="'.$upgrade_link.'" target="_blank">Pro Version</a> to manage visibility for Custom Taxonomies.</em>', 'widget-options' );?></small>
+                            </div>
                         </div><!--  end tax tab content -->
                     <?php } ?>
                     </div><!--  end .extended-widget-opts-visibility-tabs -->

@@ -84,6 +84,10 @@ if( !function_exists( 'widgetopts_tabcontent_settings' ) ):
                        </li>
                    <?php } ?>
 
+                    <li class="extended-widget-opts-settings-tab-animation">
+                        <a href="#extended-widget-opts-settings-tab-<?php echo $args['id'];?>-animation" title="<?php _e( 'Animation', 'widget-options' );?>" ><?php _e( 'Animation', 'widget-options' );?></a>
+                    </li>
+
                    <?php if( 'activate' == $widget_options['logic'] ){ ?>
                        <li class="extended-widget-opts-settings-tab-logic">
                            <a href="#extended-widget-opts-settings-tab-<?php echo $args['id'];?>-logic" title="<?php _e( 'Display Logic', 'widget-options' );?>" ><?php _e( 'Logic', 'widget-options' );?></a>
@@ -166,6 +170,147 @@ if( !function_exists( 'widgetopts_tabcontent_settings' ) ):
                        </div>
                    </div><!--  end class tab content -->
                <?php } ?>
+
+               <!--  start Animation tab demo -->
+               <?php 
+                    $animation_array = array(
+                        'Attention Seekers' => array(
+                                                'bounce',
+                                                'flash',
+                                                'pulse',
+                                                'rubberBand',
+                                                'shake',
+                                                'swing',
+                                                'tada',
+                                                'wobble',
+                                                'jello'
+                                            ) ,
+                        'Bouncing Entrances' => array(
+                                                'bounceIn',
+                                                'bounceInDown',
+                                                'bounceInLeft',
+                                                'bounceInRight',
+                                                'bounceInUp',
+                                            ),
+
+                        'Fading Entrances'   => array(
+                                                'fadeIn',
+                                                'fadeInDown',
+                                                'fadeInDownBig',
+                                                'fadeInLeft',
+                                                'fadeInLeftBig',
+                                                'fadeInRight',
+                                                'fadeInRightBig',
+                                                'fadeInUp',
+                                                'fadeInUpBig'
+                                            ),
+                        'Flippers'          => array(
+                                                'flip',
+                                                'flipInX',
+                                                'flipInY',
+                                                'flipOutX',
+                                                'flipOutY'
+                                            ),
+                        'Lightspeed'        => array(
+                                                'lightSpeedIn',
+                                                'lightSpeedOut'
+                                            ),
+
+                        'Rotating Entrances' => array(
+                                                'rotateIn',
+                                                'rotateInDownLeft',
+                                                'rotateInDownRight',
+                                                'rotateInUpLeft',
+                                                'rotateInUpRight'
+                                            ),
+                        'Sliding Entrances' => array(
+                                                'slideInUp',
+                                                'slideInDown',
+                                                'slideInLeft',
+                                                'slideInRight'
+                                            ),
+                        'Zoom Entrances'    => array(
+                                                'zoomIn',
+                                                'zoomInDown',
+                                                'zoomInLeft',
+                                                'zoomInRight',
+                                                'zoomInUp'
+                                            ),
+                        'Specials'          => array(
+                                                'hinge',
+                                                'rollIn'
+                                            )
+                    ); ?>
+                    <!--  start animation tab content -->
+                    <div id="extended-widget-opts-settings-tab-<?php echo $args['id'];?>-animation" class="extended-widget-opts-settings-tabcontent extended-widget-opts-inner-tabcontent">
+                        <div class="widget-opts-animation">
+                            <div class="extended-widget-opts-demo-feature">
+                                <div class="extended-widget-opts-demo-warning">
+                                    <p class="widgetopts-unlock-features">
+                                        <span class="dashicons dashicons-lock"></span><br>
+                                        Unlock all Features<br>
+                                        <a href="https://widget-options.com/?utm_source=wordpressadmin&amp;utm_medium=widgettabs&amp;utm_campaign=widgetoptsprotab" class="button-primary" target="_blank">Learn More</a>      
+                                    </p>
+                                </div>
+                                <p>
+                                    <label for="opts-class-animation-<?php echo $args['id'];?>"><?php _e( 'Animation Type', 'widget-options' );?></label>
+                                    <br />
+                                    <select class="widefat" readonly>
+                                        <option value=""><?php _e( 'None', 'widget-options' );?></option>
+                                        <?php foreach( $animation_array as $group => $anims ){ ?>
+                                            <optgroup label="<?php _e( $group, 'widget-options' );?>">
+                                                <?php foreach( $anims as $anim => $aname ){ ?>
+                                                    <option value="<?php echo $aname;?>" <?php echo ( $animation == $aname ) ? 'selected="selected"' : ''; ?> ><?php _e( $aname, 'widget-options' )?></option>
+                                                <?php } ?>
+                                            </optgroup>
+                                        <?php } ?>
+                                    </select>
+                                    <small><em><?php _e( 'The type of animation for this event.', 'widget-options' );?></em></small>
+                                </p>
+
+                                <p>
+                                    <label for="opts-class-event-<?php echo $args['id'];?>"><?php _e( 'Animation Event', 'widget-options' );?></label>
+                                    <br  />
+                                    <select class="widefat" readonly>
+                                        <option value="enters" <?php echo ('enters' == $event) ? 'selected="selected"' : ''; ?>><?php _e( 'Element Enters Screen', 'widget-options' );?></option>
+                                        <option value="onScreen" <?php echo ('onScreen' == $event) ? 'selected="selected"' : ''; ?>><?php _e( 'Element In Screen', 'widget-options' );?></option>
+                                        <option value="pageLoad" <?php echo ('pageLoad' == $event) ? 'selected="selected"' : ''; ?>><?php _e( 'Page Load', 'widget-options' );?></option>
+                                    </select>
+                                    <small><em><?php _e( 'The event that triggers the animation', 'widget-options' );?></em></small>
+                                </p>
+
+                                <p>
+                                    <label for="opts-class-speed-<?php echo $args['id'];?>"><?php _e( 'Animation Speed', 'widget-options' );?></label>
+                                    <br  />
+                                    <input type="text" class="widefat" readonly />
+                                    <small><em><?php _e( 'How many seconds the incoming animation should lasts.', 'widget-options' );?></em></small>
+                                </p>
+
+                                <p>
+                                    <label for="opts-class-offset-<?php echo $args['id'];?>"><?php _e( 'Screen Offset', 'widget-options' );?></label>
+                                    <br  />
+                                    <input type="text" readonly />
+                                    <small><em><?php _e( 'How many pixels above the bottom of the screen must the widget be before animating.', 'widget-options' );?></em></small>
+                                </p>
+
+                                <p>
+                                    <label for="opts-class-hidden-<?php echo $args['id'];?>"><?php _e( 'Hide Before Animation', 'widget-options' );?></label>
+                                    <br  />
+                                    <input type="checkbox" value="1" readonly />
+                                    <label for="opts-class-hidden-<?php echo $args['id'];?>"><?php _e( 'Enabled', 'widget-options' );?></label><br />
+                                    <small><em><?php _e( 'Hide widget before animating.', 'widget-options' );?></em></small>
+                                </p>
+
+                                <p>
+                                    <label for="opts-class-delay-<?php echo $args['id'];?>"><?php _e( 'Animation Delay', 'widget-options' );?></label>
+                                    <br  />
+                                    <input type="text" class="widefat" readonly />
+                                    <small><em><?php _e( 'Number of seconds after the event to start the animation.', 'widget-options' );?></em></small>
+                                </p>
+                            </div>
+                        </div>
+                    </div><!--  end animation tab content -->
+               <!--  end Animation tab demo -->
 
                <?php if( 'activate' == $widget_options['logic'] ){ ?>
                    <!--  start logic tab content -->
