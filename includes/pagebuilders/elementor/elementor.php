@@ -96,7 +96,7 @@ if( !function_exists( 'widgetopts_elementor_section' ) ){
                             $element->start_controls_tab( 
                                 'widgetopts_tab_upsell', 
                                 [ 
-                                    'label' => __( '<i class="fa fa-plus"></i>', 'widget-options' ) 
+                                    'label' => __( '<i class="dashicons dashicons-plus"></i>', 'widget-options' ) 
                                 ],
                                 [
                                     'overwrite'         => true
@@ -108,7 +108,7 @@ if( !function_exists( 'widgetopts_elementor_section' ) ){
                     			[
                     				'type' => Elementor\Controls_Manager::RAW_HTML,
                     				'raw' => '<div class="elementor-panel-nerd-box">
-                    						<i class="elementor-panel-nerd-box-icon fa fa-lock"></i>
+                                    <i class="elementor-panel-nerd-box-icon dashicons dashicons-lock"></i>
                     						<div class="elementor-panel-nerd-box-title">' .
                     							__( 'Unlock All Widget Options', 'widget-options' ) .
                     						'</div>
@@ -149,7 +149,7 @@ if( !function_exists( 'widgetopts_elementor_tab_visibility' ) ){
         $element->start_controls_tab( 
             'widgetopts_tab_visibility', 
             [ 
-                'label' => __( '<i class="fa fa-eye"></i>', 'widget-options' ) 
+                'label' => __( '<span class="dashicons dashicons-visibility"></span>', 'widget-options' ) 
             ],
             [
                 'overwrite'         => true
@@ -309,7 +309,7 @@ if( !function_exists( 'widgetopts_elementor_tab_state' ) ){
         $element->start_controls_tab(
             'widgetopts_tab_state',
             [
-                 'label' => __( '<i class="fa fa-user"></i>', 'widget-options' )
+                'label' => __( '<span class="dashicons dashicons-admin-users"></span>', 'widget-options' )
             ],
             [
                 'overwrite'         => true
@@ -345,7 +345,7 @@ if( !function_exists( 'widgetopts_elementor_tab_settings' ) ){
         $element->start_controls_tab( 
             'widgetopts_tab_settings', 
             [ 
-                'label' => __( '<i class="fa fa-gear"></i>', 'widget-options' ) 
+                'label' => __( '<span class="dashicons dashicons-admin-generic"></span>', 'widget-options' ) 
             ],
             [
                 'overwrite'         => true

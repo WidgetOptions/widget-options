@@ -1,15 +1,11 @@
 === Widget Options - Add Context To WordPress Widgets ===
-Contributors: expresstech, phpbits, flowdee
+Contributors: marketingfire, phpbits, flowdee
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FMKC2SLPTULP8
 Tags: widgets, restrict widgets, display widgets, widget logic, hide widgets, hide widget, sidebar, widget content, display widget, widget options, widget option, widget, widget css, CSS, widget classes, widget styling, widget ID, widget custom class, widget visibility, widget ninja, jetpack visibility, siteorigin, siteorigin pagebuilder, pagebuilder by siteorigin
 Requires at least: 4.0
-Tested up to: 5.8
+Tested up to: 5.9
 Requires PHP: 5.6
-<<<<<<< Updated upstream
-Stable tag: 3.7.9
-=======
 Stable tag: 3.8
->>>>>>> Stashed changes
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,6 +14,8 @@ Get Better Control over your WordPress Widgets. Easily show or hide WordPress wi
 == Description ==
 
 <strong>Control your sidebar widgets more!</strong> Assign different contents on your sidebars, footer and any sidebar widgets.
+
+With over <strong>1,060,000+ downloads</strong> and an <strong>average rating of 4.9 stars</strong>, there are no doubts that Widget Options is the perfect solution for you to take better control of your widgets.
 
 <strong>Widget Options</strong> adds elegant and feature-packed tabbed options below each widget to completely manage and control each widgets visibility and appearance.
 
@@ -105,7 +103,7 @@ Check full <a href="http://widget-options.com/features/">Extended Widget Options
 
 <h4>Add-ons</h4>
 
-In need of <a href="https://widget-options.com/modal-pop-up-and-sliding-widget-options/" target="_blank">WordPress Sliding Panel</a> for your widgets? Check out <a href="https://widget-options.com/modal-pop-up-and-sliding-widget-options/" target="_blank">Sliding Widget Options</a> add-on and transform any of your widgets to modal pop-up, slide in and/or sliding widget panel; and increase your website's user engagement!
+In need of <a href="https://widget-options.com/features/modal-pop-up-and-sliding-widget-options/" target="_blank">WordPress Sliding Panel</a> for your widgets? Check out <a href="https://widget-options.com/features/modal-pop-up-and-sliding-widget-options/" target="_blank">Sliding Widget Options</a> add-on and transform any of your widgets to modal pop-up, slide in and/or sliding widget panel; and increase your website's user engagement!
 
 If you like to contribute, report issue or have suggestions, you can find the development version on <a href="https://github.com/WidgetOptions/widget-options" target="_blank">Github</a>.
 
@@ -156,8 +154,6 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 
 == Changelog ==
 
-<<<<<<< Updated upstream
-=======
 = 3.8 =
 
 * Added option to upgrade to PRO version.
@@ -181,7 +177,6 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 * Fixed CSS issue with other plugins.
 * Fixed missing icons on Elementor page builder.
 
->>>>>>> Stashed changes
 = 3.7.9 =
 * Compatible with Latest WordPress.
 * Added option to revert Classic Widgets Screen.
@@ -251,7 +246,7 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 * Add option to disable automatic addition of .widget class
 * Fixes and support for is_active_sidebar
 * Update subscription sidebar and add free e-book download
-* Add module card for <a href="https://widget-options.com/modal-pop-up-and-sliding-widget-options/" target="_blank">WordPress Sliding Panel</a> add-on
+* Add module card for <a href="https://widget-options.com/features/modal-pop-up-and-sliding-widget-options/" target="_blank">WordPress Sliding Panel</a> add-on
 * Add module card for <a href="https://widget-options.com/features/clone-wordpress-widgets/" target="_blank">Clone WordPress Widgets</a> premium feature
 * Improvements for better speed on admin widgets dashboard
 
@@ -259,7 +254,7 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 * Use better Global pages items to prevent issues with site with lots of pages
 * Fix Multisite Issue when Network Activated
 * Add 'widget' class to fix issue with Elegant Themes that using 'et_widget' as base class
-* Add support for <a href="https://widget-options.com/modal-pop-up-and-sliding-widget-options/" target="_blank">Sliding Widgets</a> add-on
+* Add support for <a href="https://widget-options.com/features/modal-pop-up-and-sliding-widget-options/" target="_blank">Sliding Widgets</a> add-on
 
 = 3.3.1 =
 * Fix PHP 7.0 Global variables issue

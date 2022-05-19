@@ -33,191 +33,218 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
         $is_types   = ( 'activate' == $widget_options['visibility'] && isset( $widget_options['settings']['visibility'] ) && isset( $widget_options['settings']['visibility']['post_type'] ) ) ? true : false;
         $is_tax     = ( 'activate' == $widget_options['visibility'] && isset( $widget_options['settings']['visibility'] ) && isset( $widget_options['settings']['visibility']['taxonomies'] ) ) ? true : false;
 
-        if ( $is_misc && ( ( is_home() && is_front_page() ) || is_front_page() ) ) {
-            if( isset( $visibility['misc']['home'] ) && $visibility_opts == 'hide' ){
-                $hidden = true; //hide if checked on hidden pages
-            }elseif( !isset( $visibility['misc']['home'] ) && $visibility_opts == 'show' ){
-                $hidden = true; //hide if not checked on visible pages
-            }
+        $isWooPage = false;
+        if ( class_exists( 'WooCommerce' ) ) {
+            $wooPageID = 0;
 
-            //do return to bypass other conditions
-            $hidden = apply_filters( 'widget_options_visibility_home', $hidden );
-            if( $hidden ){
-                return false;
-            }
-        }elseif ( $is_misc && is_home() ) { //filter for blog page
-            if( isset( $visibility['misc']['blog'] ) && $visibility_opts == 'hide' ){
-                $hidden = true; //hide if checked on hidden pages
-            }elseif( !isset( $visibility['misc']['blog'] ) && $visibility_opts == 'show' ){
-                $hidden = true; //hide if not checked on visible pages
-            }
+            $wooPageID = ( is_shop() ) ? get_option( 'woocommerce_shop_page_id' ) : $wooPageID;
+            if ( $wooPageID ) {
+                $isWooPage = true;
 
-            //do return to bypass other conditions
-            $hidden = apply_filters( 'widget_options_visibility_blog', $hidden );
-            if( $hidden ){
-                return false;
-            }
-
-        }elseif ( $is_tax && is_category() ) {
-            if( !isset( $visibility['categories'] ) ){
-                $visibility['categories'] = array();
-            }
-
-            if( !isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'hide' && array_key_exists( get_query_var('cat') , $visibility['categories']) ){
-                $hidden = true; //hide if exists on hidden pages
-            }elseif( !isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'show' && !array_key_exists( get_query_var('cat') , $visibility['categories']) ){
-                $hidden = true; //hide if doesn't exists on visible pages
-            }elseif( isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'hide' ){
-                $hidden = true; //hide to all categories
-            }elseif( isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'show' ){
-                $hidden = false; //hide to all categories
-            }
-
-            //do return to bypass other conditions
-            $hidden = apply_filters( 'widget_options_visibility_categories', $hidden );
-            if( $hidden ){
-                return false;
-            }
-        }elseif ( $is_tax && is_tag() ) {
-            if( !isset( $visibility['tags'] ) ){
-                $visibility['tags'] = array();
-            }
-
-            if( ( isset( $visibility['taxonomies']['post_tag'] ) && $visibility_opts == 'hide' ) ||
-                ( !isset( $visibility['taxonomies']['post_tag'] ) && $visibility_opts == 'show' )
-            ){
-                $hidden = true; //hide to all tags
-            }elseif( isset( $visibility['taxonomies']['post_tag'] ) && $visibility_opts == 'show' ){
-                $hidden = false; //hide to all tags
-            }
-
-            //do return to bypass other conditions
-            $hidden = apply_filters( 'widget_options_visibility_tags', $hidden );
-            if( $hidden ){
-                return false;
-            }
-        }elseif ( $is_tax && is_tax() ) {
-            $term = get_queried_object();
-            if( !isset( $visibility['taxonomies'] ) ){
-                $visibility['taxonomies'] = array();
-            }
-
-            if( $visibility_opts == 'hide' && array_key_exists( $term->taxonomy , $visibility['taxonomies']) ){
-                $hidden = true; //hide if exists on hidden pages
-            }elseif( $visibility_opts == 'show' && !array_key_exists( $term->taxonomy , $visibility['taxonomies']) ){
-                $hidden = true; //hide if doesn't exists on visible pages
-            }
-
-            //do return to bypass other conditions
-            $hidden = apply_filters( 'widget_options_visibility_taxonomies', $hidden );
-            if( $hidden ){
-                return false;
-            }
-        }elseif ( $is_misc && is_archive() ) {
-            if( isset( $visibility['misc']['archives'] ) && $visibility_opts == 'hide' ){
-                $hidden = true; //hide if checked on hidden pages
-            }elseif( !isset( $visibility['misc']['archives'] ) && $visibility_opts == 'show' ){
-                $hidden = true; //hide if not checked on visible pages
-            }
-
-            //do return to bypass other conditions
-            $hidden = apply_filters( 'widget_options_visibility_archives', $hidden );
-            if( $hidden ){
-                return false;
-            }
-        }elseif ( $is_misc && is_404() ) {
-            if( isset( $visibility['misc']['404'] ) && $visibility_opts == 'hide' ){
-                $hidden = true; //hide if checked on hidden pages
-            }elseif( !isset( $visibility['misc']['404'] ) && $visibility_opts == 'show' ){
-                $hidden = true; //hide if not checked on visible pages
-            }
-
-            //do return to bypass other conditions
-            $hidden = apply_filters( 'widget_options_visibility_404', $hidden );
-            if( $hidden ){
-                return false;
-            }
-        }elseif ( $is_misc && is_search() ) {
-            if( isset( $visibility['misc']['search'] ) && $visibility_opts == 'hide' ){
-                $hidden = true; //hide if checked on hidden pages
-            }elseif( !isset( $visibility['misc']['search'] ) && $visibility_opts == 'show' ){
-                $hidden = true; //hide if not checked on visible pages
-            }
-
-            //do return to bypass other conditions
-            $hidden = apply_filters( 'widget_options_visibility_search', $hidden );
-            if( $hidden ){
-                return false;
-            }
-        }elseif ( is_single() && !is_page() ) {
-            global $post;
-            $type = $post->post_type;
-            
-            if( !isset( $visibility['types'] ) ){
-                $visibility['types'] = array();
-            }
-            if( $visibility_opts == 'hide' && array_key_exists( $type , $visibility['types']) ){
-                $hidden = true; //hide if exists on hidden pages
-            }elseif( $visibility_opts == 'show' && !array_key_exists( $type , $visibility['types']) ){
-                $hidden = true; //hide if doesn't exists on visible pages
-            }
-            // do return to bypass other conditions
-            $hidden = apply_filters( 'widget_options_visibility_types', $hidden );
-            //hide posts assign on category
-            if( !isset( $visibility['categories'] ) ){
-                $visibility['categories'] = array();
-            }
-            if( isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'hide' ){
-                $hidden = true; //hide to all categories
-            }elseif( isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'show' ){
-                $hidden = false; //hide to all categories
-            }elseif( !isset( $visibility['categories']['all_categories'] ) && !empty( $visibility['categories'] ) ) {
-                $cats           = wp_get_post_categories( get_the_ID() );
-                if( is_array( $cats ) && !empty( $cats ) ){
-                    $checked_cats   = array_keys( $visibility['categories'] );
-                    $intersect      = array_intersect( $cats , $checked_cats );
-                    if( !empty( $intersect ) && $visibility_opts == 'hide' ){
-                        $hidden = true;
-                    }elseif( !empty( $intersect ) && $visibility_opts == 'show' ){
-                        $hidden = false;
-                    }
-                }
-            }
-            // do return to bypass other conditions
-            $hidden = apply_filters( 'widget_options_visibility_post_category', $hidden );
-            if( $hidden ){
-                return false;
-            }
-            // echo $type;
-        }elseif ( $is_types && is_page() ) {
-            global $post;
-            //do post type condition first
-            if( isset( $visibility['types'] ) && isset( $visibility['types']['page'] ) ){
-                if( $visibility_opts == 'hide' && array_key_exists( 'page' , $visibility['types']) ){
+                $visibility['pages'] = !empty($visibility['pages']) ? $visibility['pages'] : [];
+                if( $visibility_opts == 'hide' && array_key_exists( $wooPageID , $visibility['pages']) ){
                     $hidden = true; //hide if exists on hidden pages
-                }elseif( $visibility_opts == 'show' && !array_key_exists( 'page' , $visibility['types']) ){
+                }elseif( $visibility_opts == 'show' &&  !array_key_exists( $wooPageID , $visibility['pages']) ){
                     $hidden = true; //hide if doesn't exists on visible pages
                 }
-            }else{
-                //do per pages condition
-                if( !isset( $visibility['pages'] ) ){
-                    $visibility['pages'] = array();
+
+                //do return to bypass other conditions
+                $hidden = apply_filters( 'widget_options_visibility_page', $hidden );
+
+                if( $hidden ){
+                    return false;
                 }
-                if( $visibility_opts == 'hide' && array_key_exists( $post->ID , $visibility['pages']) ){
-                    $hidden = true; //hide if exists on hidden pages
-                }elseif( $visibility_opts == 'show' && !array_key_exists( $post->ID , $visibility['pages']) ){
-                    $hidden = true; //hide if doesn't exists on visible pages
-                }
-            }
-            //do return to bypass other conditions
-            $hidden = apply_filters( 'widget_options_visibility_page', $hidden );
-            if( $hidden ){
-                return false;
             }
         }
 
+        // Normal Pages
+        if ( !$isWooPage ) {
+            if ( $is_misc && ( ( is_home() && is_front_page() ) || is_front_page() ) ) {
+                if( isset( $visibility['misc']['home'] ) && $visibility_opts == 'hide' ){
+                    $hidden = true; //hide if checked on hidden pages
+                }elseif( !isset( $visibility['misc']['home'] ) && $visibility_opts == 'show' ){
+                    $hidden = true; //hide if not checked on visible pages
+                }
+
+                //do return to bypass other conditions
+                $hidden = apply_filters( 'widget_options_visibility_home', $hidden );
+                if( $hidden ){
+                    return false;
+                }
+            }elseif ( $is_misc && is_home() ) { //filter for blog page
+                if( isset( $visibility['misc']['blog'] ) && $visibility_opts == 'hide' ){
+                    $hidden = true; //hide if checked on hidden pages
+                }elseif( !isset( $visibility['misc']['blog'] ) && $visibility_opts == 'show' ){
+                    $hidden = true; //hide if not checked on visible pages
+                }
+
+                //do return to bypass other conditions
+                $hidden = apply_filters( 'widget_options_visibility_blog', $hidden );
+                if( $hidden ){
+                    return false;
+                }
+
+            }elseif ( $is_tax && is_category() ) {
+                if( !isset( $visibility['categories'] ) ){
+                    $visibility['categories'] = array();
+                }
+
+                if( !isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'hide' && array_key_exists( get_query_var('cat') , $visibility['categories']) ){
+                    $hidden = true; //hide if exists on hidden pages
+                }elseif( !isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'show' && !array_key_exists( get_query_var('cat') , $visibility['categories']) ){
+                    $hidden = true; //hide if doesn't exists on visible pages
+                }elseif( isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'hide' ){
+                    $hidden = true; //hide to all categories
+                }elseif( isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'show' ){
+                    $hidden = false; //hide to all categories
+                }
+
+                //do return to bypass other conditions
+                $hidden = apply_filters( 'widget_options_visibility_categories', $hidden );
+                if( $hidden ){
+                    return false;
+                }
+            }elseif ( $is_tax && is_tag() ) {
+                if( !isset( $visibility['tags'] ) ){
+                    $visibility['tags'] = array();
+                }
+
+                if( ( isset( $visibility['taxonomies']['post_tag'] ) && $visibility_opts == 'hide' ) ||
+                    ( !isset( $visibility['taxonomies']['post_tag'] ) && $visibility_opts == 'show' )
+                ){
+                    $hidden = true; //hide to all tags
+                }elseif( isset( $visibility['taxonomies']['post_tag'] ) && $visibility_opts == 'show' ){
+                    $hidden = false; //hide to all tags
+                }
+
+                //do return to bypass other conditions
+                $hidden = apply_filters( 'widget_options_visibility_tags', $hidden );
+                if( $hidden ){
+                    return false;
+                }
+            }elseif ( $is_tax && is_tax() ) {
+                $term = get_queried_object();
+                if( !isset( $visibility['taxonomies'] ) ){
+                    $visibility['taxonomies'] = array();
+                }
+
+                if( $visibility_opts == 'hide' && array_key_exists( $term->taxonomy , $visibility['taxonomies']) ){
+                    $hidden = true; //hide if exists on hidden pages
+                }elseif( $visibility_opts == 'show' && !array_key_exists( $term->taxonomy , $visibility['taxonomies']) ){
+                    $hidden = true; //hide if doesn't exists on visible pages
+                }
+
+                //do return to bypass other conditions
+                $hidden = apply_filters( 'widget_options_visibility_taxonomies', $hidden );
+                if( $hidden ){
+                    return false;
+                }
+            }elseif ( $is_misc && is_archive() ) {
+                if( isset( $visibility['misc']['archives'] ) && $visibility_opts == 'hide' ){
+                    $hidden = true; //hide if checked on hidden pages
+                }elseif( !isset( $visibility['misc']['archives'] ) && $visibility_opts == 'show' ){
+                    $hidden = true; //hide if not checked on visible pages
+                }
+
+                //do return to bypass other conditions
+                $hidden = apply_filters( 'widget_options_visibility_archives', $hidden );
+                if( $hidden ){
+                    return false;
+                }
+            }elseif ( $is_misc && is_404() ) {
+                if( isset( $visibility['misc']['404'] ) && $visibility_opts == 'hide' ){
+                    $hidden = true; //hide if checked on hidden pages
+                }elseif( !isset( $visibility['misc']['404'] ) && $visibility_opts == 'show' ){
+                    $hidden = true; //hide if not checked on visible pages
+                }
+
+                //do return to bypass other conditions
+                $hidden = apply_filters( 'widget_options_visibility_404', $hidden );
+                if( $hidden ){
+                    return false;
+                }
+            }elseif ( $is_misc && is_search() ) {
+                if( isset( $visibility['misc']['search'] ) && $visibility_opts == 'hide' ){
+                    $hidden = true; //hide if checked on hidden pages
+                }elseif( !isset( $visibility['misc']['search'] ) && $visibility_opts == 'show' ){
+                    $hidden = true; //hide if not checked on visible pages
+                }
+
+                //do return to bypass other conditions
+                $hidden = apply_filters( 'widget_options_visibility_search', $hidden );
+                if( $hidden ){
+                    return false;
+                }
+            }elseif ( is_single() && !is_page() ) {
+                global $post;
+                $type = $post->post_type;
+                
+                if( !isset( $visibility['types'] ) ){
+                    $visibility['types'] = array();
+                }
+                if( $visibility_opts == 'hide' && array_key_exists( $type , $visibility['types']) ){
+                    $hidden = true; //hide if exists on hidden pages
+                }elseif( $visibility_opts == 'show' && !array_key_exists( $type , $visibility['types']) ){
+                    $hidden = true; //hide if doesn't exists on visible pages
+                }
+                // do return to bypass other conditions
+                $hidden = apply_filters( 'widget_options_visibility_types', $hidden );
+                //hide posts assign on category
+                if( !isset( $visibility['categories'] ) ){
+                    $visibility['categories'] = array();
+                }
+                if( isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'hide' ){
+                    $hidden = true; //hide to all categories
+                }elseif( isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'show' ){
+                    $hidden = false; //hide to all categories
+                }elseif( !isset( $visibility['categories']['all_categories'] ) && !empty( $visibility['categories'] ) ) {
+                    $cats           = wp_get_post_categories( get_the_ID() );
+                    if( is_array( $cats ) && !empty( $cats ) ){
+                        $checked_cats   = array_keys( $visibility['categories'] );
+                        $intersect      = array_intersect( $cats , $checked_cats );
+                        if( !empty( $intersect ) && $visibility_opts == 'hide' ){
+                            $hidden = true;
+                        }elseif( !empty( $intersect ) && $visibility_opts == 'show' ){
+                            $hidden = false;
+                        }
+                    }
+                }
+                // do return to bypass other conditions
+                $hidden = apply_filters( 'widget_options_visibility_post_category', $hidden );
+                if( $hidden ){
+                    return false;
+                }
+                // echo $type;
+            }elseif ( $is_types && is_page() ) {
+                global $post;
+                //do post type condition first
+                if( isset( $visibility['types'] ) && isset( $visibility['types']['page'] ) ){
+                    if( $visibility_opts == 'hide' && array_key_exists( 'page' , $visibility['types']) ){
+                        $hidden = true; //hide if exists on hidden pages
+                    }elseif( $visibility_opts == 'show' && !array_key_exists( 'page' , $visibility['types']) ){
+                        $hidden = true; //hide if doesn't exists on visible pages
+                    }
+                }else{
+                    //do per pages condition
+                    if( !isset( $visibility['pages'] ) ){
+                        $visibility['pages'] = array();
+                    }
+                    if( $visibility_opts == 'hide' && array_key_exists( $post->ID , $visibility['pages']) ){
+                        $hidden = true; //hide if exists on hidden pages
+                    }elseif( $visibility_opts == 'show' && !array_key_exists( $post->ID , $visibility['pages']) ){
+                        $hidden = true; //hide if doesn't exists on visible pages
+                    }
+                }
+                //do return to bypass other conditions
+                $hidden = apply_filters( 'widget_options_visibility_page', $hidden );
+                if( $hidden ){
+                    return false;
+                }
+            }
+        }
         //end wordpress pages
 
+        
         //ACF
         if( isset( $widget_options['acf'] ) && 'activate' == $widget_options['acf'] ){
             if( isset( $visibility['acf']['field'] ) && !empty( $visibility['acf']['field'] ) ){
