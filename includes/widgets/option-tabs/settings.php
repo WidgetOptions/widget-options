@@ -260,7 +260,7 @@ if( !function_exists( 'widgetopts_tabcontent_settings' ) ):
                                         <?php foreach( $animation_array as $group => $anims ){ ?>
                                             <optgroup label="<?php _e( $group, 'widget-options' );?>">
                                                 <?php foreach( $anims as $anim => $aname ){ ?>
-                                                    <option value="<?php echo $aname;?>" <?php echo ( $animation == $aname ) ? 'selected="selected"' : ''; ?> ><?php _e( $aname, 'widget-options' )?></option>
+                                                    <option value="<?php echo $aname;?>"><?php _e( $aname, 'widget-options' )?></option>
                                                 <?php } ?>
                                             </optgroup>
                                         <?php } ?>
@@ -272,9 +272,9 @@ if( !function_exists( 'widgetopts_tabcontent_settings' ) ):
                                     <label for="opts-class-event-<?php echo $args['id'];?>"><?php _e( 'Animation Event', 'widget-options' );?></label>
                                     <br  />
                                     <select class="widefat" readonly>
-                                        <option value="enters" <?php echo ('enters' == $event) ? 'selected="selected"' : ''; ?>><?php _e( 'Element Enters Screen', 'widget-options' );?></option>
-                                        <option value="onScreen" <?php echo ('onScreen' == $event) ? 'selected="selected"' : ''; ?>><?php _e( 'Element In Screen', 'widget-options' );?></option>
-                                        <option value="pageLoad" <?php echo ('pageLoad' == $event) ? 'selected="selected"' : ''; ?>><?php _e( 'Page Load', 'widget-options' );?></option>
+                                        <option value="enters"><?php _e( 'Element Enters Screen', 'widget-options' );?></option>
+                                        <option value="onScreen"><?php _e( 'Element In Screen', 'widget-options' );?></option>
+                                        <option value="pageLoad"><?php _e( 'Page Load', 'widget-options' );?></option>
                                     </select>
                                     <small><em><?php _e( 'The event that triggers the animation', 'widget-options' );?></em></small>
                                 </p>
