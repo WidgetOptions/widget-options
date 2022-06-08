@@ -62,8 +62,8 @@ function widgetopts_tabcontent_state( $args ){
             <p>
                 <strong><?php _e( 'Hide/Show', 'widget-options' );?></strong>
                 <select class="widefat" readonly>
-                    <option value="hide" <?php if( $options_role == 'hide' ){ echo 'selected="selected"'; }?> ><?php _e( 'Hide on checked roles', 'widget-options' );?></option>
-                    <option value="show" <?php if( $options_role == 'show' ){ echo 'selected="selected"'; }?>><?php _e( 'Show on checked roles', 'widget-options' );?></option>
+                    <option value="hide"><?php _e( 'Hide on checked roles', 'widget-options' );?></option>
+                    <option value="show"><?php _e( 'Show on checked roles', 'widget-options' );?></option>
                 </select>
             </p>
             <div class="extended-widget-opts-inner-roles" style="max-height: 230px;padding: 5px;overflow:auto;">
