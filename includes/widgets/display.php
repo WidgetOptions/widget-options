@@ -21,6 +21,10 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
     function widgetopts_display_callback( $instance, $widget, $args ){
         global $widget_options, $current_user;
 
+        // WPML FIX
+        $hasWPML = has_filter('wpml_current_language');
+        $default_language = $hasWPML ? apply_filters( 'wpml_default_language', NULL ) : false;
+
         $hidden     = false;
         $opts       = ( isset( $instance[ 'extended_widget_opts-'. $widget->id ] ) ) ? $instance[ 'extended_widget_opts-'. $widget->id ] : array();
         $visibility = array( 'show' => array(), 'hide' => array() );
@@ -89,9 +93,12 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
                     $visibility['categories'] = array();
                 }
 
-                if( !isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'hide' && array_key_exists( get_query_var('cat') , $visibility['categories']) ){
+                // WPML TRANSLATION OBJECT FIX
+                $category_id = ($hasWPML) ? apply_filters( 'wpml_object_id', get_query_var('cat'), 'category', true, $default_language ) : get_query_var('cat');
+
+                if( !isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'hide' && array_key_exists( $category_id , $visibility['categories']) ){
                     $hidden = true; //hide if exists on hidden pages
-                }elseif( !isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'show' && !array_key_exists( get_query_var('cat') , $visibility['categories']) ){
+                }elseif( !isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'show' && !array_key_exists( $category_id , $visibility['categories']) ){
                     $hidden = true; //hide if doesn't exists on visible pages
                 }elseif( isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'hide' ){
                     $hidden = true; //hide to all categories
@@ -215,8 +222,12 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
                     return false;
                 }
                 // echo $type;
-            }elseif ( $is_types && is_page() ) {
+            }elseif ( $is_types && (is_page() || get_post_type(get_the_ID()) == 'page') ) {
                 global $post;
+
+                // WPML FIX
+                $pageID = ($hasWPML) ? apply_filters( 'wpml_object_id', $post->ID, $post->post_type, true, $default_language ) : $post->ID;
+                
                 //do post type condition first
                 if( isset( $visibility['types'] ) && isset( $visibility['types']['page'] ) ){
                     if( $visibility_opts == 'hide' && array_key_exists( 'page' , $visibility['types']) ){
@@ -229,9 +240,9 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
                     if( !isset( $visibility['pages'] ) ){
                         $visibility['pages'] = array();
                     }
-                    if( $visibility_opts == 'hide' && array_key_exists( $post->ID , $visibility['pages']) ){
+                    if( $visibility_opts == 'hide' && array_key_exists( $pageID , $visibility['pages']) ){
                         $hidden = true; //hide if exists on hidden pages
-                    }elseif( $visibility_opts == 'show' && !array_key_exists( $post->ID , $visibility['pages']) ){
+                    }elseif( $visibility_opts == 'show' && !array_key_exists( $pageID , $visibility['pages']) ){
                         $hidden = true; //hide if doesn't exists on visible pages
                     }
                 }
@@ -384,14 +395,14 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
                 if ( stristr($display_logic,"return")===false ){
                     $display_logic="return (" . $display_logic . ");";
                 }
-				$display_logic = htmlspecialchars_decode($display_logic, ENT_QUOTES);
-				try {
-					if ( !eval( $display_logic ) ){
-						return false;
-					}
-				} catch (ParseError $e) {
-					return false;
-				}
+                $display_logic = htmlspecialchars_decode($display_logic, ENT_QUOTES);
+                try {
+                    if ( !eval( $display_logic ) ){
+                        return false;
+                    }
+                } catch (ParseError $e) {
+                    return false;
+                }
             }
         }
 
@@ -442,13 +453,13 @@ endif;
         $instance       = get_option( 'widget_' . $id_base );
 
         $num = substr( $params[0]['widget_id'], -1 );
-		if( isset( $wp_registered_widget_controls[ $params[0]['widget_id'] ]['params'][0]['number'] ) ){
+        if( isset( $wp_registered_widget_controls[ $params[0]['widget_id'] ]['params'][0]['number'] ) ){
             $num = $wp_registered_widget_controls[ $params[0]['widget_id'] ]['params'][0]['number'];
         } elseif( isset($wp_registered_widget_controls[ $params[0]['widget_id'] ]['callback']) && is_array($wp_registered_widget_controls[ $params[0]['widget_id'] ]['callback'])){
-			if (isset($wp_registered_widget_controls[ $params[0]['widget_id'] ]['callback'][0]) && isset( $wp_registered_widget_controls[ $params[0]['widget_id'] ]['callback'][0]->number)) {
-				$num = $wp_registered_widget_controls[ $params[0]['widget_id'] ]['callback'][0]->number;
-			}
-		}
+            if (isset($wp_registered_widget_controls[ $params[0]['widget_id'] ]['callback'][0]) && isset( $wp_registered_widget_controls[ $params[0]['widget_id'] ]['callback'][0]->number)) {
+                $num = $wp_registered_widget_controls[ $params[0]['widget_id'] ]['callback'][0]->number;
+            }
+        }
         if( isset( $instance[ $num ] ) ){
             $opts           = ( isset( $instance[ $num ][ 'extended_widget_opts-'. $params[0]['widget_id'] ] ) ) ? $instance[ $num ][ 'extended_widget_opts-'. $params[0]['widget_id'] ] : array();
         }else{
