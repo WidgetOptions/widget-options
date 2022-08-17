@@ -20,7 +20,7 @@ if( !class_exists( 'WIDGETOPS_Welcome' ) ){
         public function __construct() {
 			add_action( 'admin_enqueue_scripts', array($this, 'enqueue') );
 			add_action( 'admin_menu', array($this, 'screen_page') );
-			add_action( 'activated_plugin', array($this, 'redirect' ) );
+			// add_action( 'activated_plugin', array($this, 'redirect' ) );
 			add_action( 'admin_head', array($this, 'remove_menu' ) );
 		}
 

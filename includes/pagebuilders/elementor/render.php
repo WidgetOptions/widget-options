@@ -155,9 +155,9 @@ if( !function_exists( 'widgetopts_elementor_render' ) ){
 				global $wp_query;
 				$post = $wp_query->post;
 
-	            if( !isset( $settings['widgetopts_types'] ) || ( $is_types && !isset( $settings['widgetopts_types'] ) ) ){
-	                $settings['widgetopts_types'] = array();
-	            }
+	            if( !isset( $settings['widgetopts_types'] ) || ( $is_types && !isset( $settings['widgetopts_types'] ) ) || (isset( $settings['widgetopts_types'] ) && !is_array($settings['widgetopts_types'])) ) {
+					$settings['widgetopts_types'] = array();
+				}
 
 	            if( $visibility_opts == 'hide' && in_array( $post->post_type , $settings['widgetopts_types']) ){
 	                $hidden = true; //hide if exists on hidden pages
