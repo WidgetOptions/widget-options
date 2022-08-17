@@ -157,7 +157,7 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 = 3.8.6 =
 
 * Redirected to plugin page after activation
-* Fixed Array warnings & notices when Elementor page builder is actived
+* Fixed Array warnings & notices when Elementor page builder is activated
 * Fixed Display Issue with PolyLang
 
 = 3.8.5 =
