@@ -24,6 +24,7 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
         // WPML FIX
         $hasWPML = has_filter('wpml_current_language');
         $hasWPML = (function_exists('pll_the_languages')) ? false : $hasWPML;
+        $default_language = $hasWPML ? apply_filters( 'wpml_default_language', NULL ) : false;
 
         $hidden     = false;
         $opts       = ( isset( $instance[ 'extended_widget_opts-'. $widget->id ] ) ) ? $instance[ 'extended_widget_opts-'. $widget->id ] : array();
