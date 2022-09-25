@@ -1,72 +1,90 @@
 === Widget Options - Add Context To WordPress Widgets ===
-Contributors: marketingfire, phpbits, flowdee
+Contributors: marketingfire, phpbits
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FMKC2SLPTULP8
-Tags: widgets, restrict widgets, display widgets, widget logic, hide widgets, hide widget, sidebar, widget content, display widget, widget options, widget option, widget, widget css, CSS, widget classes, widget styling, widget ID, widget custom class, widget visibility, widget ninja, jetpack visibility, siteorigin, siteorigin pagebuilder, pagebuilder by siteorigin
+Tags: widgets, widget plugins, widget settings, flexible widget area manager, restrict widgets, display widgets, widget logic, hide widgets, hide widget, sidebar, widget content, display widget, widget options, widget option, widget, widget css, CSS, widget classes, widget styling, widget ID, widget custom class, widget visibility, widget ninja, jetpack visibility, siteorigin, siteorigin pagebuilder, pagebuilder by siteorigin, elementor pagebuilder
 Requires at least: 4.0
-Tested up to: 6.0
+Tested up to: 6.0.2
 Requires PHP: 5.6
-Stable tag: 3.8.8
+Stable tag: 3.8.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Get Better Control over your WordPress Widgets. Easily show or hide WordPress widgets on specific pages, for specific user roles, taxonomy or devices. Elementor supported.
+
 
 == Description ==
 
-<strong>Control your sidebar widgets more!</strong> Assign different contents on your sidebars, footer and any sidebar widgets.
+Widget Options lets you add more options to widget settings so you can take full control of your website’s widgets. With over <strong>1,060,000+ downloads</strong> and an <strong>average rating of 4.9 stars</strong>, there is no doubt that Widget Options is the perfect solution for you to manage your widgets better and easier.
 
-With over <strong>1,060,000+ downloads</strong> and an <strong>average rating of 4.9 stars</strong>, there are no doubts that Widget Options is the perfect solution for you to take better control of your widgets.
+<strong>Widget Options</strong> expands widget settings by adding elegant and feature-packed options to every widget so you can completely manage and control its visibility and appearance. It allows you to fine tune your sidebar widget visibility depending on user roles, devices, dates, and more! 
 
-<strong>Widget Options</strong> adds elegant and feature-packed tabbed options below each widget to completely manage and control each widgets visibility and appearance.
-
-Built with seamlessly integration with WordPress, Widget Options is the world's most complete widget management plugin solution yet.
+Built with seamless integration with WordPress, Widget Options is yet the world’s most complete widget management plugin. 
 
 [youtube https://www.youtube.com/watch?v=GNawoUZ_t18]
 
-<h4>Show or hide widgets on specific WordPress pages</h4>
-With Widget Options Plugin, you can easily assign pages visibility and restrict each widgets on different pages, posts, custom post types, categories, tags and custom taxonomies.
+<h3>MORE OPTIONS IN THE WIDGET SETTINGS MEANS MORE CONTROL</h3>
 
-<h4>Show or hide widgets on mobile devices, desktop and/or tablet screen sizes</h4>
-Display less widgets on your mobile devices for easier website navigation without affecting your desktop and tablet versions. Maximizing this feature you can show different sidebar widget contents for each devices for better user content targeting.
+With the expanded widget settings that Widget Options bring, you can do all of the following with ease. 
 
-<h4>Custom WordPress widget alignments</h4>
-Change your widget alignment to look better on your site. Comes with <strong>center, left, right and justified alignment</strong> options.
+<h4>SHOW OR HIDE WIDGETS ON SPECIFIC WORDPRESS PAGES</h4>
+With the Widget Options plugin, you can easily control every widget’s visibility or restrictions on different pages, posts, custom post types, categories, tags, and custom taxonomies. 
 
-<h4>Custom Widget ID & Classes</h4>
-Create predefined classes on the plugin's setting page and use them later for each widgets. You can also add custom widget ID and additional classes for styling or javascript purposes.
+<h4>SHOW OR HIDE WIDGETS ON MOBILE DEVICES, DESKTOP AND/OR TABLET</h4>
+Display fewer widgets on your mobile devices for easier website navigation without affecting your desktop and tablet versions. This is one of the features of Widget Options that proves it to be a flexible widget area manager. The device visibility section in the widget settings show which sidebar widgets are active or visible in each device type. 
 
-<h4>Display Widget Logic</h4>
-Use <a href="http://codex.wordpress.org/Conditional_Tags">WordPress Conditional tags</a> to manage and restrict your widgets using display widget logic option if you're geeky enough to use PHP conditions and in need of custom restrictions.
+<h4>CUSTOM WORDPRESS WIDGET ALIGNMENTS</h4>
+Change your widget alignment to match the entire look of your website. Comes with <strong>center, left, right, and justified alignment</strong> options.
 
-<h4>Hide Widget Title</h4>
-Easily hide widget title on front-end display while retaining them on the backend dashboard for labelling.
+<h4>CUSTOM WIDGET ID & CLASSES</h4>
+Create predefined classes on the plugin’s settings page and use them later for each widget. You can also add custom widget ID and additional classes for styling or javascript purposes.
 
-<h4>Enable / Disable Options</h4>
+<h4>DISPLAY WIDGET LOGIC</h4>
+Use <a href="http://codex.wordpress.org/Conditional_Tags">WordPress Conditional tags</a> to manage and restrict your widgets using display widget logic option if you’re geeky enough to use PHP conditions and in need of custom restrictions.
+
+<h4>HIDE WIDGET TITLE</h4>
+Easily hide widget titles from the front-end display while retaining them on the backend dashboard for labeling.
+
+<h4>ENABLE / DISABLE OPTIONS</h4>
 Use only the features you want and disable any other widget options easily using the brand new settings page.
 
-<h4>Live Widget Search Filter</h4>
-Increase administrator widget management by enabling live widget search box on your widget dashboard to locate any widgets easier rather than scrolling the page.
+<h4>USER LOGIN STATE</h4>
+Decide which widgets have to be visible or invisible to either logged-in or non-logged-in users. This feature is helpful when you want certain website functions to be available only to registered users.
 
-<h4>Easily Move WordPress Widgets without dragging</h4>
-Increase productivity and widgets management by moving any widgets easily by clicking a link and selecting the sidebar widget area instead of drag and drop! Elegant option specially on smaller screen devices such as mobile.
+<h4>STICKY/FIXED WORDPRESS WIDGETS (Premium)</h4>
+This premium feature allows widgets to be always visible to users as they scroll up and down a webpage. Make your most important widgets sticky or fixed so that users can access them easily.
 
-<h4>Import & Export Widgets and Widget Area Backup</h4>
-You can now import and export WordPress widgets easily and create any backup of specific sidebar widget areas. Move widgets to another websites at ease.
+<h3>WIDGET OPTIONS’ TIME-SAVING FEATURES</h3>
 
-<h4>View your changes live!</h4>
-This plugin is customizer ready for easier customization. View your changes live before saving it, <strong>not just better control but a time saver plugin!</strong>
+Widget plugins shouldn’t only give you control over your widgets. They must also save you a lot of time! Here are Widget Options’ features that can do that.
 
-<h3>Pagebuilder by SiteOrigin Plugin Compatible</h3>
-Extend your SiteOrigin Pagebuilder powered website's widget panels control and management using Widget Options! Restrict devices visibility, change alignments, hide widget panel title, add custom classes and control visibility using display widget logic option! <br /><strong>Pagebuilder by SiteOrigin Plugin + Widget Options = Total Freedom!</strong>
+<h4>LIVE WIDGET SEARCH FILTER</h4>
+Admins save time and manage widgets more efficiently by enabling the live widget search box on your widget dashboard to locate widgets easier. No need to scroll the page.
 
-<h3>Elementor Pagebuilder Ready!</h3>
-Extend Widget Options visibility restrictions to elementor widgets! You can now have same widget management feature available to your Elementor powered websites.
+<h4>NO NEED TO DRAG WORDPRESS WIDGETS TO MOVE THEM</h4>
+Increase productivity and improve widgets management by moving any widgets easily with just a click-and-select action. No more drag-and-drop! This is a convenient option especially when using small-screen devices such as tablets or mobile phones.
 
-<h3>Beaver Builder Plugin Ready!</h3>
-Now with Beaver Builder plugin integration! You can fully manage each modules on many ways you want it too! Integrated smoothly to upgrade your website building workflow.
+<h4>IMPORT & EXPORT WIDGETS AND WIDGET AREA BACKUP</h4>
+You can now import and export WordPress widgets easily and create backups of specific sidebar widget areas. Move widgets to another website with ease.
 
-<h3>Advanced Custom Fields (ACF) Support!</h3>
-Easily show or hide any widgets using your ACF fields and conditions. You can restric widget with the following conditions:
+<h4>VIEW YOUR CHANGES LIVE</h4>
+This plugin is customizer-ready for easier modification. View your changes live before saving it. 
+
+<h3>COMPATIBLE WITH THE MOST POPULAR PAGE BUILDERS</h3>
+
+Not all widget plugins are designed to work with page builders. If your websites use SiteOrigin, Elementor, or Beaver, you can make the most of Widget Options. This is another reason why we call it the most flexible widget area manager!
+
+<h4>PAGE BUILDER BY SITEORIGIN PLUGIN COMPATIBLE</h4>
+With Widget Options on your website that is powered by SiteOrigin Page Builder, you can add more control to the widget panels. Manage visibility on specific device types, change alignments, hide widget panel title, add custom classes, and control visibility using display widget logic option! 
+
+<strong>Page Builder by SiteOrigin Plugin + Widget Options = Total Freedom!</strong>
+
+<h4>ELEMENTOR PAGE BUILDER READY</h4>
+Extend Widget Options’ visibility restrictions on elementor widgets! You can now have the same widget management features available to your Elementor-powered websites.
+
+<h4>BEAVER BUILDER PLUGIN READY</h4>
+Widget Options now comes with Beaver Builder plugin integration – integrated for a smooth website building workflow. You can fully manage each module in many ways you want! 
+
+<h4>ADVANCED CUSTOM FIELDS (ACF) SUPPORT</h4>
+Easily show or hide any widget using your ACF fields and conditions. You can create restrictions on your widgets with the following conditions:
 
 * Equal To
 * Not Equal To
@@ -75,12 +93,11 @@ Easily show or hide any widgets using your ACF fields and conditions. You can re
 * Is Empty
 * Is Not Empty
 
-ACF integration is also available on Elementor and Beaver Builder integration.
+The ACF function is also available for Elementor and Beaver Builder.
 
-<blockquote>
-<p><strong>Upgrade to Extended Widget Options</strong><br />
-For more widgets management and restriction options, upgrade to <a href="http://widget-options.com/pricing/">Extended Widget Options today!</a></p>
-</blockquote>
+<h3>UPGRADE TO EXTENDED WIDGET OPTIONS</h3>
+
+Turn Widget Options into an even more flexible widget area manager. Upgrade to <a href="http://widget-options.com/pricing/">Extended Widget Options today!</a> today!
 
 <h4>Premium Features</h4>
 
@@ -98,14 +115,15 @@ For more widgets management and restriction options, upgrade to <a href="http://
 * Permission Options
 * Target URLs and Wildcard Restrictions
 * Option for child page to inherit parent widget visibilities
+* Clone Widget
 
 Check full <a href="http://widget-options.com/features/">Extended Widget Options features</a>.
 
-<h4>Add-ons</h4>
+<h3>ADD-ONS</h3>
 
-In need of <a href="https://widget-options.com/features/modal-pop-up-and-sliding-widget-options/" target="_blank">WordPress Sliding Panel</a> for your widgets? Check out <a href="https://widget-options.com/features/modal-pop-up-and-sliding-widget-options/" target="_blank">Sliding Widget Options</a> add-on and transform any of your widgets to modal pop-up, slide in and/or sliding widget panel; and increase your website's user engagement!
+In need of a WordPress <a href="https://widget-options.com/features/modal-pop-up-and-sliding-widget-options/">Sliding Panel</a> for your widgets? Check out <a href="https://widget-options.com/features/modal-pop-up-and-sliding-widget-options/">Sliding Widget Options</a> add-on, and transform any of your widgets to modal pop-up, slide in and/or sliding widget panel; and increase your website’s user engagement!
 
-If you like to contribute, report issue or have suggestions, you can find the development version on <a href="https://github.com/WidgetOptions/widget-options" target="_blank">Github</a>.
+We keep Widget Options up-to-date and make this flexible widget area manager even more, well, flexible! If you like to contribute, report issues or have suggestions, you can find the development version on <a href="https://github.com/WidgetOptions/widget-options">Github</a>. 
 
 <strong>More information</strong>
 
@@ -153,6 +171,11 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 10. Advanced Custom Fields ( ACF ) Support
 
 == Changelog ==
+
+= 3.8.9 =
+
+* Fixed PHP Notices connected to WPML variable
+* Updated wp.org description
 
 = 3.8.8 =
 

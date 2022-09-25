@@ -227,7 +227,8 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
                 global $post;
 
                 // WPML FIX
-                $pageID = ($hasWPML) ? apply_filters( 'wpml_object_id', $post->ID, $post->post_type, true, $default_language ) : $post->ID;
+                $page_id = get_queried_object_id();
+                $pageID = ($hasWPML) ? apply_filters( 'wpml_object_id', $page_id, 'page', true, $default_language ) : $page_id;
                 
                 //do post type condition first
                 if( isset( $visibility['types'] ) && isset( $visibility['types']['page'] ) ){
