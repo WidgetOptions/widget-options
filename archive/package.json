@@ -13,7 +13,7 @@
   "author": "flowdee",
   "license": "BSD-2-Clause",
   "devDependencies": {
-    "browser-sync": "^2.26.3",
+    "browser-sync": "^2.27.10",
     "compass-mixins": "^0.12.10",
     "gulp": "^4.0.0",
     "gulp-minify": "0.0.14",
