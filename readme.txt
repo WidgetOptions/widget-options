@@ -3,9 +3,9 @@ Contributors: marketingfire, phpbits
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FMKC2SLPTULP8
 Tags: widgets, widget plugins, widget settings, flexible widget area manager, restrict widgets, display widgets, widget logic, hide widgets, hide widget, sidebar, widget content, display widget, widget options, widget option, widget, widget css, CSS, widget classes, widget styling, widget ID, widget custom class, widget visibility, widget ninja, jetpack visibility, siteorigin, siteorigin pagebuilder, pagebuilder by siteorigin, elementor pagebuilder
 Requires at least: 4.0
-Tested up to: 6.0.2
+Tested up to: 6.1.1
 Requires PHP: 5.6
-Stable tag: 3.8.9.1
+Stable tag: 3.8.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -171,6 +171,10 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 10. Advanced Custom Fields ( ACF ) Support
 
 == Changelog ==
+
+= 3.8.9.1 =
+
+*Adjusted devices responsive breakpoints
 
 = 3.8.9.1 =
 
