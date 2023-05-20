@@ -121,6 +121,29 @@ function widgetopts_tabcontent_visibility( $args ){
         }
     }
 
+    // fix values for older settings
+    $tmpPages_values = array();
+    foreach ( $pages_values as $objKey => $objPage ) {
+        if( isset( $pages_values[ $objKey ] ) && $pages_values[ $objKey ] == '1' ){
+            $tmpPages_values[] = $objKey;
+        }
+        else {
+            $tmpPages_values[] = $objPage;
+        }
+    }
+    $pages_values = $tmpPages_values;
+
+    // fix values for older settings
+    $tmpTerms_values = array();
+    foreach ( $cat_values as $objKey => $objTerm ) {
+        if( isset( $cat_values[ $objKey ] ) && $cat_values[ $objKey ] == '1' ){
+            $tmpTerms_values[] = $objKey;
+        }
+        else {
+            $tmpTerms_values[] = $objTerm;
+        }
+    }
+    $term_values = $tmpTerms_values;
     ?>
     <div id="extended-widget-opts-tab-<?php echo $args['id'];?>-visibility" class="extended-widget-opts-tabcontent extended-widget-opts-inside-tabcontent extended-widget-opts-tabcontent-visibility">
         <div class="extended-widget-opts-visibility-m-tabs extended-widget-opts-inside-tabs">
@@ -202,16 +225,27 @@ function widgetopts_tabcontent_visibility( $args ){
                               isset( $widget_options['settings']['visibility']['post_type'] ) &&
                               '1' == $widget_options['settings']['visibility']['post_type'] ){ ?>
                         <!--  start types tab content -->
-                        <div id="extended-widget-opts-visibility-tab-<?php echo $args['id'];?>-types" class="extended-widget-opts-visibility-tabcontent extended-widget-opts-inner-tabcontent">
+                        <div id="extended-widget-opts-visibility-tab-<?php echo $args['id'];?>-types" class="extended-widget-opts-visibility-tabcontent extended-widget-opts-inner-tabcontent extended-widget-opts-tabcontent-pages">
                             <div class="extended-widget-opts-inner-lists" style="height: 230px;padding: 5px;overflow:auto;">
-                                <h4 id="extended-widget-opts-pages"><?php _e( 'Pages', 'widget-options' );?> +/-</h4>
+                                <h4 id="extended-widget-opts-pages"><?php _e( 'Pages', 'widget-options' );?> +/-<br>
+                                <small>Search for Pages</small></h4>
                                 <div class="extended-widget-opts-pages">
+                                    <select class="widefat extended-widget-opts-select2-dropdown extended-widget-opts-select2-page-dropdown" name="<?php echo $args['namespace'];?>[extended_widget_opts][visibility][pages][]" data-namespace="<?php echo $args['namespace'];?>" multiple="multiple">
+                                        <?php if ( !empty($pages_values) ) {
+                                            $pageLoop  = get_pages(['hierarchical' => false, 'include' => $pages_values]);
+                                            foreach ( $pageLoop as $objPage ) {
+                                                echo '<option value="'.$objPage->ID.'" selected>'.$objPage->post_title.'</option>';
+                                            }
+                                        } ?>
+                                    </select>
+
+
                                     <?php 
-                                    $page_class = new WidgetOpts_Pages_Checkboxes();
-                                    $page_checkboxes = $page_class->walk( $widgetopts_pages, 0, $args );
-                                    if ( $page_checkboxes ) {
-                                        echo '<div class="widgetopts-ul-pages">' . $page_checkboxes . '</div>';
-                                    }
+                                    // $page_class = new WidgetOpts_Pages_Checkboxes();
+                                    // $page_checkboxes = $page_class->walk( $widgetopts_pages, 0, $args );
+                                    // if ( $page_checkboxes ) {
+                                    //     echo '<div class="widgetopts-ul-pages">' . $page_checkboxes . '</div>';
+                                    // }
                                     ?>
                                 </div>
 
@@ -243,26 +277,19 @@ function widgetopts_tabcontent_visibility( $args ){
                                   isset( $widget_options['settings']['visibility']['taxonomies'] ) &&
                                   '1' == $widget_options['settings']['visibility']['taxonomies'] ){ ?>
                         <!--  start tax tab content -->
-                        <div id="extended-widget-opts-visibility-tab-<?php echo $args['id'];?>-tax" class="extended-widget-opts-visibility-tabcontent extended-widget-opts-inner-tabcontent">
+                        <div id="extended-widget-opts-visibility-tab-<?php echo $args['id'];?>-tax" class="extended-widget-opts-visibility-tabcontent extended-widget-opts-inner-tabcontent extended-widget-opts-tabcontent-taxonomies">
                             <div class="extended-widget-opts-inner-lists" style="height: 230px;padding: 5px;overflow:auto;">
-                                <h4 id="extended-widget-opts-categories"><?php _e( 'Categories', 'widget-options' );?> +/-</h4>
+                                <h4 id="extended-widget-opts-categories"><?php _e( 'Categories', 'widget-options' );?> +/-<br>
+                                                <small>Search for Category term</small></h4>
                                 <div class="extended-widget-opts-categories">
-                                    <p>
-                                        <input type="checkbox" name="extended_widget_opts-<?php echo $args['id'];?>[extended_widget_opts][visibility][categories][all_categories]" id="<?php echo $args['id'];?>-opts-categories-all" value="1" <?php if( isset( $cat_values['all_categories'] ) ){ echo 'checked="checked"'; };?> />
-                                        <label for="<?php echo $args['id'];?>-opts-categories-all"><?php _e( 'All Categories', 'widget-options' );?></label>
-                                    </p>
-                                    <?php foreach ($categories as $cat) {
-                                            if( isset( $cat_values[ $cat->cat_ID ] ) && $cat_values[ $cat->cat_ID ] == '1' ){
-                                                $checked = 'checked="checked"';
-                                            }else{
-                                                $checked = '';
+                                    <select class="widefat extended-widget-opts-select2-dropdown extended-widget-opts-select2-taxonomy-dropdown" name="<?php echo $args['namespace'];?>[extended_widget_opts][visibility][categories][]" data-taxonomy="category" data-namespace="<?php echo $args['namespace'];?>" multiple="multiple">
+                                        <?php if ( !empty($term_values) ) {
+                                            $taxLoop  = get_terms(['taxonomy' => array( 'category' ), 'include' => $terms_values]);
+                                            foreach ( $taxLoop as $objTax ) {
+                                                echo '<option value="'.$objTax->term_id.'" selected>'.$objTax->name.'</option>';
                                             }
-                                        ?>
-                                        <p>
-                                            <input type="checkbox" name="<?php echo $args['namespace'];?>[extended_widget_opts][visibility][categories][<?php echo $cat->cat_ID;?>]" id="<?php echo $args['id'];?>-opts-categories-<?php echo $cat->cat_ID;?>" value="1" <?php echo $checked;?> />
-                                            <label for="<?php echo $args['id'];?>-opts-categories-<?php echo $cat->cat_ID;?>"><?php echo $cat->cat_name;?></label>
-                                        </p>
-                                    <?php } ?>
+                                        } ?>
+                                    </select>
                                 </div>
 
                                 <h4 id="extended-widget-opts-taxonomies"><?php _e( 'Taxonomies', 'widget-options' );?> +/-</h4>
@@ -357,4 +384,61 @@ function widgetopts_tabcontent_visibility( $args ){
     </div>
 <?php
 }
-add_action( 'extended_widget_opts_tabcontent', 'widgetopts_tabcontent_visibility'); ?>
+add_action( 'extended_widget_opts_tabcontent', 'widgetopts_tabcontent_visibility'); 
+
+// Page Options
+function widgetopts_ajax_page_search() {
+    $response = [
+        'results' => [],
+        'pagination' => ['more' => false]
+    ];
+
+    if ( !empty($_POST['term']) ) {
+        $args = array(
+            'post_type'     => 'page',
+            'post_status'   => 'publish',
+            's' => $_POST['term'],
+        );
+
+        $query = new WP_Query( $args );
+        while ( $query->have_posts() ) { 
+            $query->the_post();
+            $response['results'][] = [
+                'id' => get_the_ID(),
+                'text' => get_the_title()
+            ];
+        }
+    }
+
+    echo json_encode( $response );
+    die();
+}
+add_action( 'wp_ajax_widgetopts_ajax_page_search',  'widgetopts_ajax_page_search' ); 
+
+// Taxonomy Options
+function widgetopts_ajax_taxonomy_search() {
+    $response = [
+        'results' => [],
+        'pagination' => ['more' => false]
+    ];
+
+    if ( !empty($_POST['term']) && $_POST['taxonomy'] ) {
+        $args = array(
+            'taxonomy'      => array( $_POST['taxonomy'] ),
+            'fields'        => 'all',
+            'name__like'    => $_POST['term']
+        );
+
+        $terms = get_terms( $args );
+        foreach ($terms as $term) {
+            $response['results'][] = [
+                'id' => $term->term_id,
+                'text' => $term->name
+            ];
+        }
+    }
+
+    echo json_encode( $response );
+    die();
+}
+add_action( 'wp_ajax_widgetopts_ajax_taxonomy_search',  'widgetopts_ajax_taxonomy_search' ); ?>

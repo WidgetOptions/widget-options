@@ -17,6 +17,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @global $widget_options
  * @return void
  */
+ 
+ /*
+ * Note: Please add a class "no-settings" in the <li> card if the card has no additional configuration, if there are configuration please remove the class
+ */
 
 if( !class_exists( 'widgetopts_settings_elementor' ) ){
 	function widgetopts_settings_elementor(){
@@ -26,7 +30,7 @@ if( !class_exists( 'widgetopts_settings_elementor' ) ){
             $widget_options['elementor'] = '';
         }
 		?>
-	    <li class="widgetopts-module-card widgetopts-module-card-no-settings <?php echo ( $widget_options['elementor'] == 'activate' ) ? 'widgetopts-module-type-enabled' : 'widgetopts-module-type-disabled'; ?>" id="widgetopts-module-card-elementor" data-module-id="elementor">
+	    <li class="widgetopts-module-card widgetopts-module-card-no-settings no-settings <?php echo ( $widget_options['elementor'] == 'activate' ) ? 'widgetopts-module-type-enabled' : 'widgetopts-module-type-disabled'; ?>" id="widgetopts-module-card-elementor" data-module-id="elementor">
 			<div class="widgetopts-module-card-content">
 				<h2><?php _e( 'Elementor Pagebuilder Support', 'widget-options' );?></h2>
 				<div class="widgetopts-pro-label" style="background: transparent;color: #777;"><?php _e( 'BETA', 'widget-options' );?></div>
@@ -36,7 +40,7 @@ if( !class_exists( 'widgetopts_settings_elementor' ) ){
 
 				<div class="widgetopts-module-actions hide-if-no-js">
 	                <?php if( $widget_options['elementor'] == 'activate' ){ ?>
-						<button class="button button-secondary widgetopts-toggle-settings"><?php _e( 'Configure Settings', 'widget-options' );?></button>
+						<button class="button button-secondary widgetopts-toggle-settings"><?php _e( 'Learn More', 'widget-options' );?></button>
 						<button class="button button-secondary widgetopts-toggle-activation"><?php _e( 'Disable', 'widget-options' );?></button>
 					<?php }else{ ?>
 						<button class="button button-secondary widgetopts-toggle-settings"><?php _e( 'Learn More', 'widget-options' );?></button>

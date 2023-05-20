@@ -3,12 +3,11 @@ Contributors: marketingfire, phpbits
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FMKC2SLPTULP8
 Tags: widgets, widget plugins, widget settings, flexible widget area manager, restrict widgets, display widgets, widget logic, hide widgets, hide widget, sidebar, widget content, display widget, widget options, widget option, widget, widget css, CSS, widget classes, widget styling, widget ID, widget custom class, widget visibility, widget ninja, jetpack visibility, siteorigin, siteorigin pagebuilder, pagebuilder by siteorigin, elementor pagebuilder
 Requires at least: 4.0
-Tested up to: 6.1.1
+Tested up to: 6.2.2
 Requires PHP: 5.6
-Stable tag: 3.8.10
+Stable tag: 3.9.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-
 
 
 == Description ==
@@ -172,205 +171,200 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 
 == Changelog ==
 
+= 3.9.0 =
+
+* Improved: Compatibility PHP 8
+* Improved: Compatibility with WP 6.2.2
+* Improved: Widget Options settings UI
+* Fixed: CSS conflict with SiteOrigin
+* Updated: Page Visibility variable selection from dropdown to search
+
+= 3.8.10 =
+
+* Improved: Devices responsive breakpoints
+
 = 3.8.9.1 =
 
-*Adjusted devices responsive breakpoints
-
-= 3.8.9.1 =
-
-* Added additional update wp.org description
-* Updated title from Widget Options – Add Context To WordPress Widgets to Widget Options - The #1 WordPress Widget Control Plugin
+* Added: Plugin description
+* Updated: Title from Widget Options – Add Context To WordPress Widgets to Widget Options - The #1 WordPress Widget Control Plugin
 
 = 3.8.9 =
 
-* Fixed PHP Notices connected to WPML variable
-* Updated wp.org description
+* Fixed: PHP Notices connected to WPML variable
 
 = 3.8.8 =
 
-* Fixed PHP Warning: Undefined variable
+* Fixed: PHP Warning: Undefined variable
 
 = 3.8.7 =
 
-* Redirected to plugin page after activation
-* Fixed Array warnings & notices when Elementor page builder is activated
-* Fixed Display Issue with PolyLang
+* Updated: Plugin redirection after activation
+* Fixed: Array warnings & notices when Elementor page builder is activated
+* Fixed: Display Issue with PolyLang
 
 = 3.8.5 =
 
-* Compatible with Latest WordPress
-* Fixed Display Issue with PeepSo Widgets
-* Fixed Display Issue with WPML added languages
+* Improved: Compatibility with WP 6.0
+* Fixed: Display Issue with PeepSo Widgets
+* Fixed: Display Issue with WPML added languages
 
 = 3.8.4 =
 
-* Fixed PHP Notice: Undefined variable
+* Fixed: PHP Notice: Undefined variable
 
 = 3.8.3 =
 
-* Fixed PHP Warning: Undefined variable
+* Fixed: PHP Warning: Undefined variable
 
 = 3.8.2 =
 
-* Fixed versioning issue
+* Fixed: Versioning issue
 
 = 3.8.1 =
 
-* Fixed missing plugin files
+* Fixed: Missing plugin files
 
 = 3.8 =
 
-* Added option to upgrade to PRO version.
+* Added: More option to upgrade to PRO version.
 
 = 3.7.14 =
 
-* Fixed PHP Recoverable fatal error – when switching AMP mode
+* Fixed: PHP Recoverable fatal error – when switching AMP mode
 
 = 3.7.13 =
 
-* Fixed issue in versioning
+* Fixed: Versioning issue
 
 = 3.7.12 =
 
-* Fixed jQuery UI styles
+* Fixed: jQuery UI styles
 
 = 3.7.11 =
-* Fixed visibility issue for WooCommerce taxonomies.
+* Fixed: Visibility issue for WooCommerce taxonomies
 
 = 3.7.10 =
-* Fixed CSS issue with other plugins.
-* Fixed missing icons on Elementor page builder.
+* Fixed: CSS issue with other plugins
+* Fixed: Missing icons on Elementor page builder
 
 = 3.7.9 =
-* Compatible with Latest WordPress.
-* Added option to revert Classic Widgets Screen.
-* Fixed admin notices.
+* Added: Option to revert Classic Widgets Screen
+* Fixed: Admin notices
 
 = 3.7.8 =
-* Compatible with Latest WordPress.
-* Updated dependency security vulnerability.
-* Fixed Multisite warning issues.
-* Fixed custom post type list in display condition.
+* Updated: Dependency security vulnerability
+* Fixed: Multisite warning issues
+* Fixed: Custom post type list in display condition
 
 = 3.7.7 =
-* Compatible with Latest WordPress.
-* Fixed deprecated jQuery functions.
-* Fixed Logic option issue.
-* Fixed Mobile restrictions issues.
-* Update plugin page descriptions.
-* Updated admin options page details.
-* Added affiliate URL support via hooks.
+* Fixed: Deprecated jQuery functions
+* Fixed: Logic option issue
+* Fixed: Mobile restrictions issues
+* Updated: Plugin descriptions
+* Updated: Admin options page details
+* Added: affiliate URL support via hooks
 
 = 3.7.6 =
-* Fix blank page issue in admin widget page.
+* Fixed: blank page issue in admin widget page
 
 = 3.7.5 =
-* Compatible with Latest WordPress.
-* Other improvements.
+* Improved: Compatible with Latest WordPress.
 
 = 3.7.4 =
-* Update readme and plugin info.
+* Updated: Readme and plugin info.
 
 = 3.7.3 =
-* Fix import and export invalid file error
-* Fix several instances of widget lock up issue
-* Other improvements
+* Fixed: Import and export invalid file error
+* Fixed: Several instances of widget lock up issue
 
 = 3.7.2 =
-* Fix issue with latest ACF version
+* Fixed: issue with latest ACF version
 
 = 3.7.1 =
-* Add fixes for https://wordpress.org/support/topic/php-errors-after-upgrade-to-3-7/
+* Fixed: PHP notices
 
 = 3.7 =
-* Add <strong>Advanced Custom Fields ( ACF )</strong> support
-* Integrate ACF conditions on Elementor and Beaver Builder integration too
-* Add <strong>User Logged-in State</strong> feature to easily restrict widget on loggedin or loggedout users
-* Add <strong>User Logged-in State</strong> to Elementor integration as well
-* Show rating notice on widget dashboard and Widget Options settings page only
-* Fixes and other improvements
+* Added: <strong>Advanced Custom Fields ( ACF )</strong> support
+* Integrated: ACF conditions on Elementor and Beaver Builder integration too
+* Added: <strong>User Logged-in State</strong> feature to easily restrict widget on loggedin or loggedout users
+* Added: <strong>User Logged-in State</strong> to Elementor integration as well
+* Added: Show rating notice on widget dashboard and Widget Options settings page only
 
 = 3.6 =
-* Add <strong>Beaver Builder Plugin Integration</strong>. Go to Settings > Widget Options to enable this brand new feature.
-* Fixes and other improvements
+* Added <strong>Beaver Builder Plugin Integration</strong>.
 
 = 3.5 =
-* Go to <strong>Settings > Widget Options</strong> to enable the brand new features below. Thanks!
-* Add <strong>Widget Importer & Exporter Feature</strong>
-* Add <strong>Specific Widget Area Backup</strong> Downloader
-* Improve pages list and indent child pages
-* Option to remove all widgets assigned on widget area
-* Fix issues with Elementor and OceanWP integration
-* Add Target URLs and Wildcard Restrictions module upgrade on settings page
-* Improvements for the upcoming Beaver Builder integration
+* Added: <strong>Widget Importer & Exporter Feature</strong>
+* Added: <strong>Specific Widget Area Backup</strong> Downloader
+* Added: Option to remove all widgets assigned on widget area
+* Added: Target URLs and Wildcard Restrictions module upgrade on settings page
+* Improved: Pages list and indent child pages
+* Improved: Compatibility for the upcoming Beaver Builder integration
+* Fixed: Issues with Elementor and OceanWP integration
 
 = 3.4 =
-* Add <strong>Move WordPress Widgets</strong> Feature
-* Add <strong>Elementor Pagebuilder Support</strong> Beta Feature
-* Add option to disable automatic addition of .widget class
-* Fixes and support for is_active_sidebar
-* Update subscription sidebar and add free e-book download
-* Add module card for <a href="https://widget-options.com/features/modal-pop-up-and-sliding-widget-options/" target="_blank">WordPress Sliding Panel</a> add-on
-* Add module card for <a href="https://widget-options.com/features/clone-wordpress-widgets/" target="_blank">Clone WordPress Widgets</a> premium feature
-* Improvements for better speed on admin widgets dashboard
+* Added: <strong>Move WordPress Widgets</strong> Feature
+* Added: <strong>Elementor Pagebuilder Support</strong> Beta Feature
+* Added: Option to disable automatic addition of .widget class
+* Fixed: Support for is_active_sidebar
+* Updated: Subscription sidebar and add free e-book download
+* Improved: Loading speed on admin widgets dashboard
 
 = 3.3.2 =
-* Use better Global pages items to prevent issues with site with lots of pages
-* Fix Multisite Issue when Network Activated
-* Add 'widget' class to fix issue with Elegant Themes that using 'et_widget' as base class
-* Add support for <a href="https://widget-options.com/features/modal-pop-up-and-sliding-widget-options/" target="_blank">Sliding Widgets</a> add-on
+* Improved: Use better Global pages items to prevent issues with site with lots of pages
+* Fixed: Multisite Issue when Network Activated
+* Added: 'widget' class to fix issue with Elegant Themes that using 'et_widget' as base class
+* Added: Support for <a href="https://widget-options.com/features/modal-pop-up-and-sliding-widget-options/" target="_blank">Sliding Widgets</a> add-on
 
 = 3.3.1 =
-* Fix PHP 7.0 Global variables issue
+* Fixed: PHP 7.0 Global variables issue
 
 = 3.3 =
-* Add Widget Live Search option on widgets.php admin dashboard
+* Added: Widget Live Search option on widgets.php admin dashboard
 
 = 3.2.1 =
-* Fix Categories not updating when new one added
-* Re-add review/rating admin notice from version 3.1
+* Fixed: Categories not updating when new one added
+* Added: Review/Rating admin notice from version 3.1
 
 = 3.2 =
-* Improve Plugin Loading and Performance
-* Fix issues reported on github
+* Improved: Plugin Loading and Performance
+* Fixed: issues reported on github
 
 = 3.1 =
-* Add Pagebuilder by SiteOrigin Plugin Widgets Compatibility
-* Fixes for https://github.com/WidgetOptions/widget-options/issues/6
-* Performance enhancement
+* Added: Pagebuilder by SiteOrigin Plugin Widgets Compatibility
+* Fixed: JQuery UI css conflicts
+* Improved: Plugin performance
 
 = 3.0.2 =
-* Fix reported issue : https://github.com/WidgetOptions/widget-options/issues/7
-* Fix DIVI jQuery UI styling issues
+* Fixed: Warning Message when Activated
+* Fixed: DIVI jQuery UI styling issues
 
 = 3.0.1 =
-* Fix reported issue : https://github.com/WidgetOptions/widget-options/issues/4
+* Fixed: Warning messages after update last version plugin
 
 = 3.0 =
-* Improve settings page and add modular options inspired by iThemes Security Plugin
-* Add user selection for features
-* Add Hide Widget Title option
-* Revamp saving options
-* other minor improvements
+* Improved: settings page and add modular options inspired by iThemes Security Plugin
+* Added: User selection for features
+* Added: Hide Widget Title option
+* Revamped: Saving options
 
 = 2.0 =
-* Add Widget Display Logic Options
-* Improve Tab UI for better navigation
-* other minor improvements
+* Added: Widget Display Logic Options
+* Improved: Tab UI for better navigation
 
 = 1.3 =
-* Apply Category Widgets Visibility Selection to associated posts
-* Update pro tabs with additional features added on Extended Widget Options 2.0
+* Added: Category Widgets Visibility Selection to associated posts
+* Updated: Pro tabs with additional features added on Extended Widget Options 2.0
 
 = 1.2 =
-* Add Widget CSS ID and Classes tab options. <a href="https://widget-options.com/blog/add-wordpress-widget-css-classes-id/">Learn more about this update</a>
-* Add Blog Page Visibility for Widgets as per @cfabrice & @fljdave request
+* Added: Widget CSS ID and Classes tab options. <a href="https://widget-options.com/blog/add-wordpress-widget-css-classes-id/">Learn more about this update</a>
+* Added: Blog Page Visibility for Widgets
 
 = 1.1.1 =
-* Reduce Transient to 5 minutes
+* Improved: Transient time to 5 minutes
 
 = 1.1 =
-* Set Transient for queries to reduce loading time
+* Improved: Set Transient for queries to reduce loading time
 
 = 1.0 =
 * Initial Plugin release

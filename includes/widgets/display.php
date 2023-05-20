@@ -97,13 +97,13 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
                 // WPML TRANSLATION OBJECT FIX
                 $category_id = ($hasWPML) ? apply_filters( 'wpml_object_id', get_query_var('cat'), 'category', true, $default_language ) : get_query_var('cat');
 
-                if( !isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'hide' && array_key_exists( $category_id , $visibility['categories']) ){
+                if( $visibility_opts == 'hide' && ((array_key_exists($category_id, $visibility['categories']) && $visibility['categories'][$category_id] == '1') || in_array($category_id, $visibility['categories'])) ){
                     $hidden = true; //hide if exists on hidden pages
-                }elseif( !isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'show' && !array_key_exists( $category_id , $visibility['categories']) ){
+                }elseif( $visibility_opts == 'show' && ((!array_key_exists($category_id, $visibility['categories']) && empty($visibility['categories'][$category_id])) && !in_array($category_id, $visibility['categories'])) ){
                     $hidden = true; //hide if doesn't exists on visible pages
-                }elseif( isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'hide' ){
+                }elseif( ((array_key_exists($category_id, $visibility['categories']) && $visibility['categories'][$category_id] == '1') || in_array($category_id, $visibility['categories'])) && $visibility_opts == 'hide' ){
                     $hidden = true; //hide to all categories
-                }elseif( isset( $visibility['categories']['all_categories'] ) && $visibility_opts == 'show' ){
+                }elseif( ((array_key_exists($category_id, $visibility['categories']) && $visibility['categories'][$category_id] == '1') || in_array($category_id, $visibility['categories'])) && $visibility_opts == 'show' ){
                     $hidden = false; //hide to all categories
                 }
 
@@ -228,7 +228,10 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
 
                 // WPML FIX
                 $page_id = get_queried_object_id();
+                $parent_id = wp_get_post_parent_id($page_id);
+
                 $pageID = ($hasWPML) ? apply_filters( 'wpml_object_id', $page_id, 'page', true, $default_language ) : $page_id;
+                $parentID = ($hasWPML) ? apply_filters( 'wpml_object_id', $parent_id, 'page', true, $default_language ) : $parent_id;
                 
                 //do post type condition first
                 if( isset( $visibility['types'] ) && isset( $visibility['types']['page'] ) ){
@@ -242,9 +245,10 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
                     if( !isset( $visibility['pages'] ) ){
                         $visibility['pages'] = array();
                     }
-                    if( $visibility_opts == 'hide' && array_key_exists( $pageID , $visibility['pages']) ){
+
+                    if( $visibility_opts == 'hide' && (array_key_exists( $pageID , $visibility['pages']) || in_array($pageID, $visibility['pages'])) ){
                         $hidden = true; //hide if exists on hidden pages
-                    }elseif( $visibility_opts == 'show' && !array_key_exists( $pageID , $visibility['pages']) ){
+                    }elseif( $visibility_opts == 'show' && (!array_key_exists( $pageID , $visibility['pages']) && !in_array($pageID, $visibility['pages'])) ){
                         $hidden = true; //hide if doesn't exists on visible pages
                     }
                 }

@@ -17,6 +17,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @global $widget_options
  * @return void
  */
+ 
+ /*
+ * Note: Please add a class "no-settings" in the <li> card if the card has no additional configuration, if there are configuration please remove the class
+ */
+ 
 if( !function_exists( 'widgetopts_settings_search' ) ):
 	function widgetopts_settings_search(){
 	    global $widget_options;
@@ -25,7 +30,7 @@ if( !function_exists( 'widgetopts_settings_search' ) ):
 			$widget_options['search'] = '';
 		}
 		?>
-		<li class="widgetopts-module-card widgetopts-module-card-no-settings <?php echo ( $widget_options['search'] == 'activate' ) ? 'widgetopts-module-type-enabled' : 'widgetopts-module-type-disabled'; ?>" id="widgetopts-module-card-search" data-module-id="search">
+		<li class="widgetopts-module-card widgetopts-module-card-no-settings no-settings <?php echo ( $widget_options['search'] == 'activate' ) ? 'widgetopts-module-type-enabled' : 'widgetopts-module-type-disabled'; ?>" id="widgetopts-module-card-search" data-module-id="search">
 			<div class="widgetopts-module-card-content">
 				<h2><?php _e( 'Live Widget Search', 'widget-options' );?></h2>
 				<p class="widgetopts-module-desc">
@@ -34,7 +39,7 @@ if( !function_exists( 'widgetopts_settings_search' ) ):
 
 				<div class="widgetopts-module-actions hide-if-no-js">
 					<?php if( $widget_options['search'] == 'activate' ){ ?>
-						<button class="button button-secondary widgetopts-toggle-settings"><?php _e( 'Configure Settings', 'widget-options' );?></button>
+						<button class="button button-secondary widgetopts-toggle-settings"><?php _e( 'Learn More', 'widget-options' );?></button>
 						<button class="button button-secondary widgetopts-toggle-activation"><?php _e( 'Disable', 'widget-options' );?></button>
 					<?php }else{ ?>
 						<button class="button button-secondary widgetopts-toggle-settings"><?php _e( 'Learn More', 'widget-options' );?></button>
