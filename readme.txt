@@ -5,7 +5,7 @@ Tags: widgets, widget plugins, widget settings, flexible widget area manager, re
 Requires at least: 4.0
 Tested up to: 6.2.2
 Requires PHP: 5.6
-Stable tag: 3.9.0
+Stable tag: 3.9.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -94,9 +94,9 @@ Easily show or hide any widget using your ACF fields and conditions. You can cre
 
 The ACF function is also available for Elementor and Beaver Builder.
 
-<h3>UPGRADE TO EXTENDED WIDGET OPTIONS</h3>
+<h3>UPGRADE TO WIDGET OPTIONS EXTENDED</h3>
 
-Turn Widget Options into an even more flexible widget area manager. Upgrade to <a href="http://widget-options.com/pricing/">Extended Widget Options today!</a> today!
+Turn Widget Options into an even more flexible widget area manager. Upgrade to <a href="http://widget-options.com/pricing/">Widget Options Extended</a> today!
 
 <h4>Premium Features</h4>
 
@@ -116,7 +116,7 @@ Turn Widget Options into an even more flexible widget area manager. Upgrade to <
 * Option for child page to inherit parent widget visibilities
 * Clone Widget
 
-Check full <a href="http://widget-options.com/features/">Extended Widget Options features</a>.
+Check full <a href="http://widget-options.com/features/">Widget Options Extended features</a>.
 
 <h3>ADD-ONS</h3>
 
@@ -170,6 +170,10 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 10. Advanced Custom Fields ( ACF ) Support
 
 == Changelog ==
+
+= 3.9.1 =
+
+* Fixed: Page Visibility taxonomies selection
 
 = 3.9.0 =
 
