@@ -57,7 +57,7 @@
 		} );
 
 		if( $('.wp-admin.widgets-php .wrap a.page-title-action').length > 0 ){
-			$('.wp-admin.widgets-php .wrap a.page-title-action').after('<a href="'+ widgetopts10n.opts_page +'" class="page-title-action hide-if-no-customize">'+ widgetopts10n.translation.manage_settings +'</a>');
+			$('.wp-admin.widgets-php .wrap a.page-title-action').after('<a href="'+ widgetopts10n.opts_page +'" class="page-title-action hide-if-no-customize widgetopts-super">'+ widgetopts10n.translation.manage_settings +'</a>');
 		}
 
 		//add live filter

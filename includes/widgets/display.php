@@ -209,6 +209,7 @@ if( !function_exists( 'widgetopts_display_callback' ) ):
                     $cats           = wp_get_post_categories( get_the_ID() );
                     if( is_array( $cats ) && !empty( $cats ) ){
                         $checked_cats   = array_keys( $visibility['categories'] );
+                        $checked_cats = (intval($checked_cats[0]) == 0) ? $visibility['categories'] : $checked_cats;
                         $intersect      = array_intersect( $cats , $checked_cats );
                         if( !empty( $intersect ) && $visibility_opts == 'hide' ){
                             $hidden = true;

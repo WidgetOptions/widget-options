@@ -135,11 +135,11 @@ if( !function_exists( 'widgetopts_load_admin_scripts' ) ):
             }
 
             /* Added by Haive Vistal - 04/20/2023 - Default link for all widgets to go through widget options panel settings */
-            $sidebaropts .= '<div class="widgetopts-super  widgetopts-sidebaropts">';
-                $sidebaropts .= '<a href="'. esc_url( wp_nonce_url( admin_url('options-general.php?page=widgetopts_plugin_settings'), 'widgeopts_setings', 'widgeopts_nonce_settings') ) .'">
-                    <span class="dashicons dashicons-admin-settings"></span> '. __( 'Enable more Widget Options superpowers', 'widget-options' ) .'
-                  </a>';
-            $sidebaropts .= '</div>';
+            // $sidebaropts .= '<div class="widgetopts-super  widgetopts-sidebaropts">';
+            //     $sidebaropts .= '<a href="'. esc_url( wp_nonce_url( admin_url('options-general.php?page=widgetopts_plugin_settings'), 'widgeopts_setings', 'widgeopts_nonce_settings') ) .'">
+            //         <span class="dashicons dashicons-admin-settings"></span> '. __( 'Enable more Widget Options superpowers', 'widget-options' ) .'
+            //       </a>';
+            // $sidebaropts .= '</div>';
 
             wp_localize_script( 'jquery-widgetopts-option-tabs', 'widgetopts10n', array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'opts_page' => esc_url( admin_url( 'options-general.php?page=widgetopts_plugin_settings' ) ), 'search_form' => $form, 'sidebaropts' => $sidebaropts, 'controls' => $btn_controls, 'translation' => array( 'manage_settings' => __( 'Manage Widget Options', 'widget-options' ), 'search_chooser' => __( 'Search sidebar&hellip;', 'widget-options' ) )) );
 

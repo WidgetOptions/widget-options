@@ -55,7 +55,7 @@ wpWidgetOpts = {
 
 			//add link to settings page on title
 			if( title.length > 0 ){
-				title.after('<a href="'+ widgetopts10n.opts_page +'" class="page-title-action hide-if-no-customize">'+ widgetopts10n.translation.manage_settings +'</a>');
+				title.after('<a href="'+ widgetopts10n.opts_page +'" class="page-title-action hide-if-no-customize widgetopts-super">'+ widgetopts10n.translation.manage_settings +'</a>');
 			}
 
 			//live search filter

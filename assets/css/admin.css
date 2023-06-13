@@ -927,11 +927,12 @@ div#widgets-right .widget-top:hover,
 }
 .widgetopts-super {
     text-align:center;
-    background: #eee;	
-    color: #777;
-    padding: 2px !important;
+    background: #ff7f29 !important;	
+    color: #000 !important;
+    padding: 4px 20px !important;
+    border: 1px solid #ff7f29 !important;
 }
-.widgetopts-super a {
+/*.widgetopts-super a {
     color: #777 !important;
 }
 .widgetopts-super:hover {
@@ -940,7 +941,7 @@ div#widgets-right .widget-top:hover,
 }
 .widgetopts-super:hover a {
     color: #777 !important;
-}
+}*/
 .widgetopts-sidebaropts a .dashicons{
 	font-size: 15px !important;
 	line-height: 21px !important;
