@@ -5,7 +5,7 @@ Tags: widgets, widget plugins, widget settings, flexible widget area manager, re
 Requires at least: 4.0
 Tested up to: 6.2.2
 Requires PHP: 5.6
-Stable tag: 3.9.2
+Stable tag: 3.9.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -170,6 +170,11 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 10. Advanced Custom Fields ( ACF ) Support
 
 == Changelog ==
+
+= 3.9.3 =
+
+* Updated: Ajax select2 directories
+* Improved: Page visibility search (can now search empty taxonomies)
 
 = 3.9.2 =
 

@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Widget Options
  * Plugin URI: https://widget-options.com/
- * Description: Additional Widget options for better widget control. Get <strong><a href="http://widget-options.com/" target="_blank" >Extended Widget Options for WordPress</a></strong> for complete widget controls. Thanks!
- * Version: 3.9.2
+ * Description: Additional Widget options for better widget control. Turn Widget Options into an even more flexible widget area manager. Upgrade to <strong><a href="http://widget-options.com/" target="_blank" >Widget Options Extended</a></strong> today!
+ * Version: 3.9.3
  * Author: Widget Options Team
  * Author URI: https://widget-options.com/
  * Text Domain: widget-options
@@ -85,7 +85,7 @@ final class WP_Widget_Options {
 
 		// Plugin version.
 		if ( ! defined( 'WIDGETOPTS_VERSION' ) ) {
-			define( 'WIDGETOPTS_VERSION', '3.9.2' );
+			define( 'WIDGETOPTS_VERSION', '3.9.3' );
 		}
 
 		// Plugin Folder Path.

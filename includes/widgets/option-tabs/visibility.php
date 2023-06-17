@@ -424,7 +424,8 @@ function widgetopts_ajax_taxonomy_search() {
         $args = array(
             'taxonomy'      => array( $_POST['taxonomy'] ),
             'fields'        => 'all',
-            'name__like'    => $_POST['term']
+            'name__like'    => $_POST['term'],
+            'hide_empty' => false
         );
 
         $terms = get_terms( $args );
