@@ -44,12 +44,12 @@ if( !function_exists( 'widgetopts_admin_notices' ) ):
             </br>
             Your review is essential to the Widget Options community and our ongoing succes.
             <br><br>
-            Thank you so much! – Your Widget Options Team
+            Thank you so much! ï¿½ Your Widget Options Team
             <ul>
                 <li><a href="https://wordpress.org/support/view/plugin-reviews/widget-options" class="thankyou" target="_blank" title="Ok, you deserved it" style="font-weight:bold;">'. __( 'Definitely. Widget Options is the best!', 'widget-options' ) .'</a></li>
                 <li><a href="javascript:void(0);" class="widgetopts_bHideRating" title="I already did" style="font-weight:bold;">'. __( 'Already done!', 'widget-options' ) .'</a></li>
-                <li><a href="https://widget-options.com/contact/" class="thankyou" target="_blank" title="Ok, you deserved it" style="font-weight:bold;">'. __( "I’m not convinced yet. Still thinking about it.", 'widget-options' ) .'</a></li>
-                <li><a href="javascript:void(0);" class="widgetopts_bHideRating" title="No, not good enough" style="font-weight:bold;">'. __( "I don’t do ratings", 'widget-options' ) .'</a></li>
+                <li><a href="https://widget-options.com/contact/" class="thankyou" target="_blank" title="Ok, you deserved it" style="font-weight:bold;">'. __( "Not convinced yet. Still think about it.", 'widget-options' ) .'</a></li>
+                <li><a href="javascript:void(0);" class="widgetopts_bHideRating" title="No, not good enough" style="font-weight:bold;">'. __( "Dismiss", 'widget-options' ) .'</a></li>
             </ul>
         </div>
         <script>
@@ -80,4 +80,3 @@ if( !function_exists( 'widgetopts_admin_notices' ) ):
     }
     add_action( 'admin_notices', 'widgetopts_admin_notices' );
 endif;
-?>

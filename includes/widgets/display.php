@@ -49,9 +49,9 @@ if (!function_exists('widgetopts_display_callback')) :
                 $isWooPage = true;
 
                 $visibility['pages'] = !empty($visibility['pages']) ? $visibility['pages'] : [];
-                if ($visibility_opts == 'hide' && array_key_exists($wooPageID, $visibility['pages'])) {
+                if ($visibility_opts == 'hide' && (array_key_exists($wooPageID, $visibility['pages']) || in_array($wooPageID, $visibility['pages']))) {
                     $hidden = true; //hide if exists on hidden pages
-                } elseif ($visibility_opts == 'show' &&  !array_key_exists($wooPageID, $visibility['pages'])) {
+                } elseif ($visibility_opts == 'show' &&  !array_key_exists($wooPageID, $visibility['pages']) && !in_array($wooPageID, $visibility['pages'])) {
                     $hidden = true; //hide if doesn't exists on visible pages
                 }
 
@@ -95,6 +95,17 @@ if (!function_exists('widgetopts_display_callback')) :
                     $visibility['categories'] = array();
                 }
 
+                //for taxonomy category checking
+                if (!isset($visibility['taxonomies'])) {
+                    $visibility['taxonomies'] = array();
+                }
+                //check first the category taxonomy
+                if ($visibility_opts == 'hide' && array_key_exists('category', $visibility['taxonomies'])) {
+                    $hidden = true; //hide if exists on hidden pages
+                } elseif ($visibility_opts == 'show' && !array_key_exists('category', $visibility['taxonomies'])) {
+                    $hidden = true; //hide if doesn't exists on visible pages
+                }
+
                 // WPML TRANSLATION OBJECT FIX
                 $category_id = ($hasWPML) ? apply_filters('wpml_object_id', get_query_var('cat'), 'category', true, $default_language) : get_query_var('cat');
 
@@ -106,6 +117,10 @@ if (!function_exists('widgetopts_display_callback')) :
                     $hidden = true; //hide to all categories
                 } elseif (((array_key_exists($category_id, $visibility['categories']) && $visibility['categories'][$category_id] == '1') || in_array($category_id, $visibility['categories'])) && $visibility_opts == 'show') {
                     $hidden = false; //hide to all categories
+                }
+
+                if ($visibility_opts == 'show' && array_key_exists('category', $visibility['taxonomies'])) {
+                    $hidden = false; //hide if doesn't exists on visible pages
                 }
 
                 //do return to bypass other conditions
@@ -250,8 +265,13 @@ if (!function_exists('widgetopts_display_callback')) :
 
                     if ($visibility_opts == 'hide' && (array_key_exists($pageID, $visibility['pages']) || in_array($pageID, $visibility['pages']))) {
                         $hidden = true; //hide if exists on hidden pages
-                    } elseif ($visibility_opts == 'show' && (!in_array($pageID, $visibility['pages']))) {
+                    } elseif ($visibility_opts == 'show' && (!array_key_exists($pageID, $visibility['pages']) && !in_array($pageID, $visibility['pages']))) {
                         $hidden = true; //hide if doesn't exists on visible pages
+                    } elseif ($visibility_opts == 'show' && $pageID == 0) {
+                        //for old versin v3.8.10 and below, need to resave the widget option
+                        if (!in_array($pageID, $visibility['pages'])) {
+                            $hidden = true;
+                        }
                     }
                 }
                 //do return to bypass other conditions
