@@ -263,15 +263,23 @@ if (!function_exists('widgetopts_display_callback')) :
                         $visibility['pages'] = array();
                     }
 
-                    if ($visibility_opts == 'hide' && (array_key_exists($pageID, $visibility['pages']) || in_array($pageID, $visibility['pages']))) {
+                    $page_in_array = in_array($pageID, $visibility['pages']);
+                    //for the compatibility of the data of lower version 3.8.10 and below
+                    if (array_key_exists($pageID, $visibility['pages'])) {
+                        if ($visibility['pages'][$pageID] == 1) {
+                            $page_in_array = true;
+                        }
+                    }
+
+                    if ($visibility_opts == 'hide' && $page_in_array) {
                         $hidden = true; //hide if exists on hidden pages
-                    } elseif ($visibility_opts == 'show' && (!array_key_exists($pageID, $visibility['pages']) && !in_array($pageID, $visibility['pages']))) {
-                        $hidden = true; //hide if doesn't exists on visible pages
                     } elseif ($visibility_opts == 'show' && $pageID == 0) {
                         //for old versin v3.8.10 and below, need to resave the widget option
                         if (!in_array($pageID, $visibility['pages'])) {
                             $hidden = true;
                         }
+                    } elseif ($visibility_opts == 'show' && !$page_in_array) {
+                        $hidden = true; //hide if doesn't exists on visible pages
                     }
                 }
                 //do return to bypass other conditions
