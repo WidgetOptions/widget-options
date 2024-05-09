@@ -1,88 +1,95 @@
-=== Widget Options - The #1 WordPress Widget Control Plugin ===
-Contributors: marketingfire, phpbits
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FMKC2SLPTULP8
-Tags: widgets, widget plugins, widget settings, flexible widget area manager, restrict widgets, display widgets, widget logic, hide widgets, hide widget, sidebar, widget content, display widget, widget options, widget option, widget, widget css, CSS, widget classes, widget styling, widget ID, widget custom class, widget visibility, widget ninja, jetpack visibility, siteorigin, siteorigin pagebuilder, pagebuilder by siteorigin, elementor pagebuilder
-Requires at least: 4.0
-Tested up to: 6.3
-Requires PHP: 5.6
-Stable tag: 3.9.6
+=== Widget Options – The #1 WordPress Widget & Block Control Plugin ===
+Contributors: marketingfire
+Tags: widgets, blocks, blocks control, gutenberg widgets, classic widgets
+Requires at least: 5.6
+Tested up to: 6.5.3
+Requires PHP: 7.4
+Stable tag: 4.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 
 == Description ==
 
-Widget Options lets you add more options to widget settings so you can take full control of your website’s widgets. With over <strong>1,060,000+ downloads</strong> and an <strong>average rating of 4.9 stars</strong>, there is no doubt that Widget Options is the perfect solution for you to manage your widgets better and easier.
+Widget Options gives you super powers to control your site’s sidebar widgets and all Gutenberg blocks on pages & posts.
 
-<strong>Widget Options</strong> expands widget settings by adding elegant and feature-packed options to every widget so you can completely manage and control its visibility and appearance. It allows you to fine tune your sidebar widget visibility depending on user roles, devices, dates, and more! 
+👉 Over 2,700,000+ downloads
+👉 Average rating of ⭐⭐⭐⭐⭐ 4.9 stars
+👉 NOW Gutenberg block enabled
 
-Built with seamless integration with WordPress, Widget Options is yet the world’s most complete widget management plugin. 
+Widget Options expands Widget & Gutenberg block settings with feature-packed options so you can completely manage and control their visibility, appearance, and behavior. Show or hide content depending on user roles, devices, dates, URL…and more!
 
-[youtube https://www.youtube.com/watch?v=GNawoUZ_t18]
+<strong> ✨ INSIDER TIP: ✨ Purchase our <a href="https://widget-options.com/">Pro Version of the Widget Options plugin</a> for even more control – and get the world’s most powerful widget management plugin today! </strong>
 
-<h3>MORE OPTIONS IN THE WIDGET SETTINGS MEANS MORE CONTROL</h3>
+[youtube https://www.youtube.com/watch?v=6ey1rDrlm_A]
 
-With the expanded widget settings that Widget Options bring, you can do all of the following with ease. 
+<h3>Take Full Control over your WordPress Widgets & Gutenberg Blocks</h3>
 
-<h4>SHOW OR HIDE WIDGETS ON SPECIFIC WORDPRESS PAGES</h4>
-With the Widget Options plugin, you can easily control every widget’s visibility or restrictions on different pages, posts, custom post types, categories, tags, and custom taxonomies. 
+Widget Options’ suite of controls makes it simple to achieve all of the following: 
 
-<h4>SHOW OR HIDE WIDGETS ON MOBILE DEVICES, DESKTOP AND/OR TABLET</h4>
-Display fewer widgets on your mobile devices for easier website navigation without affecting your desktop and tablet versions. This is one of the features of Widget Options that proves it to be a flexible widget area manager. The device visibility section in the widget settings show which sidebar widgets are active or visible in each device type. 
+<h4>✅ EASILY MANAGE WIDGET & GUTENBERG BLOCK VISIBILITY ON YOUR WORDPRESS SITE</h4>
+Effortlessly manage visibility and access across different pages, posts, and categories with the Widget Options plugin.With intuitive search or checkbox selections, customize your site's layout for categories, tags, custom post types, and more, ensuring your widgets and blocks appear exactly where you want them!
 
-<h4>CUSTOM WORDPRESS WIDGET ALIGNMENTS</h4>
-Change your widget alignment to match the entire look of your website. Comes with <strong>center, left, right, and justified alignment</strong> options.
+<h4>✅ SHOW OR HIDE WIDGETS OR BLOCKS ON MOBILE DEVICES, DESKTOP AND/OR TABLET</h4>
+Enhance your website's mobile experience with Widget Options. This tool allows you to streamline navigation by selectively displaying widgets or blocks on mobile devices. Keep your desktop and tablet interfaces unaffected while optimizing mobile views. The 'Device Visibility' feature in the widget settings clearly indicates which sidebar widgets are active on different devices, ensuring a flexible and user-friendly widget management.
 
-<h4>CUSTOM WIDGET ID & CLASSES</h4>
+<h4>✅ USER LOGIN STATE</h4>
+Decide which widgets or Gutenberg blocks should be visible or hidden to either logged-in or non-logged-in users. This feature is helpful when you want certain website functions to be available only to registered users.
+
+<h4>✅ CUSTOM WORDPRESS WIDGET ALIGNMENTS</h4>
+Change your widget or block alignment to match the entire look of your website. Comes with <strong>center, left, right, and justified alignment<strong> options which can be customized for each device type.
+
+<h4>✅ CUSTOM WIDGET ID & CLASSES</h4>
 Create predefined classes on the plugin’s settings page and use them later for each widget. You can also add custom widget ID and additional classes for styling or javascript purposes.
 
-<h4>DISPLAY WIDGET LOGIC</h4>
-Use <a href="http://codex.wordpress.org/Conditional_Tags">WordPress Conditional tags</a> to manage and restrict your widgets using display widget logic option if you’re geeky enough to use PHP conditions and in need of custom restrictions.
+<h4>✅ DISPLAY WIDGET LOGIC</h4>
+Use <a href="https://codex.wordpress.org/Conditional_Tags">WordPress Conditional</a> tags to manage and restrict your widgets or Gutenberg blocks using display widget logic option if you’re geeky enough to use PHP conditions and in need of custom restrictions.
 
-<h4>HIDE WIDGET TITLE</h4>
+<h4>✅ HIDE WIDGET TITLE</h4>
 Easily hide widget titles from the front-end display while retaining them on the backend dashboard for labeling.
 
-<h4>ENABLE / DISABLE OPTIONS</h4>
-Use only the features you want and disable any other widget options easily using the brand new settings page.
+<h4>✅ ENABLE / DISABLE WIDGET OPTIONS FEATURES</h4>
+Tailor your experience effortlessly by selecting only the features you desire, and easily disable any unwanted widget options features through the intuitive settings page.
 
-<h4>USER LOGIN STATE</h4>
-Decide which widgets have to be visible or invisible to either logged-in or non-logged-in users. This feature is helpful when you want certain website functions to be available only to registered users.
+<h4>✅ WIDGET BLOCK EDITOR</h4>
+Choose between the Classic Widget or Gutenberg Block Widget Editor with our latest feature. Experience the classic design with the old widget or embrace the power of blocks with the modern widget. Ideal for users who love the Gutenberg experience!
 
-<h4>STICKY/FIXED WORDPRESS WIDGETS (Premium)</h4>
+<h4>✅ STICKY/FIXED WORDPRESS WIDGETS (PRO)</h4>
 This premium feature allows widgets to be always visible to users as they scroll up and down a webpage. Make your most important widgets sticky or fixed so that users can access them easily.
 
-<h3>WIDGET OPTIONS’ TIME-SAVING FEATURES</h3>
+<h3>Widget Option’s Time-Saving Features</h3>
 
-Widget plugins shouldn’t only give you control over your widgets. They must also save you a lot of time! Here are Widget Options’ features that can do that.
+Widget plugins shouldn’t only give you control over your widgets. They must also save you a lot of time! Here are Widget Options’ features that can do that:
 
-<h4>LIVE WIDGET SEARCH FILTER</h4>
+<h4>✅ LIVE WIDGET SEARCH FILTER</h4>
 Admins save time and manage widgets more efficiently by enabling the live widget search box on your widget dashboard to locate widgets easier. No need to scroll the page.
 
-<h4>NO NEED TO DRAG WORDPRESS WIDGETS TO MOVE THEM</h4>
+<h4>✅ NO NEED TO DRAG WORDPRESS WIDGETS TO MOVE THEM</h4>
 Increase productivity and improve widgets management by moving any widgets easily with just a click-and-select action. No more drag-and-drop! This is a convenient option especially when using small-screen devices such as tablets or mobile phones.
 
-<h4>IMPORT & EXPORT WIDGETS AND WIDGET AREA BACKUP</h4>
+<h4>✅ IMPORT & EXPORT WIDGETS AND WIDGET AREA BACKUP</h4>
 You can now import and export WordPress widgets easily and create backups of specific sidebar widget areas. Move widgets to another website with ease.
 
-<h4>VIEW YOUR CHANGES LIVE</h4>
-This plugin is customizer-ready for easier modification. View your changes live before saving it. 
+<h4>✅ VIEW YOUR CHANGES LIVE</h4>
+This plugin is customizer-ready for easier modification. View your changes live before saving it!
 
-<h3>COMPATIBLE WITH THE MOST POPULAR PAGE BUILDERS</h3>
+<h3>Compatible with Most Major Page Builders</h3>
 
-Not all widget plugins are designed to work with page builders. If your websites use SiteOrigin, Elementor, or Beaver, you can make the most of Widget Options. This is another reason why we call it the most flexible widget area manager!
+Not all widget plugins are designed to work with page builders. If your websites use Gutenberg, SiteOrigin, Elementor, or Beaver, you can make the most of Widget Options. This is another reason why we call it the most flexible widget area manager!
 
-<h4>PAGE BUILDER BY SITEORIGIN PLUGIN COMPATIBLE</h4>
-With Widget Options on your website that is powered by SiteOrigin Page Builder, you can add more control to the widget panels. Manage visibility on specific device types, change alignments, hide widget panel title, add custom classes, and control visibility using display widget logic option! 
+<h4>🛠️ GUTENBERG BLOCK EDITOR BY WORDPRESS</h4>
+Widget Options gives you full control over the visibility of Gutenberg Blocks, which are the building blocks for many themes and sites today. Simply select the content block you want to edit and you will see all of the Widget Options abilities on the right side settings panel. 
 
-<strong>Page Builder by SiteOrigin Plugin + Widget Options = Total Freedom!</strong>
+<h4>🛠️ PAGE BUILDER BY SITEORIGIN PLUGIN COMPATIBLE</h4>
+With Widget Options on your website that is powered by SiteOrigin Page Builder, you can add more control to the widget panels. Manage visibility on specific device types, change alignments, hide widget panel title, add custom classes, and control visibility using display widget logic option!
 
-<h4>ELEMENTOR PAGE BUILDER READY</h4>
+<h4>🛠️ ELEMENTOR PAGE BUILDER READY</h4>
 Extend Widget Options’ visibility restrictions on elementor widgets! You can now have the same widget management features available to your Elementor-powered websites.
 
-<h4>BEAVER BUILDER PLUGIN READY</h4>
-Widget Options now comes with Beaver Builder plugin integration – integrated for a smooth website building workflow. You can fully manage each module in many ways you want! 
+<h4>🛠️ BEAVER BUILDER PLUGIN READY</h4>
+Widget Options now comes with Beaver Builder plugin integration – integrated for a smooth website building workflow. You can fully manage each module in many ways you want!
 
-<h4>ADVANCED CUSTOM FIELDS (ACF) SUPPORT</h4>
+<h4>🛠️ ADVANCED CUSTOM FIELDS (ACF) SUPPORT</h4>
 Easily show or hide any widget using your ACF fields and conditions. You can create restrictions on your widgets with the following conditions:
 
 * Equal To
@@ -94,41 +101,51 @@ Easily show or hide any widget using your ACF fields and conditions. You can cre
 
 The ACF function is also available for Elementor and Beaver Builder.
 
-<h3>UPGRADE TO WIDGET OPTIONS EXTENDED</h3>
+<h3>UPGRADE TO THE WIDGET OPTIONS EXTENDED PLUGIN</h3>
 
 Turn Widget Options into an even more flexible widget area manager. Upgrade to <a href="http://widget-options.com/pricing/">Widget Options Extended</a> today!
 
-<h4>Premium Features</h4>
+<h4>✨ PREMIUM FEATURES ✨</h4>
 
-* Custom WordPress Widget Styling
-* Widget Animations on scroll and page load
-* Sticky / Fixed WordPress Widgets
-* Custom Widget Links
-* Widget Cache
-* Custom Widget Columns Display
-* Restrict Widget Visibility per User Roles
-* Widget Visibility per Days and Date Range
-* Extended Taxonomy and Terms Support
-* Display Sidebars and Widgets using Shortcodes
-* Disable any WordPress Widgets
-* Permission Options
-* Target URLs and Wildcard Restrictions
-* Option for child page to inherit parent widget visibilities
-* Clone Widget
+* NEW: Unlock more features for Gutenberg widgets and blocks (pages, posts and other custom post types)
+* NEW: Widget visibility for author’s contents and archive page
+* Inherit page parent visibility
+* NEW: Filter multiple pages by keyword-containing slug
+* Target URLs and wildcard restrictions
+* Clone widgets
+* Custom widget links
+* Advanced widget visibility control by user role
+* Sticky / fixed WordPress widgets
+* Custom widget columns display
+* NEW: Widget visibility per days and date range (+ option to ignore year)
+* Custom WordPress widget styling
+* Widget cache
+* Extended taxonomy and terms support
+* Display sidebars and widgets using shortcodes
+* Disable any WordPress widgets
+* Permission options (control who can edit widget settings based on user role)
 
-Check full <a href="http://widget-options.com/features/">Widget Options Extended features</a>.
+👉👉 Check out the full list of <a href="http://widget-options.com/features/">Widget Options Extended features here</a>.
 
 <h3>ADD-ONS</h3>
 
-In need of a WordPress <a href="https://widget-options.com/features/modal-pop-up-and-sliding-widget-options/">Sliding Panel</a> for your widgets? Check out <a href="https://widget-options.com/features/modal-pop-up-and-sliding-widget-options/">Sliding Widget Options</a> add-on, and transform any of your widgets to modal pop-up, slide in and/or sliding widget panel; and increase your website’s user engagement!
+Check out the <a href="https://widget-options.com/features/modal-pop-up-and-sliding-widget-options/">Sliding Widget Options</a> add-on! Transform any of your widgets into:
 
-We keep Widget Options up-to-date and make this flexible widget area manager even more, well, flexible! If you like to contribute, report issues or have suggestions, you can find the development version on <a href="https://github.com/WidgetOptions/widget-options">Github</a>. 
+* A modal pop-up
+* A slide in/toaster
+* A chat box
+* …any other animated sliding panel you can think of to increase your website’s user engagement!
 
-<strong>More information</strong>
+<h3>CONTACT AND CREDITS</h3>
 
-* Follow the developer <a href="https://twitter.com/WidgetOptions" target="_blank">@Twitter</a>
-* <a href="https://www.facebook.com/WidgetOptions/" target="_blank">Join Facebook Community Group</a>
-* <a href="https://www.youtube.com/channel/UCgKC5IAqoz4Q7nW0WzueQFw" target="_blank">Youtube Channel</a>
+Widget Options for WordPress is regularly maintained and developed by the <a href="https://widget-options.com/">Widget Options Team</a>.
+
+We work hard to keep Widget Options up-to-date and expanding, to make the most powerful widget and block manager on WordPress even more, well… powerful! 💪
+
+If you would like to contribute, report issues or have suggestions, you can find the development version on <a href="https://github.com/WidgetOptions/widget-options">Github</a>.
+
+You can also visit us at our <a href="https://www.youtube.com/channel/UCgKC5IAqoz4Q7nW0WzueQFw">Youtube Channel</a>.
+
 
 == Installation ==
 
@@ -138,7 +155,7 @@ e.g.
 
 1. Upload the full directory into your wp-content/plugins directory
 2. Activate the plugin at the plugin administration page
-3. Go to Settings > Widget Options and add predefined Classes if you need to
+3. Go to Settings > Widget Options and add configure the features if you need to
 4. When you drag or open any widgets you'll see the Widget Options below
 5. I hope you'll love this plugin :)
 
@@ -158,18 +175,83 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 
 == Screenshots ==
 
-1. Widgets Visibility Options
+1. Widgets Visibility Options in WP Customizer
 2. Device Visibility Options
-3. Widgets Custom Alignment
-4. Widget CSS ID & Classes
+3. Block Widget Editor Enabled
+4. Gutenberg Page and Post Block 
 5. Display Widget Logic
 6. Pagebuilder by SiteOrigin Plugin Widget Options
 7. Widget Importer & Exporter Feature
-8. Beaver Builder Integration
-9. Elementor Pagebuilder Integration
+8. Widgets Custom Alignment
+9. Widget CSS ID & Classes
 10. Advanced Custom Fields ( ACF ) Support
+11. Pages Visibility Options
+12. Widget Options Available Features
+13. Beaver Builder Integration
+14. Elementor Pagebuilder Integration
 
 == Changelog ==
+
+= 4.0.6 =
+
+* Fixed: Compatibility issue with The Event Calendar plugin
+* Fixed: Conflict with jetpack slideshow and jetpack forms
+* Fixed: Widget visibility per user roles when using shortcodes
+* Fixed: Compatibility with eCommerce Product Catalog for WordPress plugin
+* Fixed: PHP Warning: Attempt to read property "taxonomy" on null
+* Fixed: PHP Warning: Attempt to read property "term_id" on null
+* Added: missing cache buster in $ver argument for styles and scripts
+
+= 4.0.5.1 =
+
+* Fixed: Notification about the new features
+
+= 4.0.5 =
+
+* Added: Additional options for category visibility, can now select Archive and Single posts, Archive only, or Singe Posts only 
+* Fixed: Content is updated and removed during page editing
+* Fixed: response is not a valid json response
+* Fixed: Ajax select2 search field
+* Fixed: Compatibility issue with All In One SEO plugin
+* Fixed: Compatibility issue with Woo Pick List plugin
+* Fixed: Compatibility issue with Jetpack
+* Fixed: Compatibility issue with Table of Content plugin
+* Fixed: Compatibility issue with WP Recipe plugin
+* Fixed: Devices Restriction, condition now working in mobile
+
+= 4.0.4 =
+
+* Fixed: All widgets showing in “customize” view.
+
+= 4.0.3 =
+
+* Fixed: WP Customizer saving issue.
+
+= 4.0.2 =
+
+* Improved: Widget Options for Kadence Block compatibility.
+* Fixed: Visibility of Product Category Taxonomy for YITH AJAX Filter Preset.
+* Fixed: Missing Add Block button.
+
+= 4.0.1 =
+
+* Improved: Added UI to enable and disable Widget Options in posts, pages, and other custom post types gutenberg blocks.
+* Fixed: PHP Warning - Undefined array key "content"
+* Fixed: WP_Block_Type_Registry::register error
+
+= 4.0.0 =
+
+* Widget Options is now a Gutenberg Block-Enabled plugin.
+* Improved: Compatibility with WP 6.3 and 6.4
+* Improved: User Interface
+* Improved: Error Handling
+* Improved: Loading speed on Classic Widget and Block Widget Editor
+* Updated: Selection of post types and taxonomies (Toggle between search and checkbox)
+* Fixed: PHP Warnings and Notices
+* Fixed: Devices Restriction issue 
+* Fixed: Cron warning issue
+* Fixed: Ajax is not allowed for Select2 error
+* Fixed: Widget Options' select2 CSS conflicts with other plugin's select2 CSS
 
 = 3.9.6 =
 
@@ -384,7 +466,7 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 
 = 1.3 =
 * Added: Category Widgets Visibility Selection to associated posts
-* Updated: Pro tabs with additional features added on Extended Widget Options 2.0
+* Updated: Pro tabs with additional features added on Widget Options Extended 2.0
 
 = 1.2 =
 * Added: Widget CSS ID and Classes tab options. <a href="https://widget-options.com/blog/add-wordpress-widget-css-classes-id/">Learn more about this update</a>

@@ -21,7 +21,19 @@ if (!defined('ABSPATH')) exit;
 if (!function_exists('widgetopts_display_callback')) :
     function widgetopts_display_callback($instance, $widget, $args)
     {
-        global $widget_options, $current_user;
+        global $widget_options, $current_user, $pagenow, $wp_customize;
+
+        if (empty($instance['extended_widget_opts-' . $widget->id]) && isset($instance['content']) && !empty($instance['content'])) {
+            $block = parse_blocks($instance['content']);
+            if (!empty($block[0]) && !empty($block[0]['attrs']) && !empty($block[0]['attrs']['extended_widget_opts'])) {
+                $instance['extended_widget_opts-' . $widget->id] = $block[0]['attrs']['extended_widget_opts'];
+            }
+        }
+
+        if (isset($wp_customize)) {
+        } else if ($pagenow === 'widgets.php' || (defined('REST_REQUEST') && REST_REQUEST)) {
+            return $instance;
+        }
 
         // WPML FIX
         $hasWPML = has_filter('wpml_current_language');
@@ -39,6 +51,90 @@ if (!function_exists('widgetopts_display_callback')) :
         $is_misc    = ('activate' == $widget_options['visibility'] && isset($widget_options['settings']['visibility']) && isset($widget_options['settings']['visibility']['misc'])) ? true : false;
         $is_types   = ('activate' == $widget_options['visibility'] && isset($widget_options['settings']['visibility']) && isset($widget_options['settings']['visibility']['post_type'])) ? true : false;
         $is_tax     = ('activate' == $widget_options['visibility'] && isset($widget_options['settings']['visibility']) && isset($widget_options['settings']['visibility']['taxonomies'])) ? true : false;
+
+        //check device
+        if ($widget_options['devices'] == 'activate' && isset($opts['devices']) && !empty($opts['devices'])) {
+
+            //for mobile and tablet
+            if (wp_is_mobile() || widgetopts_is_mobile() || widgetopts_is_tablet()) {
+                //mobile
+                // if (!widgetopts_is_tablet()) {
+                //     if (empty($opts['devices']['options']) || $opts['devices']['options'] == 'hide') {
+                //         if (isset($opts['devices']['mobile']) && $opts['devices']['mobile'] == '1') {
+                //             $hidden = true;
+                //         }
+                //     } else if ($opts['devices']['options'] == 'show') {
+                //         if (!isset($opts['devices']['mobile']) || empty($opts['devices']['mobile'])) {
+                //             $hidden = true;
+                //         }
+                //     }
+
+                //     $hidden = apply_filters('widget_options_devices_mobile', $hidden);
+                //     if ($hidden) {
+                //         return false;
+                //     }
+                // } else {
+                //     //tablet
+                //     if (empty($opts['devices']['options']) || $opts['devices']['options'] == 'hide') {
+                //         if (isset($opts['devices']['tablet']) && $opts['devices']['tablet'] == '1') {
+                //             $hidden = true;
+                //         }
+                //     } else if ($opts['devices']['options'] == 'show') {
+                //         if (!isset($opts['devices']['tablet']) || empty($opts['devices']['tablet'])) {
+                //             $hidden = true;
+                //         }
+                //     }
+
+                //     $hidden = apply_filters('widget_options_devices_tablet', $hidden);
+                //     if ($hidden) {
+                //         return false;
+                //     }
+                // }
+
+                //for a time being filter
+                if (empty($opts['devices']['options']) || $opts['devices']['options'] == 'hide') {
+                    //if both tablet and mobile are set then hide the widget
+                    if (
+                        isset($opts['devices']['mobile']) && $opts['devices']['mobile'] == '1' &&
+                        isset($opts['devices']['tablet']) && $opts['devices']['tablet'] == '1'
+                    ) {
+                        $hidden = true;
+                    } else {
+                        //else do nothing and css will make the final decision
+                    }
+                } else if ($opts['devices']['options'] == 'show') {
+                    //if both tablet and mobile are set then hide the widget
+                    if ((!isset($opts['devices']['mobile']) || empty($opts['devices']['mobile'])) &&
+                        (!isset($opts['devices']['tablet']) || empty($opts['devices']['tablet']))
+                    ) {
+                        $hidden = true;
+                    } else {
+                        //else do nothing and css will make the final decision
+                    }
+                }
+
+                $hidden = apply_filters('widget_options_devices_mobile', $hidden);
+                if ($hidden) {
+                    return false;
+                }
+            } else {
+                //for desktop
+                if (empty($opts['devices']['options']) || $opts['devices']['options'] == 'hide') {
+                    if (isset($opts['devices']['desktop']) && $opts['devices']['desktop'] == '1') {
+                        $hidden = true;
+                    }
+                } else if ($opts['devices']['options'] == 'show') {
+                    if (!isset($opts['devices']['desktop']) || empty($opts['devices']['desktop'])) {
+                        $hidden = true;
+                    }
+                }
+
+                $hidden = apply_filters('widget_options_devices_desktop', $hidden);
+                if ($hidden) {
+                    return false;
+                }
+            }
+        }
 
         $isWooPage = false;
         if (class_exists('WooCommerce')) {
@@ -78,7 +174,7 @@ if (!function_exists('widgetopts_display_callback')) :
                 if ($hidden) {
                     return false;
                 }
-            } elseif ($is_misc && is_home()) { //filter for blog page
+            } elseif ($is_misc && ((!is_front_page() && is_home()))) { //filter for blog page
                 if (isset($visibility['misc']['blog']) && $visibility_opts == 'hide') {
                     $hidden = true; //hide if checked on hidden pages
                 } elseif (!isset($visibility['misc']['blog']) && $visibility_opts == 'show') {
@@ -95,6 +191,15 @@ if (!function_exists('widgetopts_display_callback')) :
                     $visibility['categories'] = array();
                 }
 
+                if (isset($visibility['tax_terms']['category'])) {
+                    $visibility['categories'] = $visibility['tax_terms']['category'];
+                }
+
+                $selected_taxterms_page = 1;
+                if (isset($visibility['tax_terms_page']) && isset($visibility['tax_terms_page']['category'])) {
+                    $selected_taxterms_page = $visibility['tax_terms_page']['category'];
+                }
+
                 //for taxonomy category checking
                 if (!isset($visibility['taxonomies'])) {
                     $visibility['taxonomies'] = array();
@@ -109,13 +214,13 @@ if (!function_exists('widgetopts_display_callback')) :
                 // WPML TRANSLATION OBJECT FIX
                 $category_id = ($hasWPML) ? apply_filters('wpml_object_id', get_query_var('cat'), 'category', true, $default_language) : get_query_var('cat');
 
-                if ($visibility_opts == 'hide' && ((array_key_exists($category_id, $visibility['categories']) && $visibility['categories'][$category_id] == '1') || in_array($category_id, $visibility['categories']))) {
+                if ($visibility_opts == 'hide' && ((array_key_exists($category_id, $visibility['categories']) && $visibility['categories'][$category_id] == '1') || (in_array($category_id, $visibility['categories']) && ($selected_taxterms_page == 1 || $selected_taxterms_page == 2)) || ($is_misc && isset($visibility['misc']['archives'])))) {
                     $hidden = true; //hide if exists on hidden pages
-                } elseif ($visibility_opts == 'show' && ((!array_key_exists($category_id, $visibility['categories']) && empty($visibility['categories'][$category_id])) && !in_array($category_id, $visibility['categories']))) {
+                } elseif ($visibility_opts == 'show' && ((!array_key_exists($category_id, $visibility['categories']) && empty($visibility['categories'][$category_id])) && !(in_array($category_id, $visibility['categories']) && ($selected_taxterms_page == 1 || $selected_taxterms_page == 2)) && !($is_misc && isset($visibility['misc']['archives'])))) {
                     $hidden = true; //hide if doesn't exists on visible pages
-                } elseif (((array_key_exists($category_id, $visibility['categories']) && $visibility['categories'][$category_id] == '1') || in_array($category_id, $visibility['categories'])) && $visibility_opts == 'hide') {
+                } elseif (((array_key_exists($category_id, $visibility['categories']) && $visibility['categories'][$category_id] == '1') || (in_array($category_id, $visibility['categories']) && ($selected_taxterms_page == 1 || $selected_taxterms_page == 2))) && $visibility_opts == 'hide') {
                     $hidden = true; //hide to all categories
-                } elseif (((array_key_exists($category_id, $visibility['categories']) && $visibility['categories'][$category_id] == '1') || in_array($category_id, $visibility['categories'])) && $visibility_opts == 'show') {
+                } elseif (((array_key_exists($category_id, $visibility['categories']) && $visibility['categories'][$category_id] == '1') || (in_array($category_id, $visibility['categories']) && ($selected_taxterms_page == 1 || $selected_taxterms_page == 2)) || ($is_misc && isset($visibility['misc']['archives']))) && $visibility_opts == 'show') {
                     $hidden = false; //hide to all categories
                 }
 
@@ -133,8 +238,8 @@ if (!function_exists('widgetopts_display_callback')) :
                     $visibility['tags'] = array();
                 }
 
-                if ((isset($visibility['taxonomies']['post_tag']) && $visibility_opts == 'hide') ||
-                    (!isset($visibility['taxonomies']['post_tag']) && $visibility_opts == 'show')
+                if (((isset($visibility['taxonomies']['post_tag']) || ($is_misc && isset($visibility['misc']['archives']))) && $visibility_opts == 'hide') ||
+                    ((!isset($visibility['taxonomies']['post_tag']) && !($is_misc && isset($visibility['misc']['archives']))) && $visibility_opts == 'show')
                 ) {
                     $hidden = true; //hide to all tags
                 } elseif (isset($visibility['taxonomies']['post_tag']) && $visibility_opts == 'show') {
@@ -152,9 +257,9 @@ if (!function_exists('widgetopts_display_callback')) :
                     $visibility['taxonomies'] = array();
                 }
 
-                if ($visibility_opts == 'hide' && array_key_exists($term->taxonomy, $visibility['taxonomies'])) {
+                if ($visibility_opts == 'hide' && (!is_null($term) && isset($term->taxonomy) && (array_key_exists($term->taxonomy, $visibility['taxonomies'])) || ($is_misc && is_archive() && isset($visibility['misc']['archives'])))) {
                     $hidden = true; //hide if exists on hidden pages
-                } elseif ($visibility_opts == 'show' && !array_key_exists($term->taxonomy, $visibility['taxonomies'])) {
+                } elseif ($visibility_opts == 'show' && !(!is_null($term) && isset($term->taxonomy) && array_key_exists($term->taxonomy, $visibility['taxonomies'])) && !($is_misc && is_archive() && isset($visibility['misc']['archives']))) {
                     $hidden = true; //hide if doesn't exists on visible pages
                 }
 
@@ -203,14 +308,30 @@ if (!function_exists('widgetopts_display_callback')) :
                 global $post;
                 $type = $post->post_type;
 
+                if ($is_misc) {
+                    if (isset($visibility['misc']['single']) && $visibility_opts == 'show') {
+                        return $instance;
+                    }
+                }
+
+                if (isset($visibility['tax_terms']['category'])) {
+                    $visibility['categories'] = $visibility['tax_terms']['category'];
+                }
+
+                $selected_taxterms_page = 1;
+                if (isset($visibility['tax_terms_page']) && isset($visibility['tax_terms_page']['category'])) {
+                    $selected_taxterms_page = $visibility['tax_terms_page']['category'];
+                }
+
                 if (!isset($visibility['types'])) {
                     $visibility['types'] = array();
                 }
-                if ($visibility_opts == 'hide' && array_key_exists($type, $visibility['types'])) {
+                if ($visibility_opts == 'hide' && (array_key_exists($post->post_type, $visibility['types']) || ($is_misc && isset($visibility['misc']['single'])))) {
                     $hidden = true; //hide if exists on hidden pages
-                } elseif ($visibility_opts == 'show' && !array_key_exists($type, $visibility['types'])) {
+                } elseif ($visibility_opts == 'show' && (!array_key_exists($post->post_type, $visibility['types']) && (($is_misc && (!isset($visibility['misc']['single']))) || !$is_misc))) {
                     $hidden = true; //hide if doesn't exists on visible pages
                 }
+
                 // do return to bypass other conditions
                 $hidden = apply_filters('widget_options_visibility_types', $hidden);
                 //hide posts assign on category
@@ -228,9 +349,13 @@ if (!function_exists('widgetopts_display_callback')) :
                         $checked_cats = (intval($checked_cats[0]) == 0) ? $visibility['categories'] : $checked_cats;
                         $intersect      = array_intersect($cats, $checked_cats);
                         if (!empty($intersect) && $visibility_opts == 'hide') {
-                            $hidden = true;
+                            if ($selected_taxterms_page == 1 || $selected_taxterms_page == 3) {
+                                $hidden = true;
+                            }
                         } elseif (!empty($intersect) && $visibility_opts == 'show') {
-                            $hidden = false;
+                            if ($selected_taxterms_page == 1 || $selected_taxterms_page == 3) {
+                                $hidden = false;
+                            }
                         }
                     }
                 }
@@ -296,6 +421,7 @@ if (!function_exists('widgetopts_display_callback')) :
         if (isset($widget_options['acf']) && 'activate' == $widget_options['acf']) {
             if (isset($visibility['acf']['field']) && !empty($visibility['acf']['field'])) {
                 $acf = get_field_object($visibility['acf']['field']);
+
                 if ($acf && is_array($acf)) {
                     $acf_visibility    = (isset($visibility['acf']) && isset($visibility['acf']['visibility'])) ? $visibility['acf']['visibility'] : 'hide';
 
@@ -303,7 +429,12 @@ if (!function_exists('widgetopts_display_callback')) :
                     if (isset($acf['value'])) {
                         if (is_array($acf['value'])) {
                             $acf['value'] = implode(', ', array_map(function ($acf_array_value) {
-                                $acf_implode = implode(',', array_filter($acf_array_value));
+                                $acf_implode = '';
+                                if (is_array($acf_array_value)) {
+                                    $acf_implode = implode(',', array_filter($acf_array_value));
+                                } else {
+                                    $acf_implode = $acf_array_value;
+                                }
                                 return $acf_implode;
                             }, $acf['value']));
                         }
@@ -436,7 +567,11 @@ if (!function_exists('widgetopts_display_callback')) :
                     if (!eval($display_logic)) {
                         return false;
                     }
-                } catch (ParseError $e) {
+                } catch (\Exception $e) {
+                    return false;
+                } catch (\Error $e) {
+                    return false;
+                } catch (\Throwable $e) {
                     return false;
                 }
             }
@@ -462,7 +597,7 @@ if (!function_exists('widgetopts_remove_title')) :
         if ('activate' == $widget_options['hide_title'] && is_array($instance) && !empty($instance)) {
             foreach ($instance as $key => $value) {
                 if (substr($key, 0, 20) == 'extended_widget_opts') {
-                    $opts       = (isset($instance[$key])) ? $instance[$key] : array();
+                    $opts       = (isset($instance[$key])) ? (array)$instance[$key] : array();
 
                     if (isset($opts['class']) && isset($opts['class']['title']) && '1' == $opts['class']['title']) {
                         return;
@@ -500,6 +635,15 @@ if (!function_exists('widgetopts_add_classes')) :
         }
         if (isset($instance[$num])) {
             $opts           = (isset($instance[$num]['extended_widget_opts-' . $params[0]['widget_id']])) ? $instance[$num]['extended_widget_opts-' . $params[0]['widget_id']] : array();
+            if (empty($opts) && isset($instance[$num]['content']) && !empty($instance[$num]['content'])) {
+                /* if $opts is empty, try to get data from blocks */
+                $block = parse_blocks($instance[$num]['content']);
+                if (!empty($block[0]) && !empty($block[0]['attrs'])) {
+                    if (!empty($block[0]['attrs']['extended_widget_opts'])) {
+                        $opts = $block[0]['attrs']['extended_widget_opts'];
+                    }
+                }
+            }
         } else {
             $opts = array();
         }
