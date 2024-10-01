@@ -311,12 +311,12 @@ if (!class_exists('WP_Widget_Options_Beaver')) :
 ?>
 			<div class="fl-builder-widgetopts-tab">
 				<?php if (isset($widget_options['visibility']) && 'activate' == $widget_options['visibility']) { ?>
-					<a href="#fl-builder-settings-section-widgetopts-visibility" class="widgetopts-s-active"><span class="dashicons dashicons-visibility"></span><?php _e('Visibility', 'widget-options'); ?></a>
+					<a onclick="widgetoptsBeaverModule.navClick(event)" href="#fl-builder-settings-section-widgetopts-visibility" class="widgetopts-s-active"><span class="dashicons dashicons-visibility"></span><?php _e('Visibility', 'widget-options'); ?></a>
 				<?php } ?>
-				<?php if (isset($widget_options['logic']) && 'activate' == $widget_options['logic']) { ?>
-					<a href="#fl-builder-settings-section-widgetopts-settings" class="<?php echo (isset($widget_options['visibility']) && 'activate' == $widget_options['visibility']) ? '' : 'widgetopts-s-active'; ?>"><span class="dashicons dashicons-admin-generic"></span><?php _e('Settings', 'widget-options'); ?></a>
+				<?php if (isset($widget_options['logic']) && 'activate' == $widget_options['logic'] && current_user_can('administrator')) { ?>
+					<a onclick="widgetoptsBeaverModule.navClick(event)" href="#fl-builder-settings-section-widgetopts-settings" class=""><span class="dashicons dashicons-admin-generic"></span><?php _e('Settings', 'widget-options'); ?></a>
 				<?php } ?>
-				<a href="#fl-builder-settings-section-widgetopts-upgrade"><span class="dashicons dashicons-plus"></span><?php _e('More', 'widget-options'); ?></a>
+				<a onclick="widgetoptsBeaverModule.navClick(event)" href="#fl-builder-settings-section-widgetopts-upgrade"><span class="dashicons dashicons-plus"></span><?php _e('More', 'widget-options'); ?></a>
 			</div>
 		<?php }
 
@@ -331,6 +331,8 @@ if (!class_exists('WP_Widget_Options_Beaver')) :
 
 				wp_enqueue_style('widgetopts-beaver-css', $css_dir . 'beaver-widgetopts.css', array(), WIDGETOPTS_VERSION);
 				wp_enqueue_style('widgetopts-beaver-select2-css', $css_dir . 'select2.min.css', array(), WIDGETOPTS_VERSION);
+				wp_enqueue_style('widgetopts-jquery-ui', $css_dir . '/jqueryui/1.11.4/themes/ui-lightness/jquery-ui.css', array(), WIDGETOPTS_VERSION);
+				wp_enqueue_style('jquery-ui');
 
 				wp_enqueue_script(
 					'beaver-widgetopts',
@@ -401,7 +403,7 @@ if (!class_exists('WP_Widget_Options_Beaver')) :
 
 			if (!empty($options) && $value) {
 				uksort($options, function ($key1, $key2) use ($value) {
-					return (array_search($key1, $value) > array_search($key2, $value));
+					return array_search($key1, $value) <=> array_search($key2, $value);
 				});
 			}
 			if (!isset($field['class'])) {
@@ -815,14 +817,14 @@ if (!class_exists('WP_Widget_Options_Beaver')) :
 						return false;
 					}
 					if ($display_logic === true) {
-						return $content;
+						return true;
 					}
-					if (stristr($display_logic, "return") === false) {
-						$display_logic = "return (" . $display_logic . ");";
-					}
+					// if (stristr($display_logic, "return") === false) {
+					// 	$display_logic = "return (" . $display_logic . ");";
+					// }
 					$display_logic = htmlspecialchars_decode($display_logic, ENT_QUOTES);
 					try {
-						if (!eval($display_logic)) {
+						if (!widgetopts_safe_eval($display_logic)) {
 							return false;
 						}
 					} catch (ParseError $e) {

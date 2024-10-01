@@ -251,10 +251,27 @@ function widgetopts_tabcontent_visibility($args)
 
                                     <select class="widefat extended-widget-opts-select2-dropdown extended-widget-opts-select2-page-dropdown" name="<?php echo $args['namespace']; ?>[extended_widget_opts][visibility][pages][]" data-namespace="<?php echo $args['namespace']; ?>" multiple="multiple">
                                         <?php
-                                        $pageLoop  = get_pages(['hierarchical' => false]); //get_pages(['hierarchical' => false, 'include' => $pages_values]);
-                                        foreach ($pageLoop as $objPage) {
-                                            $_selected = !empty($pages_values) && in_array($objPage->ID, $pages_values) ? 'selected' : '';
-                                            echo '<option value="' . $objPage->ID . '" ' . $_selected . '>' . $objPage->post_title . '</option>';
+                                        $pargs = array(
+                                            'hierarchical' => true,
+                                            'child_of' => 0, // Display all pages regardless of parent
+                                            'parent' => -1, // Display all pages regardless of parent
+                                            'sort_order' => 'ASC',
+                                            'sort_column' => 'menu_order, post_title'
+                                        );
+
+                                        $pageLoop = get_pages($pargs);
+
+                                        if ($pageLoop) {
+                                            foreach ($pageLoop as $objPage) {
+                                                $depth = count(get_ancestors($objPage->ID, 'page'));
+                                                // Determine indentation for hierarchical display
+                                                $indent = str_repeat('-', $depth);
+
+                                                // Check if the page is selected based on form submission
+                                                $_selected_page = !empty($pages_values) && in_array($objPage->ID, $pages_values) ? 'selected' : '';
+
+                                                echo '<option value="' . $objPage->ID . '" ' . $_selected_page . '>' . $indent . esc_html($objPage->post_title) . '</option>';
+                                            }
                                         }
                                         ?>
                                     </select>

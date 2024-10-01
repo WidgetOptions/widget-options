@@ -371,12 +371,12 @@ if (!function_exists('widgetopts_elementor_render')) {
 					if ($display_logic === true) {
 						return $content;
 					}
-					if (stristr($display_logic, "return") === false) {
-						$display_logic = "return (" . $display_logic . ");";
-					}
+					// if (stristr($display_logic, "return") === false) {
+					// 	$display_logic = "return (" . $display_logic . ");";
+					// }
 					$display_logic = htmlspecialchars_decode($display_logic, ENT_QUOTES);
 					try {
-						if (!eval($display_logic)) {
+						if (!widgetopts_safe_eval($display_logic)) {
 							return $placeholder;
 						}
 					} catch (ParseError $e) {

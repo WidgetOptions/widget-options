@@ -82,13 +82,13 @@ if (!function_exists('widgetopts_load_admin_scripts')) :
             );
 
             //load only on admin pages with widgets
-            if (($is_siteorigin) || (!$is_siteorigin && in_array($hook, apply_filters('widgetopts_load_option-tabs_scripts', array('widgets.php', 'customize.php'))))) {
+            if (($is_siteorigin) || (!$is_siteorigin && in_array($hook, apply_filters('widgetopts_load_option-tabs_scripts', array('widgets.php', 'customize.php', 'nav-menus.php'))))) {
 
                   if (!in_array($hook, apply_filters('widgetopts_exclude_jqueryui', array('toplevel_page_et_divi_options', 'toplevel_page_wpcf7', 'edit.php')))) {
                         wp_enqueue_style('jquery-ui');
                   }
 
-                  if (in_array($hook, apply_filters('widgetopts_load_liveFilter_scripts', array('widgets.php')))) {
+                  if (in_array($hook, apply_filters('widgetopts_load_liveFilter_scripts', array('widgets.php', 'nav-menus.php')))) {
                         wp_enqueue_script(
                               'jquery-liveFilter',
                               plugins_url('assets/js/jquery.liveFilter.js', dirname(__FILE__)),
@@ -189,13 +189,12 @@ if (!function_exists('widgetopts_load_admin_scripts')) :
                   //         <span class="dashicons dashicons-admin-settings"></span> '. __( 'Enable more Widget Options superpowers', 'widget-options' ) .'
                   //       </a>';
                   // $sidebaropts .= '</div>';
-              
-                        wp_localize_script('jquery-widgetopts-option-tabs', 'widgetopts10n', array('ajax_url' => admin_url('admin-ajax.php'), 'opts_page' => esc_url(admin_url('options-general.php?page=widgetopts_plugin_settings')), 'search_form' => $form, 'sidebaropts' => $sidebaropts, 'controls' => $btn_controls, 'translation' => array('manage_settings' => __('Manage Widget Options', 'widget-options'), 'search_chooser' => __('Search sidebar&hellip;', 'widget-options'))));
+
+                  wp_localize_script('jquery-widgetopts-option-tabs', 'widgetopts10n', array('ajax_url' => admin_url('admin-ajax.php'), 'opts_page' => esc_url(admin_url('options-general.php?page=widgetopts_plugin_settings')), 'search_form' => $form, 'sidebaropts' => $sidebaropts, 'controls' => $btn_controls, 'translation' => array('manage_settings' => __('Manage Widget Options', 'widget-options'), 'search_chooser' => __('Search sidebar&hellip;', 'widget-options'))));
+            } else {
+                  wp_localize_script('widgetopts-global-script', 'widgetopts10n', array('ajax_url' => admin_url('admin-ajax.php'), 'opts_page' => esc_url(admin_url('options-general.php?page=widgetopts_plugin_settings')), 'translation' => array('manage_settings' => __('Manage Widget Options', 'widget-options'), 'search_chooser' => __('Search sidebar&hellip;', 'widget-options'))));
             }
-                  else {
-                    wp_localize_script('widgetopts-global-script', 'widgetopts10n', array('ajax_url' => admin_url('admin-ajax.php'), 'opts_page' => esc_url(admin_url('options-general.php?page=widgetopts_plugin_settings')), 'translation' => array('manage_settings' => __('Manage Widget Options', 'widget-options'), 'search_chooser' => __('Search sidebar&hellip;', 'widget-options'))));
-                  }
-              
+
             if (in_array($hook, apply_filters('widgetopts_load_settings_scripts', array('settings_page_widgetopts_plugin_settings')))) {
                   wp_register_script(
                         'jquery-widgetopts-settings',
@@ -319,7 +318,8 @@ if (!function_exists('widgetopts_widgets_footer_additional_script')) {
                                                       jQuery('.multiple-spinner').remove();
                                                 }, 500);
                                           },
-                                          buttonText: () => 'Click to add more'
+                                          buttonText: () => 'Click to add more',
+                                          keepOrder: true
                                     });
                               }
                         }

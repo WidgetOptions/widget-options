@@ -2,12 +2,13 @@
 Contributors: marketingfire
 Tags: widgets, blocks, blocks control, gutenberg widgets, classic widgets
 Requires at least: 5.6
-Tested up to: 6.5.3
+Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 4.0.6
+Stable tag: 4.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
+Widget Options gives you super powers to control your site’s sidebar widgets and all Gutenberg blocks on pages, posts & other custom post types.
 
 == Description ==
 
@@ -191,6 +192,19 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 14. Elementor Pagebuilder Integration
 
 == Changelog ==
+
+= 4.0.7 =
+
+* Fix: Fixed the PHP Warning: Attempt to read property “post_type”
+* Fix: Fixed Conflict with "The Events Calendar Shortcode & Block" Version 2.8.5 by Event Calendar Newsletter
+* Fix: Fixed the Insert block button from post and paged editor
+* Tweak: Enhanced UI to show page hierarchy in checkbox view
+* Tweak: Enhanced CSS attributes to avoid conflict with WPZoom Inspiro Theme
+* Tweak: Updated CSS to avoid UI conflict with Max Mega Menu plugin
+
+= 4.0.6.1 =
+
+* Improved: widgetopts_global_taxonomies attributes
 
 = 4.0.6 =
 

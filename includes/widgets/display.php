@@ -306,7 +306,13 @@ if (!function_exists('widgetopts_display_callback')) :
                 }
             } elseif (is_single() && !is_page()) {
                 global $post;
-                $type = $post->post_type;
+                $type = '';
+                if (!$post) {
+                    $current_post = get_post();
+                    $type = $current_post->post_type;
+                } else {
+                    $type = $post->post_type;
+                }
 
                 if ($is_misc) {
                     if (isset($visibility['misc']['single']) && $visibility_opts == 'show') {
@@ -326,9 +332,9 @@ if (!function_exists('widgetopts_display_callback')) :
                 if (!isset($visibility['types'])) {
                     $visibility['types'] = array();
                 }
-                if ($visibility_opts == 'hide' && (array_key_exists($post->post_type, $visibility['types']) || ($is_misc && isset($visibility['misc']['single'])))) {
+                if ($visibility_opts == 'hide' && (array_key_exists($type, $visibility['types']) || ($is_misc && isset($visibility['misc']['single'])))) {
                     $hidden = true; //hide if exists on hidden pages
-                } elseif ($visibility_opts == 'show' && (!array_key_exists($post->post_type, $visibility['types']) && (($is_misc && (!isset($visibility['misc']['single']))) || !$is_misc))) {
+                } elseif ($visibility_opts == 'show' && (!array_key_exists($type, $visibility['types']) && (($is_misc && (!isset($visibility['misc']['single']))) || !$is_misc))) {
                     $hidden = true; //hide if doesn't exists on visible pages
                 }
 
@@ -559,19 +565,11 @@ if (!function_exists('widgetopts_display_callback')) :
                 if ($display_logic === true) {
                     return true;
                 }
-                if (stristr($display_logic, "return") === false) {
-                    $display_logic = "return (" . $display_logic . ");";
-                }
+                // if (stristr($display_logic, "return") === false) {
+                //     $display_logic = "return (" . $display_logic . ");";
+                // }
                 $display_logic = htmlspecialchars_decode($display_logic, ENT_QUOTES);
-                try {
-                    if (!eval($display_logic)) {
-                        return false;
-                    }
-                } catch (\Exception $e) {
-                    return false;
-                } catch (\Error $e) {
-                    return false;
-                } catch (\Throwable $e) {
+                if (!widgetopts_safe_eval($display_logic)) {
                     return false;
                 }
             }

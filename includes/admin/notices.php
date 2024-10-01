@@ -139,4 +139,108 @@ if (!function_exists('widgetopts_display_free_liecnse_admin_notice')) {
     }
     add_action('admin_notices', 'widgetopts_display_free_liecnse_admin_notice');
 
+    function widgetopts_activate_free_liecnse () {
+        if ( ! empty( $_POST['wo_free_license_activator'] ) ) {
+            if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ 'wo_free_license_field' ] ) ), 'wo_free_license_action' ) ) {
+                return;
+            }
+
+            $email = sanitize_email( wp_unslash( $_POST['email'] ) );
+
+            if ( is_email( $email ) ) {
+                $user       = get_user_by( 'email', $email );
+                $first_name = '';
+                $last_name  = '';
+                $url        = rawurlencode( home_url() );
+
+                if ( is_a( $user, 'WP_User' ) ) {
+                    $first_name = $user->first_name;
+                    $last_name  = $user->last_name;
+                }
+
+                if ( ! empty( $_POST['wo_free_license_subscribe'] ) ) {
+                    // Make request, save key.
+                    $request = wp_remote_post(
+                        'https://widget-options.com/wp-admin/admin-ajax.php',
+                        array(
+                            'body'    =>
+                                array(
+                                    'action' => 'wo_free_license',
+                                    'email_address' => $email,
+                                    'fname'    => $first_name,
+                                    'lname'     => $last_name,
+                                    'url'           => $url,
+                                )
+                        )
+                    );
+
+                    if ( ! is_wp_error( $request ) ) {
+                        $license = $email;
+
+                        if ( ! empty( $license ) ) {
+                            update_option( 'widgetopts_free_license', sanitize_text_field( $license ) );
+
+                            add_action(
+                                'admin_notices',
+                                function() {
+                                    ?>
+                                    <div class="notice notice-success">
+                                        <p><?php esc_html_e( 'Free license activated!', 'widget-options' ); ?></p>
+                                    </div>
+                                    <?php
+                                }
+                            );
+                        }
+                    } else {
+                        add_action(
+                            'admin_notices',
+                            function() {
+                                ?>
+                                <div class="notice notice-error">
+                                    <p><?php esc_html_e( 'Something went wrong! Try again later.', 'widget-options' ); ?></p>
+                                </div>
+                                <?php
+                            }
+                        );
+                    }
+                } else {
+                    $license = $email;
+
+                    if ( ! empty( $license ) ) {
+                        update_option( 'widgetopts_free_license', sanitize_text_field( $license ) );
+
+                        add_action(
+                            'admin_notices',
+                            function() {
+                                ?>
+                                <div class="notice notice-success">
+                                    <p><?php esc_html_e( 'Free license activated!', 'widget-options' ); ?></p>
+                                </div>
+                                <?php
+                            }
+                        );
+                    }
+                }
+            } else {
+                add_action(
+                    'admin_notices',
+                    function() {
+                        ?>
+                        <div class="notice notice-error">
+                            <p><?php esc_html_e( 'Invalid email address!', 'widget-options' ); ?></p>
+                        </div>
+                        <?php
+                    }
+                );
+            }
+        }
+        if ( ! empty( $_POST['wo_free_dismiss'] ) ) {
+            if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ 'wo_free_license_dismiss_field' ] ) ), 'wo_free_license_dismiss' ) ) {
+                return;
+            }
+
+            update_option( 'widgetopts_free_license', sanitize_text_field( 'NA' ) );
+        }
+    }
+    add_action( 'admin_init', 'widgetopts_activate_free_liecnse' );
 }

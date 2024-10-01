@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) exit;
 
 if (!function_exists('widgetopts_elementor_section')) {
     //Add "Widget Options" section to every Elementor Widgets
-    add_action('elementor/element/after_section_end', 'widgetopts_elementor_section', 10, 3);
+    add_action('elementor/element/after_section_end', 'widgetopts_elementor_section', 5, 3);
     function widgetopts_elementor_section($element, $section_id, $args)
     {
         if (Elementor\Plugin::$instance->editor->is_edit_mode()) {
@@ -91,7 +91,7 @@ if (!function_exists('widgetopts_elementor_section')) {
                         widgetopts_elementor_tab_state($element, $section_id, $args);
                     }
 
-                    if ('activate' == $widget_options['logic'] || (isset($widget_options['sliding']) && 'activate' == $widget_options['sliding'] && in_array($element->get_name(), array('button', 'button_plus', 'eael-creative-button', 'cta')))) {
+                    if (current_user_can('administrator') && ('activate' == $widget_options['logic'] || (isset($widget_options['sliding']) && 'activate' == $widget_options['sliding'] && in_array($element->get_name(), array('button', 'button_plus', 'eael-creative-button', 'cta'))))) {
                         widgetopts_elementor_tab_settings($element, $section_id, $args);
                     }
 
@@ -375,7 +375,7 @@ if (!function_exists('widgetopts_elementor_tab_settings')) {
             );
         }
 
-        if ('activate' == $widget_options['logic']) {
+        if ('activate' == $widget_options['logic'] && current_user_can('administrator')) {
 
             $element->add_control(
                 'widgetopts_logic',

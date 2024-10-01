@@ -73,8 +73,9 @@ add_action('rest_api_init', function () {
 }, 999);
 
 add_filter('register_block_type_args', function ($args, $name) {
-	//if block type is luckywp/tableofcontents use type string
-	if ($name == 'luckywp/tableofcontents') {
+	global $orig_callback;
+	$plugin_names = apply_filters('widget_options_type_string_attribute', ['luckywp/tableofcontents']);
+	if (in_array($name, $plugin_names)) {
 		$args['attributes']['extended_widget_opts_block'] = array(
 			'type' => 'string',
 			'default' => json_encode((object)[])
@@ -84,6 +85,33 @@ add_filter('register_block_type_args', function ($args, $name) {
 			'type' => 'string',
 			'default' => json_encode((object)[])
 		);
+	} else if ($name == 'events-calendar-shortcode/block') {
+		$args['attributes']['extended_widget_opts_block'] = array(
+			'type' => 'object'
+		);
+
+		$args['attributes']['extended_widget_opts'] = array(
+			'type' => 'object'
+		);
+
+		if (isset($args['render_callback'])) {
+			$orig_callback = $args['render_callback'];
+			$args['render_callback'] = function ($attributes) {
+				global $orig_callback;
+				if (isset($attributes['extended_widget_opts'])) {
+					$attributes['extended_widget_opts'] = json_encode($attributes['extended_widget_opts']);
+				}
+
+				if (isset($attributes['extended_widget_opts_block'])) {
+					$attributes['extended_widget_opts_block'] = json_encode($attributes['extended_widget_opts_block']);
+				}
+
+				if (function_exists('ecs_render_block')) {
+					return ecs_render_block($attributes);
+				}
+				return call_user_func($orig_callback, $attributes);
+			};
+		}
 	} else if (stripos($name, 'jetpack') !== false) {
 		$args['attributes']['extended_widget_opts_block'] = array(
 			'type' => 'object',
@@ -710,19 +738,11 @@ function blockopts_filter_before_display($block_content, $parsed_block, $obj)
 				if ($display_logic === true) {
 					return true;
 				}
-				if (stristr($display_logic, "return") === false) {
-					$display_logic = "return (" . $display_logic . ");";
-				}
+				// if (stristr($display_logic, "return") === false) {
+				// 	$display_logic = "return (" . $display_logic . ");";
+				// }
 				$display_logic = htmlspecialchars_decode($display_logic, ENT_QUOTES);
-				try {
-					if (!eval($display_logic)) {
-						return false;
-					}
-				} catch (\Exception $e) {
-					return false;
-				} catch (\Error $e) {
-					return false;
-				} catch (\Throwable $e) {
+				if (!widgetopts_safe_eval($display_logic)) {
 					return false;
 				}
 			}
@@ -905,6 +925,10 @@ function widgetopts_get_settings_ajax()
 	}
 	$settings = widgetopts_get_settings();
 
+	if (!current_user_can('administrator')) {
+		$settings['logic'] = 'deactivate';
+	}
+
 	wp_send_json_success($settings);
 	die;
 }
@@ -918,19 +942,24 @@ function widgetopts_get_pages()
 
 	$pages = [];
 
-	$widgetopts_pages_args = array(
-		'post_type'      => 'page',
-		'post_status'    => 'publish',
-		'posts_per_page' => -1,
-		'orderby'        => 'title',
-		'order'          => 'ASC'
+	$pargs = array(
+		'hierarchical' => true,
+		'child_of' => 0, // Display all pages regardless of parent
+		'parent' => -1, // Display all pages regardless of parent
+		'sort_order' => 'ASC',
+		'sort_column' => 'menu_order, post_title'
 	);
 
-	$widgetopts_pages_query = new WP_Query($widgetopts_pages_args);
+	$pageLoop = get_pages($pargs);
 
-	if ($widgetopts_pages_query->have_posts()) {
-		$pages = $widgetopts_pages_query->posts;
-		wp_reset_postdata(); // Reset the query back to the original state.
+	if ($pageLoop) {
+		foreach ($pageLoop as $objPage) {
+			$depth = count(get_ancestors($objPage->ID, 'page'));
+			// Determine indentation for hierarchical display
+			$indent = str_repeat('-', $depth);
+			$objPage->post_title = $indent . "" . $objPage->post_title;
+		}
+		$pages = $pageLoop;
 	}
 
 	wp_send_json_success($pages);
@@ -993,43 +1022,6 @@ function widgetopts_get_users()
 	die;
 }
 add_action('wp_ajax_widgetopts_get_users', 'widgetopts_get_users');
-
-function widgetopts_save_widget_editor_cache()
-{
-	if (!(current_user_can('edit_pages') || current_user_can('edit_posts') || current_user_can('edit_theme_options'))) {
-		die;
-	}
-	if (isset($_POST['editor_cache']) && (isset($_POST['widget_id']) || isset($_POST['clientId']))) {
-		$editor_cached = widgetopts_sanitize_array($_POST['editor_cache']);
-		$widget_id = isset($_POST['widget_id']) ? sanitize_key($_POST['widget_id']) : sanitize_key($_POST['clientId']);
-		$cached = get_option('widgetopts_editor_cached');
-		$_cached = array();
-		$editor_cached['widgetopts_expiry'] = wp_date("Y-m-d", strtotime("+ 1 day"));
-
-		if ($cached) {
-			$_cached = json_decode($cached, true);
-
-			if (isset($_cached) && !empty($_cached)) {
-				$_cached = (array) $_cached;
-				$_cached["extended_widget_opts-" . $widget_id] = $editor_cached;
-			} else {
-				$_cached = array(
-					"extended_widget_opts-" . $widget_id => $editor_cached,
-				);
-			}
-		} else {
-			$_cached = array(
-				"extended_widget_opts-" . $widget_id => $editor_cached,
-			);
-		}
-
-		update_option('widgetopts_editor_cached', json_encode($_cached));
-	}
-
-	wp_send_json_success('success!');
-	die;
-}
-add_action('wp_ajax_widgetopts_save_widget_editor_cache', 'widgetopts_save_widget_editor_cache');
 
 function widgetopts_ajax_roles_search_block()
 {

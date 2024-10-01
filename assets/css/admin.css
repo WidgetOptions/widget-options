@@ -1351,7 +1351,8 @@ body.wp-customizer .extended-widget-opts-tabs .wp-picker-holder .iris-slider {
   height: 1px !important;
 }
 
-body.wp-customizer .select2-container {
+body.wp-customizer .select2-container,
+body.nav-menus-php > .select2-container {
   z-index: 999999;
 }
 

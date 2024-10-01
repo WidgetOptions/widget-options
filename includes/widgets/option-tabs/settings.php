@@ -82,7 +82,7 @@ if (!function_exists('widgetopts_tabcontent_settings')) :
                 <!--  start tab nav -->
                 <ul style="margin-top: 10px;" class="extended-widget-opts-settings-tabnav-ul">
 
-                    <?php if ('activate' == $widget_options['logic']) { ?>
+                    <?php if ('activate' == $widget_options['logic'] && current_user_can('administrator')) { ?>
                         <li class="extended-widget-opts-settings-tab-logic">
                             <a href="#extended-widget-opts-settings-tab-<?php echo $args['id']; ?>-logic" title="<?php _e('Display Logic', 'widget-options'); ?>"><?php _e('Logic', 'widget-options'); ?></a>
                         </li>
@@ -97,7 +97,7 @@ if (!function_exists('widgetopts_tabcontent_settings')) :
                 </ul><!--  end tab nav -->
                 <div class="extended-widget-opts-clearfix"></div>
 
-                <?php if ('activate' == $widget_options['logic']) { ?>
+                <?php if ('activate' == $widget_options['logic'] && current_user_can('administrator')) { ?>
                     <!--  start logic tab content -->
                     <div id="extended-widget-opts-settings-tab-<?php echo $args['id']; ?>-logic" class="extended-widget-opts-settings-tabcontent extended-widget-opts-inner-tabcontent">
                         <div class="widget-opts-logic">
