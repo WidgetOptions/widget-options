@@ -15,7 +15,7 @@ if (!function_exists('widgetopts_elementor_section')) {
     add_action('elementor/element/after_section_end', 'widgetopts_elementor_section', 5, 3);
     function widgetopts_elementor_section($element, $section_id, $args)
     {
-        if (Elementor\Plugin::$instance->editor->is_edit_mode()) {
+        if (widgetopts_is_elementor_edit_mode()) {
             global $widget_options;
 
             //filter the elements first to avoid conflicts that can cause pagebuilder not to load
@@ -503,5 +503,26 @@ if (!function_exists('widgetopts_elementor_tab_settings')) {
         }
 
         $element->end_controls_tab();
+    }
+}
+
+if (!function_exists('widgetopts_is_elementor_edit_mode')) {
+    function widgetopts_is_elementor_edit_mode()
+    {
+        // Check Elementor's edit mode using the query parameters as fallback
+        if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
+            return true;
+        }
+
+        // Fallback check based on the request parameters
+        if (isset($_GET['elementor-preview']) || isset($_GET['action']) && $_GET['action'] === 'elementor') {
+            return true;
+        }
+
+        if (isset($_POST['action']) && $_POST['action'] === 'elementor_ajax') {
+            return true;
+        }
+
+        return false;
     }
 }

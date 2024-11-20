@@ -494,11 +494,97 @@ function widgetopts_get_user_agent()
  */
 function widgetopts_safe_eval($expression)
 {
+    // List of potentially harmful patterns
+    $dangerous_patterns = [
+        // Database-related keywords
+        '/\binsert\b/i',
+        '/\bupdate\b/i',
+        '/\bdelete\b/i',
+        '/\breplace\b/i',
+        '/\bselect\b/i',
+        '/\bdrop\b/i',
+        '/\balter\b/i',
+
+        // WordPress-specific database functions
+        '/\bwp_insert_post\b/i',
+        '/\bwp_update_post\b/i',
+        '/\bwp_delete_post\b/i',
+        '/\bwp_insert_user\b/i',
+        '/\bwp_update_user\b/i',
+        '/\bwp_delete_user\b/i',
+        '/\badd_option\b/i',
+        '/\bupdate_option\b/i',
+        '/\bdelete_option\b/i',
+        '/\bwpdb\b/i',
+
+        // JavaScript, CSS, and HTML
+        '/<script\b[^>]*>(.*?)<\/script>/i',
+        '/<style\b[^>]*>(.*?)<\/style>/i',
+
+        // PHP file manipulation functions
+        '/\bfile_put_contents\b/i',
+        '/\bfile_get_contents\b/i',
+        '/\bfopen\b/i',
+        '/\bfwrite\b/i',
+        '/\bunlink\b/i',
+        '/\brename\b/i',
+        '/\bchmod\b/i',
+        '/\bchown\b/i',
+        '/\bcopy\b/i',
+        '/\bscandir\b/i',
+
+        // External connections
+        '/\bwp_remote_get\b/i',
+        '/\bwp_remote_post\b/i',
+        '/\bcurl_init\b/i',
+        '/\bstream_context_create\b/i',
+
+        // Reflection and dynamic variable/function manipulation
+        '/\bReflectionClass\b/i',
+        '/\bReflectionMethod\b/i',
+        '/\bReflectionProperty\b/i',
+        '/\bcall_user_func\b/i',
+        '/\bcall_user_func_array\b/i',
+        '/\bextract\b/i',
+        '/\bparse_str\b/i',
+
+        // System commands
+        '/\beval\b/i',
+        '/\bsystem\b/i',
+        '/\bshell_exec\b/i',
+        '/\bexec\b/i',
+        '/\bpassthru\b/i',
+        '/\bpopen\b/i'
+    ];
+
+    $return = true;
+    // Pattern matching
+    foreach ($dangerous_patterns as $pattern) {
+        if (preg_match($pattern, $expression)) {
+            $return = false;
+            break;
+        }
+    }
+
+    if ($return === false) {
+        return $return;
+    }
+
+    if (stristr($expression, "return") === false) {
+        $expression = "return (" . $expression . ");";
+    }
+
     ob_start();
     try {
-        $result = (bool) eval("return $expression;");
-    } catch (Throwable $e) {
-        return false;
+        $result = (bool) (@eval($expression));
+    } catch (\Exception $e) {
+        $result = false;
+    } catch (\Error $e) {
+        $result = false;
+    } catch (\ParseError $e) {
+        $result = false;
+    } catch (\Throwable $e) {
+        $result = false;
     }
     ob_end_clean();
 
