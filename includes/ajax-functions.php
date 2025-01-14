@@ -119,8 +119,23 @@ add_action('wp_ajax_widgetopts_ajax_settings',  'widgetopts_ajax_save_settings')
 if (!function_exists('widgetopts_ajax_hide_rating')) :
 	function widgetopts_ajax_hide_rating()
 	{
-		update_option('widgetopts_RatingDiv', 'yes');
-		echo json_encode(array("success"));
+		if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'widgetopts_ajax_nonce')) {
+			wp_send_json_error('Invalid nonce or session.', 403);
+			exit;
+		}
+
+		if (!current_user_can('update_plugins')) {
+			wp_send_json_error('You do not have permission to update plugins.', 403);
+			exit;
+		}
+
+		$updated = update_option('widgetopts_RatingDiv', 'yes');
+
+		if ($updated) {
+			wp_send_json_success(array('message' => 'Rating visibility updated successfully.'));
+		} else {
+			wp_send_json_error('Failed to update the option.', 500);
+		}
 		exit;
 	}
 	add_action('wp_ajax_widgetopts_hideRating', 'widgetopts_ajax_hide_rating');

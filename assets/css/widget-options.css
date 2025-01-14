@@ -25,7 +25,6 @@ body .extendedwopts-md-justify {
   }
   body .widget.clearfix-desktop {
     clear: both;
-    float: none !important;
   }
 }
 @media screen and (max-width: 1024px) and (orientation: Portrait) {
@@ -40,7 +39,6 @@ body .extendedwopts-md-justify {
   }
   body .widget.clearfix-tablet {
     clear: both;
-    float: none !important;
   }
 }
 @media screen and (max-width: 1180px) and (orientation: landscape) {
@@ -55,7 +53,6 @@ body .extendedwopts-md-justify {
   }
   body .widget.clearfix-tablet {
     clear: both;
-    float: none !important;
   }
 }
 @media screen and (max-width: 767px) and (orientation: Portrait) {
@@ -77,7 +74,6 @@ body .extendedwopts-md-justify {
   }
   body .widget.clearfix-mobile {
     clear: both;
-    float: none !important;
   }
 }
 @media screen and (max-width: 991px) and (orientation: landscape) {
@@ -99,7 +95,6 @@ body .extendedwopts-md-justify {
   }
   body .widget.clearfix-mobile {
     clear: both;
-    float: none !important;
   }
 }
 .panel-cell-style:after {

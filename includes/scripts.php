@@ -37,20 +37,6 @@ function widgetopts_load_scripts()
                   'after'
             );
       }
-
-      if (!is_admin()) {
-            // Check if the device is NOT mobile (i.e., it's a desktop)
-            if (!wp_is_mobile()) {
-                  // Enqueue the script for desktop devices
-                  wp_enqueue_script(
-                        'widgetopts-resize-script', // Handle name
-                        $js_dir . 'widgetopts.resize.js',
-                        array(), // Dependencies (optional)
-                        WIDGETOPTS_VERSION,    // Version (optional)
-                        true     // Load in footer (optional)
-                  );
-            }
-      }
 }
 add_action('wp_enqueue_scripts', 'widgetopts_load_scripts');
 add_action('customize_controls_enqueue_scripts', 'widgetopts_load_scripts');
