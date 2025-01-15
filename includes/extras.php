@@ -505,8 +505,8 @@ function widgetopts_safe_eval($expression)
         '/\bdrop\b/i',
         '/\balter\b/i',
         '/\btruncate\b/i',
-        '/\bgrant\b/i/',
-        '/\brevoke\b/i/',
+        '/\bgrant\b/i',
+        '/\brevoke\b/i',
 
         // WordPress-specific database functions
         '/\bwp_insert_post\b/i',
