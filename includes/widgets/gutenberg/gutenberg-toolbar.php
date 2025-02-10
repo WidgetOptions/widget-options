@@ -198,8 +198,122 @@ if (wp_use_widgets_block_editor()) {
 			}
 		}
 
+		if ($instance['extended_widget_opts-' . $obj->id]) {
+			$instance['extended_widget_opts-' . $obj->id] = widgetopts_sanitize_array($instance['extended_widget_opts-' . $obj->id]);
+		}
+
+		//check if user is administrator
+		if (!current_user_can('administrator')) {
+			if (isset($instance['extended_widget_opts-' . $obj->id])) {
+				if (isset($instance['extended_widget_opts-' . $obj->id]['class']) && isset($instance['extended_widget_opts-' . $obj->id]['class']['logic']) && !empty($instance['extended_widget_opts-' . $obj->id]['class']['logic'])) {
+					if (isset($old_instance['extended_widget_opts-' . $obj->id]['class']) && isset($old_instance['extended_widget_opts-' . $obj->id]['class']['logic']) && !empty($old_instance['extended_widget_opts-' . $obj->id]['class']['logic'])) {
+						$instance['extended_widget_opts-' . $obj->id]['class']['logic'] = $old_instance['extended_widget_opts-' . $obj->id]['class']['logic'];
+					} else {
+						$instance['extended_widget_opts-' . $obj->id]['class']['logic'] = '';
+					}
+				}
+			}
+		}
+
 		return $instance;
 	}, 100, 4);
+}
+
+add_filter('rest_pre_insert_post', 'widgetopts_rest_pre_insert', 10, 2);
+add_filter('rest_pre_insert_page', 'widgetopts_rest_pre_insert', 10, 2);
+
+function widgetopts_rest_pre_insert($post, $request)
+{
+	if (!current_user_can('edit_posts')) {
+		return $post; // Security check: Only users with permission can edit
+	}
+
+	if (current_user_can('administrator')) {
+		return $post; // Admins can modify all attributes freely
+	}
+
+	if (empty($post->post_content) || empty($post->ID)) {
+		return $post; // Exit if no content or post ID
+	}
+
+	// Get the old post content before editing
+	$old_post = get_post($post->ID);
+
+	// Parse blocks from the old post content (recursively)
+	$old_blocks = !$old_post ? [] : parse_blocks($old_post->post_content);
+	// Parse blocks from the new post content
+	$new_blocks = parse_blocks($post->post_content);
+
+	if (!is_array($new_blocks) || empty($new_blocks)) {
+		return $post; // Exit if no blocks found
+	}
+
+	// Convert old blocks into a lookup table using anchor or unique ID (recursively process)
+	$old_blocks_lookup = [];
+	widgetopt_process_blocks_recursively($old_blocks, $old_blocks_lookup);
+
+	foreach ($new_blocks as &$new_block) {
+		widgetopt_modify_block_attributes($new_block, $old_blocks_lookup);
+	}
+
+	// Convert modified blocks back to post content
+	$post->post_content = serialize_blocks($new_blocks);
+
+	return $post;
+}
+
+// Recursively process blocks (both parent and nested inner blocks)
+function widgetopt_process_blocks_recursively(&$blocks, &$old_blocks_lookup)
+{
+	foreach ($blocks as &$block) {
+		if (!isset($block['blockName'])) {
+			continue; // Skip invalid blocks
+		}
+
+		// Use anchor as the unique identifier or generate one if not available
+		$anchor = $block['attrs']['anchor'] ?? md5(json_encode($block['innerContent'])); // Generate unique ID if missing
+
+		// Store or compare the block's attributes
+		$old_blocks_lookup[$anchor] = [
+			'attrs' => $block['attrs'] ?? [],
+		];
+
+		// If the block has inner blocks, recurse through them
+		if (isset($block['innerBlocks']) && !empty($block['innerBlocks'])) {
+			widgetopt_process_blocks_recursively($block['innerBlocks'], $old_blocks_lookup); // Recursively process inner blocks
+		}
+	}
+}
+
+// Recursively modify block attributes (parent and inner blocks)
+function widgetopt_modify_block_attributes(&$block, $old_blocks_lookup)
+{
+	if (!isset($block['blockName'])) {
+		return; // Skip invalid blocks
+	}
+
+	// Find the old block using the anchor (or generated unique ID)
+	$anchor = $block['attrs']['anchor'] ?? md5(json_encode($block['innerContent'])); // Generate unique ID if missing
+	$old_data = $old_blocks_lookup[$anchor] ?? [];
+	$old_attrs = $old_data['attrs'] ?? [];
+
+	//do the modification
+	if (isset($block['attrs']['extended_widget_opts'])) {
+		if (isset($block['attrs']['extended_widget_opts']['class']) && isset($block['attrs']['extended_widget_opts']['class']['logic']) && !empty($block['attrs']['extended_widget_opts']['class']['logic'])) {
+			if (isset($old_attrs['extended_widget_opts']) && isset($old_attrs['extended_widget_opts']['class']) && isset($old_attrs['extended_widget_opts']['class']['logic']) && !empty($old_attrs['extended_widget_opts']['class']['logic'])) {
+				$block['attrs']['extended_widget_opts']['class']['logic'] = $old_attrs['extended_widget_opts']['class']['logic'];
+			} else {
+				$block['attrs']['extended_widget_opts']['class']['logic'] = '';
+			}
+		}
+	}
+
+	// If the block has inner blocks, recurse through them
+	if (isset($block['innerBlocks']) && !empty($block['innerBlocks'])) {
+		foreach ($block['innerBlocks'] as &$inner_block) {
+			widgetopt_modify_block_attributes($inner_block, $old_blocks_lookup); // Recursively modify inner blocks
+		}
+	}
 }
 
 add_filter('render_block', function ($block_content, $parsed_block, $obj) {

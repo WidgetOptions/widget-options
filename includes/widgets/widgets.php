@@ -141,7 +141,7 @@ add_action('in_widget_form', 'widgetopts_in_widget_form', 10, 3);
 /*
  * Update Options
  */
-function widgetopts_ajax_update_callback($instance, $new_instance, $this_widget)
+function widgetopts_ajax_update_callback($instance, $new_instance, $old_instance, $this_widget)
 {
     global $widget_options;
 
@@ -158,6 +158,17 @@ function widgetopts_ajax_update_callback($instance, $new_instance, $this_widget)
             $options     = $_POST[$name];
         }
         if (isset($options['extended_widget_opts'])) {
+            //check if user is administrator
+            if (!current_user_can('administrator')) {
+                if (isset($options['extended_widget_opts']['class']) && isset($options['extended_widget_opts']['class']['logic']) && !empty($options['extended_widget_opts']['class']['logic'])) {
+                    if (isset($old_instance['extended_widget_opts']['class']) && isset($old_instance['extended_widget_opts']['class']['logic']) && !empty($old_instance['extended_widget_opts']['class']['logic'])) {
+                        $options['extended_widget_opts']['class']['logic'] = $old_instance['extended_widget_opts']['class']['logic'];
+                    } else {
+                        $options['extended_widget_opts']['class']['logic'] = '';
+                    }
+                }
+            }
+
             // update_option( $name , $options['extended_widget_opts'] );
             if (isset($options['extended_widget_opts']['class']['link']) && !empty($options['extended_widget_opts']['class']['link'])) {
                 $options['extended_widget_opts']['class']['link'] = widgetopts_addhttp($options['extended_widget_opts']['class']['link']);
@@ -184,7 +195,7 @@ function widgetopts_ajax_update_callback($instance, $new_instance, $this_widget)
     }
     return $instance;
 }
-add_filter('widget_update_callback', 'widgetopts_ajax_update_callback', 10, 3);
+add_filter('widget_update_callback', 'widgetopts_ajax_update_callback', 10, 4);
 
 add_filter('widget_form_callback', function ($instance, $widget) {
     /* if $opts is empty, try to get data from blocks */

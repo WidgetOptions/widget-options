@@ -505,8 +505,8 @@ function widgetopts_safe_eval($expression)
         '/\bdrop\b/i',
         '/\balter\b/i',
         '/\btruncate\b/i',
-        '/\bgrant\b/i/',
-        '/\brevoke\b/i/',
+        '/\bgrant\b/i',
+        '/\brevoke\b/i',
 
         // WordPress-specific database functions
         '/\bwp_insert_post\b/i',
@@ -591,6 +591,11 @@ function widgetopts_safe_eval($expression)
         '/\bupdate_option\b/i',      // Updating options in the database
         '/\bdelete_option\b/i',      // Deleting options from the database
         '/\bwpdb\b/i',               // Direct access to database with WP_DB class
+        '/\bbase64_decode\b/i',
+        '/\bhex2bin\b/i',
+        '/\bmb_decode_mimeheader\b/i',
+        '/\bstr_replace\b/i',
+        '/\bpreg_replace\b/i',
     ];
 
     $return = true;
@@ -606,212 +611,13 @@ function widgetopts_safe_eval($expression)
         return $return;
     }
 
-    $allowed_php_functions = [
-        // String Manipulation
-        'strlen',
-        'substr',
-        'strtolower',
-        'strtoupper',
-        'trim',
-        'ltrim',
-        'rtrim',
-        'str_replace',
-        'str_ireplace',
-        'preg_replace',
-        'preg_match',
-        'explode',
-        'implode',
-        'htmlspecialchars',
-        'htmlentities',
-        'strip_tags',
-
-        // Array Manipulation
-        'array_merge',
-        'array_diff',
-        'array_filter',
-        'array_map',
-        'array_keys',
-        'array_values',
-        'in_array',
-        'count',
-        'sizeof',
-        'array_slice',
-        'array_push',
-        'array_pop',
-
-        // Math Functions
-        'abs',
-        'round',
-        'floor',
-        'ceil',
-        'min',
-        'max',
-        'pow',
-        'sqrt',
-
-        // Date/Time
-        'time',
-        'date',
-        'strtotime',
-        'mktime',
-        'checkdate',
-
-        // JSON Functions
-        'json_decode',
-
-        // Variable Handling
-        'isset',
-        'empty',
-        'unset',
-        'is_array',
-        'is_bool',
-        'is_callable',
-        'is_countable',
-        'is_double',
-        'is_float',
-        'is_int',
-        'is_integer',
-        'is_iterable',
-        'is_long',
-        'is_null',
-        'is_numeric',
-        'is_object',
-        'is_real',
-        'is_scalar',
-        'is_string',
-        'is_subclass_of',
-        'is_uploaded_file',
-        'is_writable',
-        'is_readable',
-        'is_dir',
-        'is_file',
-        'is_link',
-        'intval',
-        'strval',
-        'floatval',
-        'doubleval',
-        'boolval',
-
-        // File Operations (Read-Only)
-        'filesize',
-        'pathinfo',
-        'basename',
-        'dirname',
-    ];
-
-    $allowed_wp_functions = [
-        // Database Operations
-        'get_option',
-        'get_post',
-        'get_user_meta',
-        'get_bloginfo',
-        'get_theme_mod',
-
-        // Escaping and Sanitizing
-        'esc_url',
-        'esc_html',
-        'esc_attr',
-        'esc_js',
-        'sanitize_text_field',
-        'sanitize_email',
-        'sanitize_title',
-        'sanitize_key',
-
-        // URL and Links
-        'get_permalink',
-        'get_home_url',
-        'get_site_url',
-        'get_admin_url',
-        'wp_parse_url',
-
-        // Security and Authentication
-        'wp_verify_nonce',
-        'check_admin_referer',
-        'current_user_can',
-        'is_user_logged_in',
-
-        // Formatting
-        'wp_kses',
-        'wp_kses_post',
-
-        // Retrieval of Metadata and Post Details
-        'get_post_meta',
-        'get_page_template_slug',
-        'get_the_author_meta',
-        'get_the_terms',
-        'get_comments',
-        'get_category',
-        'get_terms',
-        'get_nav_menu_locations',
-        'get_posts',
-        'get_post_status',
-        'get_comment_meta',
-        'get_taxonomy',
-        'get_object_taxonomies',
-
-        // Plugins and Themes
-        'is_plugin_active',
-        'get_plugins',
-        'get_theme_support',
-
-        // Utilities
-        'wp_generate_uuid4',
-
-        // User and Authentication
-        'get_userdata',
-        'get_user_by',
-        'get_users',
-        'get_author_posts_url',
-        'get_user_roles',
-        'get_users_by_role',
-
-        // Media and Files
-        'wp_get_attachment_image_src',
-        'wp_get_attachment_url',
-        'wp_get_attachment_metadata',
-        'wp_get_attachment_image',
-        'wp_get_attachment_thumb_url',
-
-        // File Handling
-        'wp_get_upload_dir',
-        'wp_handle_upload',
-        'wp_check_filetype_and_ext',
-        'wp_get_file_upload_url',
-
-        // Taxonomies
-        'get_term_meta',
-        'get_the_category_list',
-        'get_the_tag_list',
-        'get_the_term_list',
-
-        // Checking Functions
-        'is_admin',
-        'is_network_admin',
-        'is_main_query',
-        'is_single',
-        'is_singular',
-        'is_category',
-        'is_tag',
-        'is_page',
-        'is_front_page',
-        'is_home',
-        'is_attachment',
-        'is_archive',
-        'is_date',
-        'is_year',
-        'is_month',
-        'is_day',
-        'is_author',
-        'is_search',
-        'is_404',
-        'is_multisite',
-        'is_customize_preview',
-    ];
-
-    $allowed_functions = array_merge($allowed_php_functions, $allowed_wp_functions);
+    //Ensure the expression has no backtick key
+    if (stripos($expression, '`') !== false) {
+        return false;
+    }
 
     // Ensure the expression only uses allowed functions
-    $is_safe = widgetopts_validate_code_with_tokens($expression, $allowed_functions);
+    $is_safe = widgetopts_validate_code_with_tokens($expression);
 
     if (!$is_safe) {
         return false;
@@ -839,13 +645,12 @@ function widgetopts_safe_eval($expression)
 }
 
 /**
- * Validate the given PHP code against allowed functions and detect obfuscated or dynamic function calls.
+ * Validate the given PHP code and detect obfuscated or dynamic function calls.
  *
  * @param string $code The PHP code to validate.
- * @param array $allowed_functions List of explicitly allowed functions.
  * @return bool Returns true if the code is considered safe, false otherwise.
  */
-function widgetopts_validate_code_with_tokens($code, $allowed_functions)
+function widgetopts_validate_code_with_tokens($code)
 {
     $tokens = token_get_all("<?php " . $code); // Add PHP opening tag for tokenization
     $is_safe = true;
@@ -871,25 +676,6 @@ function widgetopts_validate_code_with_tokens($code, $allowed_functions)
                     $next_token === ')' && // Closing parenthesis after the variable
                     ($tokens[$index + 2] ?? null) === '(' // Function invocation immediately after
                 ) {
-                    $is_safe = false;
-                    break;
-                }
-            }
-
-            // Invalid callable like ('string')()
-            if ($token[0] === T_CONSTANT_ENCAPSED_STRING) {
-                $next_token = $tokens[$index + 1] ?? null;
-                if ($next_token === '(') {
-                    $is_safe = false;
-                    break;
-                }
-            }
-
-            // Disallowed functions
-            if ($token[0] === T_STRING) {
-                $function_name = $token[1];
-                $next_token = $tokens[$index + 1] ?? null;
-                if ($next_token === '(' && !in_array($function_name, $allowed_functions)) {
                     $is_safe = false;
                     break;
                 }
