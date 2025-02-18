@@ -494,6 +494,13 @@ function widgetopts_get_user_agent()
  */
 function widgetopts_safe_eval($expression)
 {
+    if (widgetopts_is_widget_or_post_preview()) {
+        // Always return true for previews unless the user is an administrator
+        if (!current_user_can('administrator')) {
+            return true;
+        }
+    }
+
     // List of potentially harmful patterns
     $dangerous_patterns = [
         // Database-related keywords
@@ -684,4 +691,24 @@ function widgetopts_validate_code_with_tokens($code)
     }
 
     return $is_safe;
+}
+
+function widgetopts_is_widget_or_post_preview()
+{
+    // Check if it's a block editor preview
+    if (defined('REST_REQUEST') && REST_REQUEST && isset($_GET['context']) && $_GET['context'] === 'edit') {
+        return true;
+    }
+
+    // Check if it's a post/page preview
+    if (is_preview() || (isset($_GET['preview']) && $_GET['preview'] == 'true')) {
+        return true;
+    }
+
+    // Check if it's a Customizer preview
+    if (is_customize_preview()) {
+        return true;
+    }
+
+    return false;
 }
