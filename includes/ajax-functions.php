@@ -140,3 +140,23 @@ if (!function_exists('widgetopts_ajax_hide_rating')) :
 	}
 	add_action('wp_ajax_widgetopts_hideRating', 'widgetopts_ajax_hide_rating');
 endif;
+
+function widgetopts_ajax_validate_expression()
+{
+	if (!wp_verify_nonce($_POST['nonce'], 'widgetopts-expression-nonce')) {
+		echo json_encode(['response' => 'failed', 'message' => 'Security check failed. Please refresh the page and try again.']);
+		die();
+	}
+
+	if (!isset($_POST['expression']) || empty(trim($_POST['expression']))) {
+		echo json_encode(['response' => 'success', 'message' => 'Expression is empty, but this will be considered as valid.', 'valid' => true]);
+		die();
+	}
+
+	$expression = sanitize_text_field($_POST['expression']);
+	$result = widgetopts_validate_expression($expression);
+
+	echo json_encode(['response' => 'success', 'message' => $result['message'], 'valid' => $result['valid']]);
+	die();
+}
+add_action('wp_ajax_widgetopts_ajax_validate_expression', 'widgetopts_ajax_validate_expression');

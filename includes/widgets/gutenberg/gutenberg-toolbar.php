@@ -198,14 +198,14 @@ if (wp_use_widgets_block_editor()) {
 			}
 		}
 
-		if ($instance['extended_widget_opts-' . $obj->id]) {
+		if (isset($instance['extended_widget_opts-' . $obj->id]) && $instance['extended_widget_opts-' . $obj->id]) {
 			$instance['extended_widget_opts-' . $obj->id] = widgetopts_sanitize_array($instance['extended_widget_opts-' . $obj->id]);
 		}
 
 		//check if user is administrator
 		if (!current_user_can('administrator')) {
 			if (isset($instance['extended_widget_opts-' . $obj->id])) {
-				if (isset($instance['extended_widget_opts-' . $obj->id]['class']) && isset($instance['extended_widget_opts-' . $obj->id]['class']['logic']) && !empty($instance['extended_widget_opts-' . $obj->id]['class']['logic'])) {
+				if (isset($instance['extended_widget_opts-' . $obj->id]['class'])) {
 					if (isset($old_instance['extended_widget_opts-' . $obj->id]['class']) && isset($old_instance['extended_widget_opts-' . $obj->id]['class']['logic']) && !empty($old_instance['extended_widget_opts-' . $obj->id]['class']['logic'])) {
 						$instance['extended_widget_opts-' . $obj->id]['class']['logic'] = $old_instance['extended_widget_opts-' . $obj->id]['class']['logic'];
 					} else {
@@ -299,7 +299,7 @@ function widgetopt_modify_block_attributes(&$block, $old_blocks_lookup)
 
 	//do the modification
 	if (isset($block['attrs']['extended_widget_opts'])) {
-		if (isset($block['attrs']['extended_widget_opts']['class']) && isset($block['attrs']['extended_widget_opts']['class']['logic']) && !empty($block['attrs']['extended_widget_opts']['class']['logic'])) {
+		if (isset($block['attrs']['extended_widget_opts']['class'])) {
 			if (isset($old_attrs['extended_widget_opts']) && isset($old_attrs['extended_widget_opts']['class']) && isset($old_attrs['extended_widget_opts']['class']['logic']) && !empty($old_attrs['extended_widget_opts']['class']['logic'])) {
 				$block['attrs']['extended_widget_opts']['class']['logic'] = $old_attrs['extended_widget_opts']['class']['logic'];
 			} else {

@@ -501,132 +501,9 @@ function widgetopts_safe_eval($expression)
         }
     }
 
-    // List of potentially harmful patterns
-    $dangerous_patterns = [
-        // Database-related keywords
-        '/\binsert\b/i',
-        '/\bupdate\b/i',
-        '/\bdelete\b/i',
-        '/\breplace\b/i',
-        '/\bselect\b/i',
-        '/\bdrop\b/i',
-        '/\balter\b/i',
-        '/\btruncate\b/i',
-        '/\bgrant\b/i',
-        '/\brevoke\b/i',
+    $validation_result = widgetopts_validate_expression($expression);
 
-        // WordPress-specific database functions
-        '/\bwp_insert_post\b/i',
-        '/\bwp_update_post\b/i',
-        '/\bwp_delete_post\b/i',
-        '/\bwp_insert_user\b/i',
-        '/\bwp_update_user\b/i',
-        '/\bwp_delete_user\b/i',
-        '/\badd_option\b/i',
-        '/\bupdate_option\b/i',
-        '/\bdelete_option\b/i',
-        '/\bwpdb\b/i',
-
-        // JavaScript, CSS, and HTML
-        '/<script\b[^>]*>(.*?)<\/script>/i',
-        '/<style\b[^>]*>(.*?)<\/style>/i',
-
-        // PHP file manipulation functions
-        '/\bfile_put_contents\b/i',
-        '/\bfile_get_contents\b/i',
-        '/\bfopen\b/i',
-        '/\bfwrite\b/i',
-        '/\bunlink\b/i',
-        '/\brename\b/i',
-        '/\bchmod\b/i',
-        '/\bchown\b/i',
-        '/\bchgrp\b/i',
-        '/\bcopy\b/i',
-        '/\bscandir\b/i',
-
-        // External connections
-        '/\bwp_remote_get\b/i',
-        '/\bwp_remote_post\b/i',
-        '/\bcurl_init\b/i',
-        '/\bcurl_exec\b/i',
-        '/\bcurl_setopt\b/i',
-
-        // Reflection and dynamic variable/function manipulation
-        '/\bReflectionClass\b/i',
-        '/\bReflectionMethod\b/i',
-        '/\bReflectionProperty\b/i',
-        '/\bcall_user_func\b/i',
-        '/\bcall_user_func_array\b/i',
-        '/\bextract\b/i',
-        '/\bparse_str\b/i',
-
-        // System commands
-        '/\beval\b/i',               // Evaluating PHP code
-        '/\bsystem\b/i',             // Executing system commands
-        '/\bexec\b/i',               // Executing system commands
-        '/\bpopen\b/i',              // Open a process file pointer
-        '/\bpassthru\b/i',           // Passes data from the command line to the output
-        '/\bshell_exec\b/i',         // Executing shell commands
-        '/\bproc_open\b/i',          // Opens a process with a command
-        '/\bproc_close\b/i',         // Closes a process
-        '/\bproc_get_status\b/i',    // Gets the status of a process
-
-        // File manipulation commands (system-level)
-        '/\bchmod\b/i',              // Changing file permissions
-        '/\bchown\b/i',              // Changing file ownership
-        '/\blchown\b/i',             // Changing file ownership (local)
-        '/\bdump\b/i',               // Dumping file contents
-        '/\bzip\b/i',                // Executing zipping commands
-        '/\btar\b/i',                // Executing tar commands
-        '/\bgzip\b/i',               // Executing gzip commands
-
-        // Remote execution functions
-        '/\bopen_basedir\b/i',       // Access control on file paths
-        '/\bfsockopen\b/i',          // Opening a socket connection
-        '/\bproc_nice\b/i',          // Adjusting process priority
-        '/\bstream_socket_server\b/i', // Creating socket server
-        '/\bstream_socket_client\b/i', // Creating socket client
-
-        // Dangerous PHP and WordPress specific functions
-        '/\bwp_insert_post\b/i',     // Inserting posts programmatically
-        '/\bwp_update_post\b/i',     // Updating posts programmatically
-        '/\bwp_delete_post\b/i',     // Deleting posts programmatically
-        '/\bwp_insert_user\b/i',     // Inserting users programmatically
-        '/\bwp_update_user\b/i',     // Updating users programmatically
-        '/\bwp_delete_user\b/i',     // Deleting users programmatically
-        '/\badd_option\b/i',         // Adding options to database
-        '/\bupdate_option\b/i',      // Updating options in the database
-        '/\bdelete_option\b/i',      // Deleting options from the database
-        '/\bwpdb\b/i',               // Direct access to database with WP_DB class
-        '/\bbase64_decode\b/i',
-        '/\bhex2bin\b/i',
-        '/\bmb_decode_mimeheader\b/i',
-        '/\bstr_replace\b/i',
-        '/\bpreg_replace\b/i',
-    ];
-
-    $return = true;
-    // Pattern matching
-    foreach ($dangerous_patterns as $pattern) {
-        if (preg_match($pattern, $expression)) {
-            $return = false;
-            break;
-        }
-    }
-
-    if ($return === false) {
-        return $return;
-    }
-
-    //Ensure the expression has no backtick key
-    if (stripos($expression, '`') !== false) {
-        return false;
-    }
-
-    // Ensure the expression only uses allowed functions
-    $is_safe = widgetopts_validate_code_with_tokens($expression);
-
-    if (!$is_safe) {
+    if ($validation_result['valid'] === false) {
         return false;
     }
 
@@ -652,20 +529,355 @@ function widgetopts_safe_eval($expression)
 }
 
 /**
- * Validate the given PHP code and detect obfuscated or dynamic function calls.
+ * Validate the expression if it contains dangerous and unallowed patterns.
+ */
+function widgetopts_validate_expression($expression)
+{
+    // Ensure the expression has no backtick execution
+    if (stripos($expression, '`') !== false) {
+        return ['valid' => false, 'message' => 'Backticks execution is not allowed.'];
+    }
+
+    // List of potentially harmful patterns and their messages
+    $dangerous_patterns = [
+        '/\b(insert|update|delete|replace|select|drop|alter|truncate|grant|revoke)\b/i' => 'Potential SQL injection detected.',
+        '/\b(wp_insert_post|wp_update_post|wp_delete_post|wp_insert_user|wp_update_user|wp_delete_user|add_option|update_option|delete_option|wpdb)\b/i' => 'Unsafe WordPress database functions found.',
+        '/\b(file_put_contents|file_get_contents|fopen|fwrite|unlink|rename|chmod|chown|chgrp|copy|scandir)\b/i' => 'File system manipulation functions are not allowed.',
+        '/\b(wp_remote_get|wp_remote_post|curl_init|curl_exec|curl_setopt|open_basedir|fsockopen|proc_nice|stream_socket_server|stream_socket_client)\b/i' => 'Potential remote execution functions detected.',
+        '/\b(eval|assert|system|exec|shell_exec|passthru|proc_open|popen|pcntl_exec|dl|include|require|include_once|require_once)\b/i' => 'Execution functions are not allowed.',
+        '/\b(base64_decode|hex2bin|mb_decode_mimeheader|str_rot13)\b/i' => 'Encoding/decoding functions that may be used for obfuscation are not allowed.',
+        '/\b(call_user_func|call_user_func_array|create_function|compact|extract|parse_str|ReflectionClass|ReflectionMethod|ReflectionProperty)\b/i' => 'Dynamic function execution is not allowed.',
+        '/\b(str_replace|str_ireplace|preg_replace|preg_replace_callback|preg_replace_callback_array)\b/i' => 'String replacement functions are restricted due to potential obfuscation.',
+        '/`[^`]*`/' => 'Backticks execution is not allowed.',
+        '/\[\s*[\'"]?[a-zA-Z0-9_]+\s*\.\s*[\'"]?[a-zA-Z0-9_]+\s*\]/i' => 'Concatenated function execution is not allowed.',
+        '/\b(str_replace|preg_replace|preg_replace_callback|preg_replace_callback_array)\s*\(\s*[\'"]\s*\.\s*[\'"]/' => 'Potential function name obfuscation detected.',
+        '/\$\w+\s*\[\s*[\'"]?\d+[\'"]?\s*\]\s*\(/' => 'Dynamic function execution using arrays is not allowed.',
+    ];
+
+    $is_valid = true;
+    // Check for dangerous patterns
+    foreach ($dangerous_patterns as $pattern => $message) {
+        if (preg_match($pattern, $expression)) {
+            $is_valid = false;
+            break;
+        }
+    }
+
+    if ($is_valid === false) {
+        return ['valid' => false, 'message' => $message];
+    }
+
+    // Retrieve allowed functions
+    $allowed_functions = array_merge(widgetopts_get_allowed_php_functions(), widgetopts_get_allowed_wp_functions());
+    $allowed_functions = apply_filters('widgetopts_allowed_php_functions', $allowed_functions);
+
+    // Validate using token-based function checking
+    $is_valid = widgetopts_validate_code_with_tokens($expression, $allowed_functions);
+    $is_valid = apply_filters('widgetopts_validate_allowed_commands', $is_valid);
+
+    // Return validation result
+    return $is_valid ? ['valid' => true, 'message' => 'Expression is safe.'] : ['valid' => false, 'message' => 'Expression contains disallowed function calls.'];
+}
+
+/**
+ * Returns a list of allowed PHP functions.
+ */
+function widgetopts_get_allowed_php_functions()
+{
+    return [
+        // String Manipulation
+        'strlen',
+        'substr',
+        'strtolower',
+        'strtoupper',
+        'trim',
+        'ltrim',
+        'rtrim',
+        'preg_match',
+        'explode',
+        'implode',
+        'htmlspecialchars',
+        'htmlentities',
+        'strip_tags',
+        'str_repeat',
+        'str_split',
+        'strpos',
+        'strrpos',
+        'stripos',
+        'strripos',
+        'substr_replace',
+        'wordwrap',
+
+        // Array Manipulation
+        'array_merge',
+        'array_diff',
+        'array_filter',
+        'array_map',
+        'array_keys',
+        'array_values',
+        'in_array',
+        'count',
+        'sizeof',
+        'array_slice',
+        'array_push',
+        'array_pop',
+        'array_reduce',
+        'array_intersect',
+        'array_unique',
+        'array_column',
+        'array_reverse',
+
+        // Math Functions
+        'abs',
+        'round',
+        'floor',
+        'ceil',
+        'min',
+        'max',
+        'pow',
+        'sqrt',
+        'rand',
+        'mt_rand',
+        'number_format',
+        'log',
+        'exp',
+        'bcadd',
+        'bcsub',
+        'bcmul',
+        'bcdiv',
+
+        // Date/Time
+        'time',
+        'date',
+        'strtotime',
+        'mktime',
+        'checkdate',
+        'date_default_timezone_get',
+        'gmdate',
+
+        // JSON Functions
+        'json_decode',
+        'json_encode',
+
+        // Variable Handling
+        'isset',
+        'empty',
+        'unset',
+        'is_array',
+        'is_bool',
+        'is_callable',
+        'is_countable',
+        'is_double',
+        'is_float',
+        'is_int',
+        'is_integer',
+        'is_iterable',
+        'is_long',
+        'is_null',
+        'is_numeric',
+        'is_object',
+        'is_real',
+        'is_scalar',
+        'is_string',
+        'is_subclass_of',
+        'is_uploaded_file',
+        'is_writable',
+        'is_readable',
+        'is_dir',
+        'is_file',
+        'is_link',
+        'intval',
+        'strval',
+        'floatval',
+        'doubleval',
+        'boolval',
+        'realpath',
+
+        // File Operations (Read-Only)
+        'filesize',
+        'pathinfo',
+        'basename',
+        'dirname',
+        'file_exists',
+        'readfile',
+    ];
+}
+
+/**
+ * Returns a list of allowed WordPress functions.
+ */
+function widgetopts_get_allowed_wp_functions()
+{
+    return [
+        // Database Operations
+        'get_option',
+        'get_post',
+        'get_user_meta',
+        'get_bloginfo',
+        'get_theme_mod',
+
+        // Escaping and Sanitizing
+        'esc_url',
+        'esc_html',
+        'esc_attr',
+        'esc_js',
+        'sanitize_text_field',
+        'sanitize_email',
+        'sanitize_title',
+        'sanitize_key',
+
+        // URL and Links
+        'get_permalink',
+        'get_home_url',
+        'get_site_url',
+        'get_admin_url',
+        'wp_parse_url',
+        'urlencode',
+        'urldecode',
+        'rawurlencode',
+        'rawurldecode',
+        'parse_url',
+        'http_build_query',
+
+        // Security and Authentication
+        'wp_verify_nonce',
+        'check_admin_referer',
+        'current_user_can',
+        'is_user_logged_in',
+        'wp_nonce_field',
+        'wp_nonce_url',
+
+        // Formatting
+        'wp_kses',
+        'wp_kses_post',
+        'wp_trim_words',
+        'wpautop',
+
+        // Retrieval of Metadata and Post Details
+        'get_post_meta',
+        'get_page_template_slug',
+        'get_the_author_meta',
+        'get_the_terms',
+        'get_comments',
+        'get_category',
+        'get_terms',
+        'get_nav_menu_locations',
+        'get_posts',
+        'get_post_status',
+        'get_comment_meta',
+        'get_taxonomy',
+        'get_object_taxonomies',
+        'get_post_type',
+        'get_the_ID',
+        'get_the_title',
+        'get_edit_post_link',
+
+        // Plugins and Themes
+        'is_plugin_active',
+        'get_plugins',
+        'get_theme_support',
+
+        // Utilities
+        'wp_generate_uuid4',
+
+        // User and Authentication
+        'get_userdata',
+        'get_user_by',
+        'get_users',
+        'get_author_posts_url',
+        'get_user_roles',
+        'get_users_by_role',
+        'wp_get_current_user',
+
+        // Media and Files
+        'wp_get_attachment_image_src',
+        'wp_get_attachment_url',
+        'wp_get_attachment_metadata',
+        'wp_get_attachment_image',
+        'wp_get_attachment_thumb_url',
+
+        // File Handling
+        'wp_get_upload_dir',
+        'wp_handle_upload',
+        'wp_check_filetype_and_ext',
+        'wp_get_file_upload_url',
+
+        // Taxonomies
+        'get_term_meta',
+        'get_the_category_list',
+        'get_the_tag_list',
+        'get_the_term_list',
+
+        // Checking Functions
+        'is_admin',
+        'is_network_admin',
+        'is_main_query',
+        'is_single',
+        'is_singular',
+        'is_category',
+        'is_tag',
+        'is_page',
+        'is_front_page',
+        'is_home',
+        'is_attachment',
+        'is_archive',
+        'is_date',
+        'is_year',
+        'is_month',
+        'is_day',
+        'is_author',
+        'is_search',
+        'is_404',
+        'is_multisite',
+        'is_customize_preview',
+    ];
+}
+
+/**
+ * Validate PHP code against allowed functions and detect obfuscated calls.
  *
  * @param string $code The PHP code to validate.
+ * @param array $allowed_functions List of explicitly allowed functions.
  * @return bool Returns true if the code is considered safe, false otherwise.
  */
-function widgetopts_validate_code_with_tokens($code)
+function widgetopts_validate_code_with_tokens($code, $allowed_functions)
 {
-    $tokens = token_get_all("<?php " . $code); // Add PHP opening tag for tokenization
+    $code = stripslashes($code);
+    // Ensure correct PHP opening tag before tokenizing
+    if (strpos(trim($code), '<?php') !== 0) {
+        $code = "<?php " . $code;
+    }
+
+    $tokens = token_get_all($code);
     $is_safe = true;
+    $last_token = null;
 
     foreach ($tokens as $index => $token) {
         if (is_array($token)) {
-            // Dynamic variable function call (e.g., $cmd())
-            if ($token[0] === T_VARIABLE) {
+            $token_type = $token[0];
+            $token_value = $token[1];
+
+            // **Fix: Properly detect function calls inside conditions**
+            if ($token_type === T_STRING) {
+                $function_name = strtolower($token_value);
+                $next_token = $tokens[$index + 1] ?? null;
+
+                if ($next_token === '(' || (is_array($next_token) && $next_token[0] === T_WHITESPACE && ($tokens[$index + 2] ?? null) === '(')) {
+                    if (!in_array($function_name, array_map('strtolower', $allowed_functions))) {
+                        $is_safe = false;
+                        break;
+                    }
+                }
+            }
+
+            // **Fix: Detect if T_ENCAPSED_AND_WHITESPACE is being treated as code**
+            if ($token_type === T_ENCAPSED_AND_WHITESPACE) {
+                $is_safe = false;
+                break;
+            }
+
+            // **Fix: Dynamic Function Execution (`$func()` or `['test']()`)**
+            if ($token_type === T_VARIABLE || $token_type === T_CONSTANT_ENCAPSED_STRING) {
                 $next_token = $tokens[$index + 1] ?? null;
                 if ($next_token === '(') {
                     $is_safe = false;
@@ -673,20 +885,7 @@ function widgetopts_validate_code_with_tokens($code)
                 }
             }
 
-            // Grouped dynamic variable function call (e.g., ($cmd)())
-            if ($token[0] === T_VARIABLE) {
-                $prev_token = $tokens[$index - 1] ?? null;
-                $next_token = $tokens[$index + 1] ?? null;
-
-                if (
-                    $prev_token === '(' && // Opening parenthesis before the variable
-                    $next_token === ')' && // Closing parenthesis after the variable
-                    ($tokens[$index + 2] ?? null) === '(' // Function invocation immediately after
-                ) {
-                    $is_safe = false;
-                    break;
-                }
-            }
+            $last_token = $token;
         }
     }
 

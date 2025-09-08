@@ -191,9 +191,9 @@ if (!function_exists('widgetopts_load_admin_scripts')) :
                   //       </a>';
                   // $sidebaropts .= '</div>';
 
-                  wp_localize_script('jquery-widgetopts-option-tabs', 'widgetopts10n', array('ajax_url' => admin_url('admin-ajax.php'), 'opts_page' => esc_url(admin_url('options-general.php?page=widgetopts_plugin_settings')), 'search_form' => $form, 'sidebaropts' => $sidebaropts, 'controls' => $btn_controls, 'translation' => array('manage_settings' => __('Manage Widget Options', 'widget-options'), 'search_chooser' => __('Search sidebar&hellip;', 'widget-options'))));
+                  wp_localize_script('jquery-widgetopts-option-tabs', 'widgetopts10n', array('ajax_url' => admin_url('admin-ajax.php'), 'opts_page' => esc_url(admin_url('options-general.php?page=widgetopts_plugin_settings')), 'search_form' => $form, 'sidebaropts' => $sidebaropts, 'controls' => $btn_controls, 'translation' => array('manage_settings' => __('Manage Widget Options', 'widget-options'), 'search_chooser' => __('Search sidebar&hellip;', 'widget-options')), 'validate_expression_nonce' => wp_create_nonce('widgetopts-expression-nonce')));
             } else {
-                  wp_localize_script('widgetopts-global-script', 'widgetopts10n', array('ajax_url' => admin_url('admin-ajax.php'), 'opts_page' => esc_url(admin_url('options-general.php?page=widgetopts_plugin_settings')), 'translation' => array('manage_settings' => __('Manage Widget Options', 'widget-options'), 'search_chooser' => __('Search sidebar&hellip;', 'widget-options'))));
+                  wp_localize_script('widgetopts-global-script', 'widgetopts10n', array('ajax_url' => admin_url('admin-ajax.php'), 'opts_page' => esc_url(admin_url('options-general.php?page=widgetopts_plugin_settings')), 'translation' => array('manage_settings' => __('Manage Widget Options', 'widget-options'), 'search_chooser' => __('Search sidebar&hellip;', 'widget-options')), 'validate_expression_nonce' => wp_create_nonce('widgetopts-expression-nonce')));
             }
 
             if (in_array($hook, apply_filters('widgetopts_load_settings_scripts', array('settings_page_widgetopts_plugin_settings')))) {

@@ -160,9 +160,9 @@ function widgetopts_ajax_update_callback($instance, $new_instance, $old_instance
         if (isset($options['extended_widget_opts'])) {
             //check if user is administrator
             if (!current_user_can('administrator')) {
-                if (isset($options['extended_widget_opts']['class']) && isset($options['extended_widget_opts']['class']['logic']) && !empty($options['extended_widget_opts']['class']['logic'])) {
-                    if (isset($old_instance['extended_widget_opts']['class']) && isset($old_instance['extended_widget_opts']['class']['logic']) && !empty($old_instance['extended_widget_opts']['class']['logic'])) {
-                        $options['extended_widget_opts']['class']['logic'] = $old_instance['extended_widget_opts']['class']['logic'];
+                if (isset($options['extended_widget_opts']['class'])) {
+                    if (isset($old_instance['extended_widget_opts-' . $this_widget->id]['class']) && isset($old_instance['extended_widget_opts-' . $this_widget->id]['class']['logic']) && !empty($old_instance['extended_widget_opts-' . $this_widget->id]['class']['logic'])) {
+                        $options['extended_widget_opts']['class']['logic'] = $old_instance['extended_widget_opts-' . $this_widget->id]['class']['logic'];
                     } else {
                         $options['extended_widget_opts']['class']['logic'] = '';
                     }

@@ -11,8 +11,12 @@ jQuery(function () {
     });
   });
 
-  jQuery(document).on("change keyup", '.widget-opts-logic textarea[name="extended_widget_opts[class][logic]"], .widget-opts-logic textarea', function () {
+  jQuery(document).on("change", '.widget-opts-logic textarea[name="extended_widget_opts[class][logic]"], .widget-opts-logic textarea', function () {
     checkForDangerousPatterns(this);
+  });
+
+  jQuery(document).on("keyup", '.widget-opts-logic textarea[name="extended_widget_opts[class][logic]"], .widget-opts-logic textarea', function () {
+    partialCheckForDangerousPatterns(this);
   });
 
   jQuery(document).on("click", ".widgetopts-tab-panel.tab-logic button", function () {
@@ -20,121 +24,81 @@ jQuery(function () {
   });
 
   function checkForDangerousPatterns(that) {
+    let expression = jQuery(that).val();
+    jQuery.ajax({
+      type: "POST",
+      url: widgetopts10n.ajax_url,
+      data: {
+        action: "widgetopts_ajax_validate_expression",
+        nonce: widgetopts10n.validate_expression_nonce,
+        expression: expression,
+      },
+      dataType: "json",
+      success: function (response) {
+        if (response.valid) {
+          if (jQuery(".wopts-warning-message").length !== 0) {
+            jQuery(".wopts-warning-message").remove();
+          }
+        } else {
+          if (jQuery(".wopts-warning-message").length === 0) {
+            if (response.message != "") {
+              jQuery(that).after(`<p class="wopts-warning-message" style="font-size: 11px;">Warning: <span style="color: red;">${response.message}</span></p>`);
+            }
+          }
+        }
+      },
+      error: function () {},
+    });
+  }
+
+  function partialCheckForDangerousPatterns(that) {
     const dangerousPatterns = [
       // Database-related keywords
-      { pattern: /\binsert\b/i, keyword: "insert" },
-      { pattern: /\bupdate\b/i, keyword: "update" },
-      { pattern: /\bdelete\b/i, keyword: "delete" },
-      { pattern: /\breplace\b/i, keyword: "replace" },
-      { pattern: /\bselect\b/i, keyword: "select" },
-      { pattern: /\bdrop\b/i, keyword: "drop" },
-      { pattern: /\balter\b/i, keyword: "alter" },
-      { pattern: /\btruncate\b/i, keyword: "truncate" },
-      { pattern: /\bgrant\b/i, keyword: "grant" },
-      { pattern: /\brevoke\b/i, keyword: "revoke" },
+      { pattern: /\b(insert|update|delete|replace|select|drop|alter|truncate|grant|revoke)\b/i, message: "Potential SQL injection detected." },
 
       // WordPress-specific database functions
-      { pattern: /\bwp_insert_post\b/i, keyword: "wp_insert_post" },
-      { pattern: /\bwp_update_post\b/i, keyword: "wp_update_post" },
-      { pattern: /\bwp_delete_post\b/i, keyword: "wp_delete_post" },
-      { pattern: /\bwp_insert_user\b/i, keyword: "wp_insert_user" },
-      { pattern: /\bwp_update_user\b/i, keyword: "wp_update_user" },
-      { pattern: /\bwp_delete_user\b/i, keyword: "wp_delete_user" },
-      { pattern: /\badd_option\b/i, keyword: "add_option" },
-      { pattern: /\bupdate_option\b/i, keyword: "update_option" },
-      { pattern: /\bdelete_option\b/i, keyword: "delete_option" },
-      { pattern: /\bwpdb\b/i, keyword: "wpdb" },
-
-      // JavaScript, CSS, and HTML
-      { pattern: /<script\b[^>]*>(.*?)<\/script>/i, keyword: "<script>" },
-      { pattern: /<style\b[^>]*>(.*?)<\/style>/i, keyword: "<style>" },
+      { pattern: /\b(wp_insert_post|wp_update_post|wp_delete_post|wp_insert_user|wp_update_user|wp_delete_user|add_option|update_option|delete_option|wpdb)\b/i, message: "Unsafe WordPress database functions found." },
 
       // PHP file manipulation functions
-      { pattern: /\bfile_put_contents\b/i, keyword: "file_put_contents" },
-      { pattern: /\bfile_get_contents\b/i, keyword: "file_get_contents" },
-      { pattern: /\bfopen\b/i, keyword: "fopen" },
-      { pattern: /\bfwrite\b/i, keyword: "fwrite" },
-      { pattern: /\bunlink\b/i, keyword: "unlink" },
-      { pattern: /\brename\b/i, keyword: "rename" },
-      { pattern: /\bchmod\b/i, keyword: "chmod" },
-      { pattern: /\bchown\b/i, keyword: "chown" },
-      { pattern: /\bchgrp\b/i, keyword: "chgrp" },
-      { pattern: /\bcopy\b/i, keyword: "copy" },
-      { pattern: /\bscandir\b/i, keyword: "scandir" },
+      { pattern: /\b(file_put_contents|file_get_contents|fopen|fwrite|unlink|rename|chmod|chown|chgrp|copy|scandir)\b/i, message: "File system manipulation functions are not allowed." },
 
       // External connections
-      { pattern: /\bwp_remote_get\b/i, keyword: "wp_remote_get" },
-      { pattern: /\bwp_remote_post\b/i, keyword: "wp_remote_post" },
-      { pattern: /\bcurl_init\b/i, keyword: "curl_init" },
-      { pattern: /\bcurl_exec\b/i, keyword: "curl_exec" },
-      { pattern: /\bcurl_setopt\b/i, keyword: "curl_setopt" },
+      { pattern: /\b(wp_remote_get|wp_remote_post|curl_init|curl_exec|curl_setopt|open_basedir|fsockopen|proc_nice|stream_socket_server|stream_socket_client)\b/i, message: "Potential remote execution functions detected." },
 
-      // Reflection and dynamic variable/function manipulation
-      { pattern: /\bReflectionClass\b/i, keyword: "ReflectionClass" },
-      { pattern: /\bReflectionMethod\b/i, keyword: "ReflectionMethod" },
-      { pattern: /\bReflectionProperty\b/i, keyword: "ReflectionProperty" },
-      { pattern: /\bcall_user_func\b/i, keyword: "call_user_func" },
-      { pattern: /\bcall_user_func_array\b/i, keyword: "call_user_func_array" },
-      { pattern: /\bextract\b/i, keyword: "extract" },
-      { pattern: /\bparse_str\b/i, keyword: "parse_str" },
+      // Execution function
+      { pattern: /\b(eval|assert|system|exec|shell_exec|passthru|proc_open|popen|pcntl_exec|dl|include|require|include_once|require_once)\b/i, message: "Execution functions are not allowed." },
 
-      // System commands
-      { pattern: /\beval\b/i, keyword: "eval" },
-      { pattern: /\bsystem\b/i, keyword: "system" },
-      { pattern: /\bshell_exec\b/i, keyword: "shell_exec" },
-      { pattern: /\bexec\b/i, keyword: "exec" },
-      { pattern: /\bpassthru\b/i, keyword: "passthru" },
-      { pattern: /\bpopen\b/i, keyword: "popen" },
-      { pattern: /\bproc_open\b/i, keyword: "proc_open" },
-      { pattern: /\bproc_close\b/i, keyword: "proc_close" },
-      { pattern: /\bproc_get_status\b/i, keyword: "proc_get_status" },
+      // Encoding/decoding functions
+      { pattern: /\b(base64_decode|hex2bin|mb_decode_mimeheader|str_rot13)\b/i, message: "Encoding/decoding functions that may be used for obfuscation are not allowed." },
 
-      // File manipulation commands (system-level)
-      { pattern: /\bchmod\b/i, keyword: "chmod" },
-      { pattern: /\bchown\b/i, keyword: "chown" },
-      { pattern: /\blchown\b/i, keyword: "lchown" },
-      { pattern: /\bdump\b/i, keyword: "dump" },
-      { pattern: /\bzip\b/i, keyword: "zip" },
-      { pattern: /\btar\b/i, keyword: "tar" },
-      { pattern: /\bgzip\b/i, keyword: "gzip" },
+      // Dynamic function execution
+      { pattern: /\b(call_user_func|call_user_func_array|create_function|compact|extract|parse_str|ReflectionClass|ReflectionMethod|ReflectionProperty)\b/i, message: "Dynamic function execution is not allowed." },
 
       // Remote execution functions
-      { pattern: /\bopen_basedir\b/i, keyword: "open_basedir" },
-      { pattern: /\bfsockopen\b/i, keyword: "fsockopen" },
-      { pattern: /\bproc_nice\b/i, keyword: "proc_nice" },
-      { pattern: /\bstream_socket_server\b/i, keyword: "stream_socket_server" },
-      { pattern: /\bstream_socket_client\b/i, keyword: "stream_socket_client" },
-
-      // Dangerous PHP and WordPress specific functions
-      { pattern: /\bwp_insert_post\b/i, keyword: "wp_insert_post" },
-      { pattern: /\bwp_update_post\b/i, keyword: "wp_update_post" },
-      { pattern: /\bwp_delete_post\b/i, keyword: "wp_delete_post" },
-      { pattern: /\bwp_insert_user\b/i, keyword: "wp_insert_user" },
-      { pattern: /\bwp_update_user\b/i, keyword: "wp_update_user" },
-      { pattern: /\bwp_delete_user\b/i, keyword: "wp_delete_user" },
-      { pattern: /\badd_option\b/i, keyword: "add_option" },
-      { pattern: /\bupdate_option\b/i, keyword: "update_option" },
-      { pattern: /\bdelete_option\b/i, keyword: "delete_option" },
-      { pattern: /\bwpdb\b/i, keyword: "wpdb" },
+      { pattern: /\b(str_replace|str_ireplace|preg_replace|preg_replace_callback|preg_replace_callback_array)\b/i, message: "String replacement functions are restricted due to potential obfuscation." },
 
       //Dynamic PHP variable call
-      { pattern: /(?:\(\$[a-zA-Z_]\w*\)|\$[a-zA-Z_]\w*)(?=\s*\()/g, keyword: "dynamic_keyword" },
+      { pattern: /\[\s*[\'"]?[a-zA-Z0-9_]+\s*\.\s*[\'"]?[a-zA-Z0-9_]+\s*\]/i, message: "Concatenated function execution is not allowed." },
+      { pattern: /(?:\(\$[a-zA-Z_]\w*\)|\$[a-zA-Z_]\w*)(?=\s*\()/g, message: "Potential function name obfuscation detected." },
+      { pattern: /\b(str_replace|preg_replace|preg_replace_callback|preg_replace_callback_array)\s*\(\s*[\'"]\s*\.\s*[\'"]/, message: "Potential function name obfuscation detected." },
+
+      //Backtick
+      { pattern: /`[^`]*`/, message: "Backticks execution is not allowed." },
+
+      { pattern: /\\x(?:[0-9A-F]{2})+/i, message: "Hexadecimal escape sequences detected." },
+      { pattern: /\\u(?:[0-9A-F]{4})+/i, message: "Unicode escape sequences detected." },
+      { pattern: /\$\w+\s*\[\s*[\'"]?\d+[\'"]?\s*\]\s*\(/, message: "Dynamic function execution using arrays is not allowed." },
     ];
 
     let input = jQuery(that).val();
     let safe = true;
 
-    for (const { pattern, keyword } of dangerousPatterns) {
+    for (const { pattern, message } of dangerousPatterns) {
       if (pattern.test(input)) {
         safe = false;
         if (jQuery(".wopts-warning-message").length === 0) {
-          if (keyword == "dynamic_keyword") {
-            jQuery(that).after(`<p class="wopts-warning-message" style="font-size: 11px;">Warning: <span style="color: red;">Dynamic PHP variable call detected.</span></p>`);
-          } else {
-            jQuery(that).after(`<p class="wopts-warning-message" style="font-size: 11px;">Warning: <span style="color: red;">Unallowed keyword "${keyword}" exists in your code.</span></p>`);
-          }
+          jQuery(that).after(`<p class="wopts-warning-message" style="font-size: 11px;">Warning: <span style="color: red;">${message}</span></p>`);
         }
-
         break;
       }
     }
