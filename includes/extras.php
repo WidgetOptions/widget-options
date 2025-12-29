@@ -807,6 +807,7 @@ function widgetopts_get_allowed_wp_functions()
         'get_the_category_list',
         'get_the_tag_list',
         'get_the_term_list',
+≈
 
         // Checking Functions
         'is_admin',
@@ -830,6 +831,7 @@ function widgetopts_get_allowed_wp_functions()
         'is_404',
         'is_multisite',
         'is_customize_preview',
+        'in_category',
     ];
 }
 
@@ -911,3 +913,4 @@ function widgetopts_is_widget_or_post_preview()
 
     return false;
 }
+
