@@ -899,8 +899,8 @@ function widgetopts_add_classes_post_block($block_content, $parsed_block, $obj)
 		//don't add the IDs when the setting is set to NO
 		if (isset($widget_options['settings']['classes']['id'])) {
 			if (is_array($custom_class) && isset($custom_class['id']) && !empty($custom_class['id'])) {
-				$id_to_add = $custom_class['id'];
-				$widget_id_set = $custom_class['id'];
+				$id_to_add = sanitize_html_class($custom_class['id']);
+				$widget_id_set = sanitize_html_class($custom_class['id']);
 			}
 		}
 	}

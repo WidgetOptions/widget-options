@@ -653,6 +653,7 @@ if (!function_exists('widgetopts_add_classes')) :
             //don't add the IDs when the setting is set to NO
             if (isset($widget_options['settings']['classes']['id'])) {
                 if (is_array($custom_class) && isset($custom_class['id']) && !empty($custom_class['id'])) {
+                    $custom_class['id'] = sanitize_html_class($custom_class['id']);
                     $params[0]['before_widget'] = preg_replace('/id="[^"]*/', "id=\"{$custom_class['id']}", $params[0]['before_widget'], 1);
                     $widget_id_set = $custom_class['id'];
                 }

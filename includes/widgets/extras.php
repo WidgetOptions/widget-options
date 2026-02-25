@@ -31,10 +31,10 @@ if( !function_exists( 'widgetopts_classes_generator' ) ){
                 //devices visibility
                 if( !empty( $devices ) ){
                     $device_opts    = ( isset( $opts['devices']['options'] ) ) ? $opts['devices']['options'] : 'hide';
-                    $classes[] = 'extendedwopts-' . $device_opts ;
+                    $classes[] = sanitize_html_class('extendedwopts-' . $device_opts);
 
                     foreach ($devices as $key => $value) {
-                        $classes[] = 'extendedwopts-' . $key;
+                        $classes[] = sanitize_html_class('extendedwopts-' . $key);
                     }
                 }
             }
@@ -44,7 +44,7 @@ if( !function_exists( 'widgetopts_classes_generator' ) ){
                 if( !empty( $alignment ) ){
                     foreach ($alignment as $k => $v) {
                         if( 'default' != $v ){
-                            $classes[] = 'extendedwopts-' . $abbr[ $k ] . '-'. $v ;
+                            $classes[] = sanitize_html_class('extendedwopts-' . $abbr[ $k ] . '-'. $v);
                         }
                     }
                 }
@@ -62,7 +62,12 @@ if( !function_exists( 'widgetopts_classes_generator' ) ){
                 if( !isset( $settings['classes']['type'] ) ||
                     ( isset(  $settings['classes']['type'] ) && !in_array(  $settings['classes']['type'] , array( 'hide', 'predefined' ) ) ) ){
                     if( is_array( $custom_class ) && isset( $custom_class['classes'] ) && !empty( $custom_class['classes'] ) ){
-                        $classes[] = $custom_class['classes'];
+                        $tmpClasses = explode(" ", $custom_class['classes']);
+                        if(!empty($tmpClasses)){
+                            foreach($tmpClasses as $c) {
+                                $classes[] = sanitize_html_class($c);
+                            }
+                        }
                     }
                 }
 
