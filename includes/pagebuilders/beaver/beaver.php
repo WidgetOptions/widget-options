@@ -44,6 +44,7 @@ if (!class_exists('WP_Widget_Options_Beaver')) :
 			// add_action( 'admin_notices', array( &$this, 'widgetopts_plugin_check' ) );
 
 			add_filter('fl_builder_is_node_visible', array(&$this, 'widgetopts_beaver_is_node_visible'), 10, 2);
+			add_action('fl_builder_control_widgetopts-beaver-legacy', array(&$this, 'fl_widgetopts_beaver_legacy_control'), 1, 4);
 		}
 
 		function widgetopts_beaver_settings($form, $id)
@@ -210,10 +211,48 @@ if (!class_exists('WP_Widget_Options_Beaver')) :
 					$settings_fld = array();
 
 					if (isset($widget_options['logic']) && 'activate' == $widget_options['logic']) {
+						// Get available snippets for dropdown
+						$snippet_options = array('' => __('— No Logic (Always Show) —', 'widget-options'));
+						if (class_exists('WidgetOpts_Snippets_CPT')) {
+							$snippets = WidgetOpts_Snippets_CPT::get_all_snippets();
+							foreach ($snippets as $snippet) {
+								$snippet_options[$snippet['id']] = $snippet['title'];
+							}
+						}
+
+						$snippet_description = __('Select a logic snippet to control when this widget is displayed.', 'widget-options');
+						if (current_user_can('manage_options')) {
+							$snippet_description .= '<br><a href="' . admin_url('edit.php?post_type=widgetopts_snippet') . '" target="_blank" style="display:inline-block;margin-top:5px;padding:3px 8px;background:#0073aa;color:#fff;text-decoration:none;border-radius:3px;font-size:11px;">' . __('Manage Snippets', 'widget-options') . ' →</a>';
+						}
+
+						// Hidden field to ensure BB includes legacy logic value in settings
 						$settings_fld['widgetopts_settings_logic'] = array(
-							'type'          => 'textarea',
-							'label' 		=> __('Display Logic', 'widget-options'),
-							'description' 	=> __('<small>PLEASE NOTE that the display logic you introduce is EVAL\'d directly. Anyone who has access to edit widget appearance will have the right to add any code, including malicious and possibly destructive functions. There is an optional filter "widget_options_logic_override" which you can use to bypass the EVAL with your own code if needed.</small>', 'widget-options')
+							'type'    => 'hidden',
+							'default' => '',
+						);
+
+						// Hidden flag: set to '1' when user clicks Clear button
+						$settings_fld['widgetopts_logic_cleared'] = array(
+							'type'    => 'hidden',
+							'default' => '',
+						);
+
+						// Widget Options version stamp
+						$settings_fld['widgetopts_wopt_version'] = array(
+							'type'    => 'hidden',
+							'default' => '',
+						);
+
+						// Per-node legacy logic display (shown only when this node has legacy code)
+						$settings_fld['widgetopts_legacy_logic_display'] = array(
+							'type' => 'widgetopts-beaver-legacy',
+						);
+
+						$settings_fld['widgetopts_logic_snippet_id'] = array(
+							'type'          => 'widgetopts-select2',
+							'label' 		=> __('Display Logic Snippet', 'widget-options'),
+							'options'       => $snippet_options,
+							'description' 	=> $snippet_description
 						);
 					}
 
@@ -313,7 +352,7 @@ if (!class_exists('WP_Widget_Options_Beaver')) :
 				<?php if (isset($widget_options['visibility']) && 'activate' == $widget_options['visibility']) { ?>
 					<a onclick="widgetoptsBeaverModule.navClick(event)" href="#fl-builder-settings-section-widgetopts-visibility" class="widgetopts-s-active"><span class="dashicons dashicons-visibility"></span><?php _e('Visibility', 'widget-options'); ?></a>
 				<?php } ?>
-				<?php if (isset($widget_options['logic']) && 'activate' == $widget_options['logic'] && current_user_can('administrator')) { ?>
+				<?php if (isset($widget_options['logic']) && 'activate' == $widget_options['logic']) { ?>
 					<a onclick="widgetoptsBeaverModule.navClick(event)" href="#fl-builder-settings-section-widgetopts-settings" class=""><span class="dashicons dashicons-admin-generic"></span><?php _e('Settings', 'widget-options'); ?></a>
 				<?php } ?>
 				<a onclick="widgetoptsBeaverModule.navClick(event)" href="#fl-builder-settings-section-widgetopts-upgrade"><span class="dashicons dashicons-plus"></span><?php _e('More', 'widget-options'); ?></a>
@@ -401,7 +440,7 @@ if (!class_exists('WP_Widget_Options_Beaver')) :
 				}
 			}
 
-			if (!empty($options) && $value) {
+			if (!empty($options) && $value && is_array($value)) {
 				uksort($options, function ($key1, $key2) use ($value) {
 					return array_search($key1, $value) <=> array_search($key2, $value);
 				});
@@ -414,10 +453,14 @@ if (!class_exists('WP_Widget_Options_Beaver')) :
 		?>
 			<select name="<?php echo $name;
 							if (isset($field['multi-select'])) echo '[]'; ?>" class="widgetopts-select2 <?php echo $field['class']; ?>" <?php if (isset($field['multi-select'])) echo 'multiple ';
-																																		echo $attributes; ?> placeholder="<?php _e('Click to search or select', 'widget-options'); ?>">
-				<option></option>
+																																	echo $attributes; ?> placeholder="<?php _e('Click to search or select', 'widget-options'); ?>">
+				<option value=""><?php echo isset($options['']) ? esc_html(is_array($options['']) ? $options['']['label'] : $options['']) : ''; ?></option>
 				<?php
 				foreach ($options as $option_key => $option_val) :
+
+					if ($option_key === '') {
+						continue;
+					}
 
 					if (is_array($option_val) && isset($option_val['premium']) && $option_val['premium'] && true === FL_BUILDER_LITE) {
 						continue;
@@ -438,6 +481,54 @@ if (!class_exists('WP_Widget_Options_Beaver')) :
 				<?php endforeach; ?>
 			</select>
 		<?php }
+
+		/**
+		 * Custom control: show legacy logic readonly textarea + warning per-node
+		 */
+		function fl_widgetopts_beaver_legacy_control($name, $value, $field, $settings)
+		{
+			// Don't show if snippet_id is already set (migration done)
+			if (!empty($settings->widgetopts_logic_snippet_id)) {
+				return;
+			}
+
+			// Only render if this specific node has legacy logic code
+			$legacy_code = '';
+			if (isset($settings->widgetopts_settings_logic) && !empty($settings->widgetopts_settings_logic)) {
+				$legacy_code = $settings->widgetopts_settings_logic;
+			} elseif (isset($settings->widgetopts_settings_logic_backup) && !empty($settings->widgetopts_settings_logic_backup)) {
+				$legacy_code = $settings->widgetopts_settings_logic_backup;
+			}
+
+			if (empty($legacy_code)) {
+				return;
+			}
+
+			$migration_url = admin_url('options-general.php?page=widgetopts_migration');
+			?>
+			<div class="widgetopts-legacy-logic-wrap" style="margin-bottom:15px;">
+				<p><strong><?php _e('Legacy Display Logic Code', 'widget-options'); ?></strong></p>
+				<textarea readonly="readonly" rows="4" style="width:100%;background:#f9f2f4;color:#c7254e;font-family:monospace;font-size:12px;cursor:not-allowed;resize:vertical;"><?php echo esc_textarea($legacy_code); ?></textarea>
+				<p style="margin-top:8px;padding:8px 12px;background:#fff3cd;border-left:4px solid #ffc107;color:#856404;font-size:12px;">
+					<?php _e('This module uses legacy inline display logic. Please migrate it to the new snippet-based system.', 'widget-options'); ?>
+					<?php if (current_user_can(WIDGETOPTS_MIGRATION_PERMISSIONS)) : ?>
+						<br><a href="<?php echo esc_url($migration_url); ?>" target="_blank"><?php _e('Go to Migration Page', 'widget-options'); ?> &rarr;</a>
+					<?php endif; ?>
+				</p>
+				<button type="button" class="fl-builder-button fl-builder-button-primary widgetopts-bb-clear-legacy" style="margin-top:8px;padding:5px 15px;background:#dc3545;color:#fff;border:none;border-radius:3px;cursor:pointer;font-size:12px;" onclick="(function(btn){var form=jQuery(btn).closest('form,.fl-builder-settings');if(form.length){form.find('input[name=widgetopts_settings_logic]').val('');form.find('input[name=widgetopts_logic_cleared]').val('1');jQuery(btn).closest('.widgetopts-legacy-logic-wrap').slideUp();form.find('#fl-field-widgetopts_logic_snippet_id').show();}})( this)">
+					<?php _e('Clear Legacy Logic', 'widget-options'); ?>
+				</button>
+			</div>
+			<script>
+			jQuery(function(){
+				var wrap = jQuery('.widgetopts-legacy-logic-wrap');
+				if (wrap.length && wrap.is(':visible')) {
+					wrap.closest('form,.fl-builder-settings').find('#fl-field-widgetopts_logic_snippet_id').hide();
+				}
+			});
+			</script>
+			<?php
+		}
 
 		function fl_widgetopts_upgrade($name, $value, $field, $settings)
 		{ ?>
@@ -808,8 +899,23 @@ if (!class_exists('WP_Widget_Options_Beaver')) :
 
 			//widget logic
 			if (isset($widget_options['logic']) && 'activate' == $widget_options['logic']) {
-				if (isset($settings->widgetopts_settings_logic) && !empty($settings->widgetopts_settings_logic)) {
-					//do widget logic
+				// New snippet-based system
+				if (isset($settings->widgetopts_logic_snippet_id) && !empty($settings->widgetopts_logic_snippet_id)) {
+					$snippet_id = $settings->widgetopts_logic_snippet_id;
+					if (class_exists('WidgetOpts_Snippets_API')) {
+						$result = WidgetOpts_Snippets_API::execute_snippet($snippet_id);
+						if ($result === false) {
+							return false;
+						}
+					}
+				}
+				// Legacy support for old inline logic
+				elseif (isset($settings->widgetopts_settings_logic) && !empty($settings->widgetopts_settings_logic)) {
+					// Flag that legacy migration is needed
+					if (!get_option('wopts_display_logic_migration_required', false)) {
+						update_option('wopts_display_logic_migration_required', true);
+					}
+
 					$display_logic = stripslashes(trim($settings->widgetopts_settings_logic));
 					$display_logic = apply_filters('widget_options_logic_override', $display_logic);
 					$display_logic = apply_filters('extended_widget_options_logic_override', $display_logic);
@@ -819,9 +925,6 @@ if (!class_exists('WP_Widget_Options_Beaver')) :
 					if ($display_logic === true) {
 						return true;
 					}
-					// if (stristr($display_logic, "return") === false) {
-					// 	$display_logic = "return (" . $display_logic . ");";
-					// }
 					$display_logic = htmlspecialchars_decode($display_logic, ENT_QUOTES);
 					try {
 						if (!widgetopts_safe_eval($display_logic)) {
@@ -849,5 +952,85 @@ if (!class_exists('WP_Widget_Options_Beaver')) :
 
 	add_action('plugins_loaded', array('WP_Widget_Options_Beaver', 'init'));
 // new WP_Widget_Options_Beaver();
+
+	/**
+	 * Protect legacy display logic from modification/injection on BB save.
+	 * Always restores the DB value for widgetopts_settings_logic per node.
+	 * Prevents code injection via console AND data loss before migration.
+	 * 
+	 * @since 5.1
+	 */
+	add_filter('fl_builder_before_save_layout', function($data) {
+		if (!is_array($data) || !class_exists('FLBuilderModel')) {
+			return $data;
+		}
+
+		$post_id = FLBuilderModel::get_post_id();
+		if (!$post_id) {
+			return $data;
+		}
+
+		// Build map: node_id => old widgetopts_settings_logic from DB
+		$old_logic = array();
+		foreach (array('_fl_builder_data', '_fl_builder_draft') as $mk) {
+			$old_nodes = get_post_meta($post_id, $mk, true);
+			if (is_array($old_nodes)) {
+				foreach ($old_nodes as $nid => $node) {
+					if (is_object($node) && isset($node->settings) && is_object($node->settings)
+						&& !empty($node->settings->widgetopts_settings_logic)) {
+						$old_logic[$nid] = $node->settings->widgetopts_settings_logic;
+					}
+				}
+			}
+		}
+
+		// Protect each node
+		foreach ($data as $nid => &$node) {
+			if (!is_object($node) || !isset($node->settings) || !is_object($node->settings)) {
+				continue;
+			}
+
+			$wopt_ver = isset($node->settings->widgetopts_wopt_version) ? $node->settings->widgetopts_wopt_version : '';
+			$has_snippet = !empty($node->settings->widgetopts_logic_snippet_id);
+			$has_legacy = !empty($node->settings->widgetopts_settings_logic);
+
+			// If wopt_version >= 4.2: legacy logic is obsolete — clear it
+			if ($wopt_ver !== '' && version_compare($wopt_ver, '4.2', '>=')) {
+				if ($has_legacy) {
+					$node->settings->widgetopts_settings_logic = '';
+				}
+				continue;
+			}
+
+			// Auto-clear legacy logic if snippet_id is already set (migration done)
+			if ($has_snippet && $has_legacy) {
+				$node->settings->widgetopts_settings_logic = '';
+				$node->settings->widgetopts_wopt_version = WIDGETOPTS_VERSION;
+				continue;
+			}
+
+			// User intentionally cleared legacy logic via Clear button
+			if (!empty($node->settings->widgetopts_logic_cleared)) {
+				$node->settings->widgetopts_settings_logic = '';
+				unset($node->settings->widgetopts_logic_cleared);
+				$node->settings->widgetopts_wopt_version = WIDGETOPTS_VERSION;
+				continue;
+			}
+
+			$old_val = isset($old_logic[$nid]) ? $old_logic[$nid] : '';
+			$new_val = isset($node->settings->widgetopts_settings_logic) ? $node->settings->widgetopts_settings_logic : '';
+
+			if ($new_val !== $old_val) {
+				if ($old_val !== '') {
+					$node->settings->widgetopts_settings_logic = $old_val;
+				} else {
+					unset($node->settings->widgetopts_settings_logic);
+				}
+			}
+
+		}
+
+		return $data;
+	}, 10, 1);
 
 endif;

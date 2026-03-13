@@ -110,6 +110,11 @@ var widgetoptsSettingsModule = {
                 var newToggleSettingsLabel = widgetopts.translation.show_settings;
             }
 			
+			// Show Manage Snippets button for Display Logic module
+			if ( 'logic' === module ) {
+				$card.find( '.widgetopts-manage-snippets-btn' ).show();
+			}
+			
 		} else {
 			$buttons
 				.html( widgetopts.translation.activate )
@@ -122,6 +127,11 @@ var widgetoptsSettingsModule = {
 				.removeClass( 'widgetopts-module-type-enabled' );
             
 			var newToggleSettingsLabel = widgetopts.translation.show_description;
+			
+			// Hide Manage Snippets button for Display Logic module
+			if ( 'logic' === module ) {
+				$card.find( '.widgetopts-manage-snippets-btn' ).hide();
+			}
 		}
         
 		// if( !$card.hasClass('widgetopts-module-card-no-settings') ){

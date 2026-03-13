@@ -191,7 +191,7 @@ if (!function_exists('widgetopts_load_admin_scripts')) :
                   //       </a>';
                   // $sidebaropts .= '</div>';
 
-                  wp_localize_script('jquery-widgetopts-option-tabs', 'widgetopts10n', array('ajax_url' => admin_url('admin-ajax.php'), 'opts_page' => esc_url(admin_url('options-general.php?page=widgetopts_plugin_settings')), 'search_form' => $form, 'sidebaropts' => $sidebaropts, 'controls' => $btn_controls, 'translation' => array('manage_settings' => __('Manage Widget Options', 'widget-options'), 'search_chooser' => __('Search sidebar&hellip;', 'widget-options')), 'validate_expression_nonce' => wp_create_nonce('widgetopts-expression-nonce')));
+                  wp_localize_script('jquery-widgetopts-option-tabs', 'widgetopts10n', array('ajax_url' => admin_url('admin-ajax.php'), 'opts_page' => esc_url(admin_url('options-general.php?page=widgetopts_plugin_settings')), 'search_form' => $form, 'sidebaropts' => $sidebaropts, 'controls' => $btn_controls, 'translation' => array('manage_settings' => __('Manage Widget Options', 'widget-options'), 'search_chooser' => __('Search sidebar&hellip;', 'widget-options')), 'validate_expression_nonce' => wp_create_nonce('widgetopts-expression-nonce'), 'migration_nonce' => wp_create_nonce('widgetopts_migration_nonce'), 'migration_strings' => array('prompt_title' => __('Enter a name for the new snippet:', 'widget-options'), 'default_title' => __('Migrated Snippet', 'widget-options'), 'converting' => __('Converting...', 'widget-options'), 'success' => __('Converted successfully!', 'widget-options'), 'error' => __('Conversion failed.', 'widget-options'))));
             } else {
                   wp_localize_script('widgetopts-global-script', 'widgetopts10n', array('ajax_url' => admin_url('admin-ajax.php'), 'opts_page' => esc_url(admin_url('options-general.php?page=widgetopts_plugin_settings')), 'translation' => array('manage_settings' => __('Manage Widget Options', 'widget-options'), 'search_chooser' => __('Search sidebar&hellip;', 'widget-options')), 'validate_expression_nonce' => wp_create_nonce('widgetopts-expression-nonce')));
             }
@@ -342,9 +342,205 @@ if (!function_exists('widgetopts_widgets_footer_additional_script')) {
                               });
 
                         });
+
+                        // Select2 AJAX config for dynamic snippet search
+                        var snippetSelect2Config = {
+                              placeholder: '<?php echo esc_js(__("— No Logic (Always Show) —", "widget-options")); ?>',
+                              allowClear: true,
+                              width: '100%',
+                              minimumInputLength: 0,
+                              ajax: {
+                                    url: ajaxurl,
+                                    type: 'POST',
+                                    dataType: 'json',
+                                    delay: 250,
+                                    data: function(params) {
+                                          return {
+                                                action: 'widgetopts_get_snippets_ajax',
+                                                search: params.term || ''
+                                          };
+                                    },
+                                    processResults: function(response) {
+                                          var results = [{id: '', text: '<?php echo esc_js(__("— No Logic (Always Show) —", "widget-options")); ?>'}];
+                                          if (response.success && response.data && response.data.snippets) {
+                                                response.data.snippets.forEach(function(snippet) {
+                                                      results.push({id: String(snippet.id), text: snippet.title, description: snippet.description || ''});
+                                                });
+                                          }
+                                          return { results: results };
+                                    },
+                                    cache: true
+                              }
+                        };
+
+                        // Update snippet description text next to the select
+                        function updateSnippetDesc($select, description) {
+                              var $desc = $select.closest('.widget-opts-logic').find('.widgetopts-snippet-desc');
+                              if ($desc.length) {
+                                    if (description) {
+                                          $desc.text(description).show();
+                                    } else {
+                                          $desc.text('').hide();
+                                    }
+                              }
+                        }
+
+                        // Init Select2 AJAX on a single select element
+                        function initSelect2Ajax($select) {
+                              if ($select.hasClass('select2-hidden-accessible')) {
+                                    $select.select2('destroy');
+                              }
+                              var config = jQuery.extend({}, snippetSelect2Config, {
+                                    dropdownParent: $select.closest('.widget-content, .widget-inside, form')
+                              });
+                              $select.select2(config);
+                              $select.off('select2:select.woDesc select2:unselect.woDesc');
+                              $select.on('select2:select.woDesc', function(e) {
+                                    updateSnippetDesc($select, e.params.data.description || '');
+                              });
+                              $select.on('select2:unselect.woDesc', function() {
+                                    updateSnippetDesc($select, '');
+                              });
+                        }
+
+                        // Initialize Select2 for all uninitialized snippet dropdowns
+                        function initSnippetSelect2() {
+                              jQuery('.widgetopts-select2-snippets:not(.select2-hidden-accessible)').each(function() {
+                                    initSelect2Ajax(jQuery(this));
+                              });
+                        }
+                        
+                        // Init on page load
+                        jQuery(document).ready(function() {
+                              setTimeout(initSnippetSelect2, 500);
+                        });
+                        
+                        // Re-init when widget is added/updated (WordPress fires widget-updated event)
+                        jQuery(document).on('widget-added widget-updated', function(e, widget) {
+                              setTimeout(function() {
+                                    jQuery(widget).find('.widgetopts-select2-snippets').each(function() {
+                                          initSelect2Ajax(jQuery(this));
+                                    });
+                              }, 300);
+                        });
+                        
+                        // Init when widget panel is opened (click on widget title)
+                        jQuery(document).on('click', '.widget-title, .widget-top', function() {
+                              setTimeout(initSnippetSelect2, 300);
+                        });
+                        
+                        // Init when Widget Options tabs are clicked
+                        jQuery(document).on('click', '.extended-widget-opts-tabs a, .extended-widget-opts-settings-tabnav-ul a', function() {
+                              setTimeout(initSnippetSelect2, 100);
+                        });
                   })();
             </script>
 <?php }
       add_action('admin_footer-widgets.php', 'widgetopts_widgets_footer_additional_script', 999);
+}
+
+if (!function_exists('widgetopts_siteorigin_footer_script')) {
+      function widgetopts_siteorigin_footer_script()
+      {
+            global $widget_options;
+            // Only load for SiteOrigin pages
+            if (!isset($widget_options['siteorigin']) || $widget_options['siteorigin'] !== 'activate') {
+                  return;
+            }
+      ?>
+            <script>
+                  (function($) {
+                        // Select2 AJAX config for dynamic snippet search
+                        var soSnippetConfig = {
+                              placeholder: '<?php echo esc_js(__("— No Logic (Always Show) —", "widget-options")); ?>',
+                              allowClear: true,
+                              width: '100%',
+                              minimumInputLength: 0,
+                              ajax: {
+                                    url: ajaxurl,
+                                    type: 'POST',
+                                    dataType: 'json',
+                                    delay: 250,
+                                    data: function(params) {
+                                          return {
+                                                action: 'widgetopts_get_snippets_ajax',
+                                                search: params.term || ''
+                                          };
+                                    },
+                                    processResults: function(response) {
+                                          var results = [{id: '', text: '<?php echo esc_js(__("— No Logic (Always Show) —", "widget-options")); ?>'}];
+                                          if (response.success && response.data && response.data.snippets) {
+                                                response.data.snippets.forEach(function(snippet) {
+                                                      results.push({id: String(snippet.id), text: snippet.title, description: snippet.description || ''});
+                                                });
+                                          }
+                                          return { results: results };
+                                    },
+                                    cache: true
+                              }
+                        };
+
+                        // Update snippet description text next to the select
+                        function updateSoSnippetDesc($select, description) {
+                              var $desc = $select.closest('.widget-opts-logic').find('.widgetopts-snippet-desc');
+                              if ($desc.length) {
+                                    if (description) {
+                                          $desc.text(description).show();
+                                    } else {
+                                          $desc.text('').hide();
+                                    }
+                              }
+                        }
+
+                        // Init Select2 AJAX on a single select element
+                        function initSoSelect2Ajax($select) {
+                              if ($select.hasClass('select2-hidden-accessible')) {
+                                    $select.select2('destroy');
+                              }
+                              var config = $.extend({}, soSnippetConfig, {
+                                    dropdownParent: $select.closest('.so-content, .so-visual-styles, .widget-content, form')
+                              });
+                              $select.select2(config);
+                              $select.off('select2:select.woDesc select2:unselect.woDesc');
+                              $select.on('select2:select.woDesc', function(e) {
+                                    updateSoSnippetDesc($select, e.params.data.description || '');
+                              });
+                              $select.on('select2:unselect.woDesc', function() {
+                                    updateSoSnippetDesc($select, '');
+                              });
+                        }
+
+                        // Initialize Select2 for snippet dropdowns in SiteOrigin
+                        function initSiteOriginSnippetSelect2() {
+                              $('.widgetopts-select2-snippets:not(.select2-hidden-accessible)').each(function() {
+                                    initSoSelect2Ajax($(this));
+                              });
+                        }
+                        
+                        // SiteOrigin events
+                        $(document).on('panelsopen', function() {
+                              setTimeout(initSiteOriginSnippetSelect2, 300);
+                        });
+                        
+                        // Widget dialog opened
+                        $(document).on('dialogopen', '.so-panels-dialog', function() {
+                              setTimeout(initSiteOriginSnippetSelect2, 300);
+                        });
+                        
+                        // Form loaded via AJAX
+                        $(document).ajaxComplete(function(event, xhr, settings) {
+                              if (settings.url && settings.url.indexOf('so_panels') !== -1) {
+                                    setTimeout(initSiteOriginSnippetSelect2, 300);
+                              }
+                        });
+                        
+                        // Click on widget options tabs
+                        $(document).on('click', '.extended-widget-opts-tabs a, .extended-widget-opts-settings-tabnav-ul a', function() {
+                              setTimeout(initSiteOriginSnippetSelect2, 100);
+                        });
+                  })(jQuery);
+            </script>
+      <?php }
+      add_action('admin_footer', 'widgetopts_siteorigin_footer_script', 999);
 }
 ?>

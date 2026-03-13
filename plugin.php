@@ -4,7 +4,7 @@
  * Plugin Name: Widget Options
  * Plugin URI: https://widget-options.com/
  * Description: Additional Widget and Block options for better widget and block control. Turn Widget Options into an even more flexible widget and block area manager. Upgrade to <strong><a href="http://widget-options.com/" target="_blank" >Widget Options Extended</a></strong> today!
- * Version: 4.1.3
+ * Version: 4.2
  * Author: Widget Options Team
  * Author URI: https://widget-options.com/
  * Text Domain: widget-options
@@ -92,7 +92,7 @@ if (!class_exists('WP_Widget_Options')) :
 
 			// Plugin version.
 			if (!defined('WIDGETOPTS_VERSION')) {
-				define('WIDGETOPTS_VERSION', '4.1.3');
+				define('WIDGETOPTS_VERSION', '4.2');
 			}
 
 			// Plugin Folder Path.
@@ -114,6 +114,11 @@ if (!class_exists('WP_Widget_Options')) :
 			if (!defined('WIDGETOPTS_PLUGIN_WEBSITE')) {
 				define('WIDGETOPTS_PLUGIN_WEBSITE', 'https://widget-options.com');
 			}
+
+			// Migration permissions capability (editor level minimum)
+			if (!defined('WIDGETOPTS_MIGRATION_PERMISSIONS')) {
+				define('WIDGETOPTS_MIGRATION_PERMISSIONS', 'edit_others_posts');
+			}
 		}
 
 		/**
@@ -133,6 +138,14 @@ if (!class_exists('WP_Widget_Options')) :
 			require_once WIDGETOPTS_PLUGIN_DIR . 'includes/extras.php';
 			$widgetopts_http_headers = widgetopts_set_http_headers();
 			$widgetopts_user_agent = widgetopts_get_user_agent();
+
+			// Load Display Logic Snippets system
+			require_once WIDGETOPTS_PLUGIN_DIR . 'includes/snippets/class-snippets-cpt.php';
+			require_once WIDGETOPTS_PLUGIN_DIR . 'includes/snippets/class-snippets-api.php';
+			if (is_admin()) {
+				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/snippets/class-snippets-admin.php';
+				require_once WIDGETOPTS_PLUGIN_DIR . 'includes/snippets/class-snippets-migration.php';
+			}
 
 			require_once WIDGETOPTS_PLUGIN_DIR . 'includes/scripts.php';
 

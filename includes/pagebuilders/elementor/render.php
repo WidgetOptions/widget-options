@@ -346,7 +346,7 @@ if (!function_exists('widgetopts_elementor_render')) {
 				}
 			}
 
-			//widget logic
+			// User state check
 			if (isset($widget_options['state']) && 'activate' == $widget_options['state']) {
 				if (isset($settings['widgetopts_roles_state']) && !empty($settings['widgetopts_roles_state'])) {
 					//do state action here
@@ -360,8 +360,23 @@ if (!function_exists('widgetopts_elementor_render')) {
 
 			//widget logic
 			if ('activate' == $widget_options['logic']) {
-				if (isset($settings['widgetopts_logic']) && !empty($settings['widgetopts_logic'])) {
-					//do widget logic
+				// New snippet-based system
+				if (isset($settings['widgetopts_logic_snippet_id']) && !empty($settings['widgetopts_logic_snippet_id'])) {
+					$snippet_id = $settings['widgetopts_logic_snippet_id'];
+					if (class_exists('WidgetOpts_Snippets_API')) {
+						$result = WidgetOpts_Snippets_API::execute_snippet($snippet_id);
+						if ($result === false) {
+							return $placeholder;
+						}
+					}
+				}
+				// Legacy support for old inline logic
+				elseif (isset($settings['widgetopts_logic']) && !empty($settings['widgetopts_logic'])) {
+					// Flag that legacy migration is needed
+					if (!get_option('wopts_display_logic_migration_required', false)) {
+						update_option('wopts_display_logic_migration_required', true);
+					}
+
 					$display_logic = stripslashes(trim($settings['widgetopts_logic']));
 					$display_logic = apply_filters('widget_options_logic_override', $display_logic);
 					$display_logic = apply_filters('extended_widget_options_logic_override', $display_logic);
@@ -371,9 +386,6 @@ if (!function_exists('widgetopts_elementor_render')) {
 					if ($display_logic === true) {
 						return $content;
 					}
-					// if (stristr($display_logic, "return") === false) {
-					// 	$display_logic = "return (" . $display_logic . ");";
-					// }
 					$display_logic = htmlspecialchars_decode($display_logic, ENT_QUOTES);
 					try {
 						if (!widgetopts_safe_eval($display_logic)) {

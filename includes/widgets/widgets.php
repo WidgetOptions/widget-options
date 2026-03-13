@@ -158,18 +158,11 @@ function widgetopts_ajax_update_callback($instance, $new_instance, $old_instance
             $options     = $_POST[$name];
         }
         if (isset($options['extended_widget_opts'])) {
-            //check if user is administrator
-            if (!current_user_can('administrator')) {
-                if (isset($options['extended_widget_opts']['class'])) {
-                    if (isset($old_instance['extended_widget_opts-' . $this_widget->id]['class']) && isset($old_instance['extended_widget_opts-' . $this_widget->id]['class']['logic']) && !empty($old_instance['extended_widget_opts-' . $this_widget->id]['class']['logic'])) {
-                        $options['extended_widget_opts']['class']['logic'] = $old_instance['extended_widget_opts-' . $this_widget->id]['class']['logic'];
-                    } else {
-                        $options['extended_widget_opts']['class']['logic'] = '';
-                    }
-                }
+            // Remove legacy logic field - only snippet IDs are allowed now (security)
+            if (isset($options['extended_widget_opts']['class']['logic'])) {
+                unset($options['extended_widget_opts']['class']['logic']);
             }
 
-            // update_option( $name , $options['extended_widget_opts'] );
             if (isset($options['extended_widget_opts']['class']['link']) && !empty($options['extended_widget_opts']['class']['link'])) {
                 $options['extended_widget_opts']['class']['link'] = widgetopts_addhttp($options['extended_widget_opts']['class']['link']);
             }

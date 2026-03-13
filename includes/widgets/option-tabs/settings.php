@@ -41,11 +41,12 @@ if (!function_exists('widgetopts_tabcontent_settings')) :
     {
         global $widget_options;
 
-        $id         = '';
-        $classes    = '';
-        $logic      = '';
-        $selected   = 0;
-        $check      = '';
+        $id               = '';
+        $classes          = '';
+        $logic_snippet_id = '';
+        $legacy_logic     = '';
+        $selected         = 0;
+        $check            = '';
         if (isset($args['params']) && isset($args['params']['class'])) {
             if (isset($args['params']['class']['id'])) {
                 $id = $args['params']['class']['id'];
@@ -56,8 +57,17 @@ if (!function_exists('widgetopts_tabcontent_settings')) :
             if (isset($args['params']['class']['selected'])) {
                 $selected = $args['params']['class']['selected'];
             }
-            if (isset($args['params']['class']['logic'])) {
-                $logic = $args['params']['class']['logic'];
+            // New snippet-based logic
+            if (isset($args['params']['class']['logic_snippet_id'])) {
+                $logic_snippet_id = $args['params']['class']['logic_snippet_id'];
+            }
+            // Legacy inline logic code (old format)
+            if (isset($args['params']['class']['logic']) && !empty($args['params']['class']['logic'])) {
+                $legacy_logic = $args['params']['class']['logic'];
+                // Flag that legacy migration is needed
+                if (!get_option('wopts_display_logic_migration_required', false)) {
+                    update_option('wopts_display_logic_migration_required', true);
+                }
             }
             if (isset($args['params']['class']['title']) && $args['params']['class']['title'] == '1') {
                 $check = 'checked="checked"';
@@ -82,7 +92,7 @@ if (!function_exists('widgetopts_tabcontent_settings')) :
                 <!--  start tab nav -->
                 <ul style="margin-top: 10px;" class="extended-widget-opts-settings-tabnav-ul">
 
-                    <?php if ('activate' == $widget_options['logic'] && current_user_can('administrator')) { ?>
+                    <?php if ('activate' == $widget_options['logic']) { ?>
                         <li class="extended-widget-opts-settings-tab-logic">
                             <a href="#extended-widget-opts-settings-tab-<?php echo $args['id']; ?>-logic" title="<?php _e('Display Logic', 'widget-options'); ?>"><?php _e('Logic', 'widget-options'); ?></a>
                         </li>
@@ -97,22 +107,78 @@ if (!function_exists('widgetopts_tabcontent_settings')) :
                 </ul><!--  end tab nav -->
                 <div class="extended-widget-opts-clearfix"></div>
 
-                <?php if ('activate' == $widget_options['logic'] && current_user_can('administrator')) { ?>
+                <?php if ('activate' == $widget_options['logic']) { ?>
                     <!--  start logic tab content -->
                     <div id="extended-widget-opts-settings-tab-<?php echo $args['id']; ?>-logic" class="extended-widget-opts-settings-tabcontent extended-widget-opts-inner-tabcontent">
                         <div class="widget-opts-logic">
-                            <p><small><?php _e('The text field lets you use <a href="http://codex.wordpress.org/Conditional_Tags" target="_blank">WP Conditional Tags</a>, or any general PHP code.', 'widget-options'); ?></small></p>
-                            <textarea class="widefat" name="<?php echo $args['namespace']; ?>[extended_widget_opts][class][logic]"><?php echo stripslashes($logic); ?></textarea>
 
-                            <?php if (
-                                !isset($widget_options['settings']['logic']) ||
-                                (isset($widget_options['settings']['logic']) && !isset($widget_options['settings']['logic']['notice']))
-                            ) { ?>
-                                <p><a href="#" class="widget-opts-toggler-note"><?php _e('Click to Toggle Note', 'widget-options'); ?></a></p>
-                                <p class="widget-opts-toggle-note"><small><?php _e('PLEASE NOTE that the display logic you introduce is EVAL\'d directly. Anyone who has access to edit widget appearance will have the right to add any code, including malicious and possibly destructive functions. There is an optional filter <em>"widget_options_logic_override"</em> which you can use to bypass the EVAL with your own code if needed.', 'widget-options'); ?></small></p>
-                            <?php } ?>
+                            <?php
+                            // Get available snippets
+                            $snippets = array();
+                            if (class_exists('WidgetOpts_Snippets_CPT')) {
+                                $snippets = WidgetOpts_Snippets_CPT::get_all_snippets();
+                            }
+
+                            $snippet_desc = '';
+                            if (!empty($logic_snippet_id) && !empty($snippets)) {
+                                foreach ($snippets as $s) {
+                                    if ($s['id'] == $logic_snippet_id) {
+                                        $snippet_desc = $s['description'];
+                                        break;
+                                    }
+                                }
+                            }
+
+                            // Show Legacy Logic OR Snippet dropdown — mutually exclusive
+                            $show_legacy = (!empty($legacy_logic) && empty($logic_snippet_id));
+                            ?>
+
+                            <?php if ($show_legacy) : ?>
+                                <div class="widgetopts-legacy-logic-warning" style="margin-bottom: 15px;">
+                                    <p><strong><?php _e('Legacy Display Logic Code', 'widget-options'); ?></strong></p>
+                                    <textarea readonly="readonly" class="widefat" rows="4" style="background: #f9f2f4; color: #c7254e; font-family: monospace; font-size: 12px; cursor: not-allowed;"><?php echo esc_textarea($legacy_logic); ?></textarea>
+                                    <input type="hidden" name="<?php echo $args['namespace']; ?>[extended_widget_opts][class][logic_cleared]" value="" class="widgetopts-logic-cleared-field" />
+                                    <p style="margin-top: 8px; padding: 8px 12px; background: #fff3cd; border-left: 4px solid #ffc107; color: #856404;">
+                                        <?php _e('This widget uses legacy inline display logic code that needs to be migrated to the new snippet-based system.', 'widget-options'); ?>
+                                        <?php if (current_user_can(WIDGETOPTS_MIGRATION_PERMISSIONS)) : ?>
+                                            <br><a href="<?php echo esc_url(admin_url('options-general.php?page=widgetopts_migration')); ?>" target="_blank">
+                                                <?php _e('Go to Migration Page', 'widget-options'); ?> &rarr;
+                                            </a>
+                                        <?php endif; ?>
+                                    </p>
+                                    <button type="button" class="button widgetopts-clear-legacy-btn" style="margin-top:8px;background:#dc3545;color:#fff;border-color:#dc3545;font-size:12px;" onclick="(function(btn){var $btn=jQuery(btn);var $wrap=$btn.closest('.widgetopts-legacy-logic-warning');var $logic=$btn.closest('.widget-opts-logic');var $widget=$btn.closest('.widget');var $inside=$widget.children('.widget-inside');var $cleared=$wrap.find('.widgetopts-logic-cleared-field');var $snippet=$logic.find('.widgetopts-logic-snippet-select');var $saveButton=$inside.find('.widget-control-save');var widgetId=$inside.find('.widget-id').val();var saveLabel=(window.wp&&wp.i18n&&wp.i18n.__)?wp.i18n.__( 'Save' ):'Save';$cleared.val('1').trigger('input').trigger('change');$snippet.val('').trigger('change');$wrap.slideUp();$logic.find('.widgetopts-snippet-section').slideDown();if(window.wpWidgets&&widgetId){window.wpWidgets.dirtyWidgets[widgetId]=true;}$widget.addClass('widget-dirty');$saveButton.prop('disabled',false).removeClass('disabled').val(saveLabel);$inside.trigger('input').trigger('change');$widget.find('.widget-control-close-wrapper .widget-control-close').text('Cancel');})(this)">
+                                        <?php _e('Clear Legacy Logic', 'widget-options'); ?>
+                                    </button>
+                                </div>
+                            <?php endif; ?>
+
+                            <div class="widgetopts-snippet-section"<?php echo $show_legacy ? ' style="display:none;"' : ''; ?>>
+                                <p><strong><?php _e('Display Logic Snippet', 'widget-options'); ?></strong></p>
+                                <p><small><?php _e('Select a logic snippet to control when this widget is displayed.', 'widget-options'); ?></small></p>
+                                
+                                <select class="widefat widgetopts-logic-snippet-select widgetopts-select2-snippets" name="<?php echo $args['namespace']; ?>[extended_widget_opts][class][logic_snippet_id]" style="margin-bottom: 10px; width: 100%;" data-placeholder="<?php esc_attr_e('— No Logic (Always Show) —', 'widget-options'); ?>">
+                                    <option value=""><?php _e('— No Logic (Always Show) —', 'widget-options'); ?></option>
+                                    <?php foreach ($snippets as $snippet) : ?>
+                                        <option value="<?php echo esc_attr($snippet['id']); ?>" <?php selected($logic_snippet_id, $snippet['id']); ?>>
+                                            <?php echo esc_html($snippet['title']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                                
+                                <p class="widgetopts-snippet-desc description" style="font-style: italic; color: #666;<?php echo empty($snippet_desc) ? ' display:none;' : ''; ?>">
+                                    <?php echo esc_html($snippet_desc); ?>
+                                </p>
+                                
+                                <?php if (current_user_can('manage_options')) : ?>
+                                    <p style="margin-top: 15px;">
+                                        <a href="<?php echo admin_url('edit.php?post_type=widgetopts_snippet'); ?>" target="_blank" class="button button-small">
+                                            <?php _e('Manage Logic Snippets', 'widget-options'); ?>
+                                        </a>
+                                    </p>
+                                <?php endif; ?>
+                            </div>
                         </div>
-                    </div><!--  end logiv tab content -->
+                    </div><!--  end logic tab content -->
                 <?php } ?>
 
                 <!-- Start ACF tab -->

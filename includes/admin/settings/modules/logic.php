@@ -31,9 +31,24 @@ if( !function_exists( 'widgetopts_settings_logic' ) ):
 					<?php if( $widget_options['logic'] == 'activate' ){ ?>
 						<button class="button button-secondary widgetopts-toggle-settings"><?php _e( 'Configure Settings', 'widget-options' );?></button>
 						<button class="button button-secondary widgetopts-toggle-activation"><?php _e( 'Disable', 'widget-options' );?></button>
+						<?php if( current_user_can( 'manage_options' ) ){ ?>
+							<a href="<?php echo admin_url('edit.php?post_type=widgetopts_snippet'); ?>" class="button button-secondary widgetopts-manage-snippets-btn" style="margin-left: 5px;">
+								<?php _e( 'Manage Snippets', 'widget-options' );?>
+							</a>
+						<?php } ?>
+						<?php if( current_user_can( WIDGETOPTS_MIGRATION_PERMISSIONS ) ){ ?>
+							<a href="<?php echo admin_url('options-general.php?page=widgetopts_migration'); ?>" class="button button-secondary" style="margin-left: 5px;">
+								<?php _e( 'Migrate', 'widget-options' );?>
+							</a>
+						<?php } ?>
 					<?php }else{ ?>
 						<button class="button button-secondary widgetopts-toggle-settings"><?php _e( 'Learn More', 'widget-options' );?></button>
 						<button class="button button-primary widgetopts-toggle-activation"><?php _e( 'Enable', 'widget-options' );?></button>
+						<?php if( current_user_can( 'manage_options' ) ){ ?>
+							<a href="<?php echo admin_url('edit.php?post_type=widgetopts_snippet'); ?>" class="button button-secondary widgetopts-manage-snippets-btn" style="margin-left: 5px; display: none;">
+								<?php _e( 'Manage Snippets', 'widget-options' );?>
+							</a>
+						<?php } ?>
 					<?php } ?>
 
 				</div>
@@ -59,6 +74,19 @@ if( !function_exists( 'widgetopts_settings_logic' ) ):
 							<label for="widgetopts-logic-notice"><?php _e( 'Disable Notice Toggler', 'widget-options' );?></label>
 							<p class="description">
 								<?php _e( 'Hide similar filter notice above on each widget display logic feature.', 'widget-options' );?>
+							</p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">
+							<label><?php _e( 'Logic Snippets', 'widget-options' );?></label>
+						</th>
+						<td>
+							<a href="<?php echo admin_url('edit.php?post_type=widgetopts_snippet'); ?>" class="button button-secondary">
+								<?php _e( 'Manage Logic Snippets', 'widget-options' );?>
+							</a>
+							<p class="description">
+								<?php _e( 'Create and manage reusable display logic snippets for your widgets.', 'widget-options' );?>
 							</p>
 						</td>
 					</tr>

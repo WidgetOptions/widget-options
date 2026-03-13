@@ -45,10 +45,21 @@ if (!function_exists('widgetopts_filter_plugin_actions')) {
 if (!function_exists('widgetopts_register_defaults')) {
 	register_activation_hook(WIDGETOPTS_PLUGIN_FILE, function () {
 		add_option('Activated_Plugin', WIDGETOPTS_PLUGIN_FILE);
+		update_option('widgetopts_force_migration_rescan', 1);
 		widgetopts_register_defaults();
 	});
 
 	add_action('admin_init', function () {
+		if (is_admin() && get_option('widgetopts_force_migration_rescan')) {
+			delete_option('widgetopts_force_migration_rescan');
+			if (class_exists('WidgetOpts_Snippets_Migration')) {
+				WidgetOpts_Snippets_Migration::rescan_and_update_flag();
+			} elseif (class_exists('WidgetOpts_Snippets_CPT')) {
+				delete_option('wopts_display_logic_migration_required');
+				WidgetOpts_Snippets_CPT::scan_for_legacy_logic();
+			}
+		}
+
 		if (is_admin() && get_option('Activated_Plugin') == WIDGETOPTS_PLUGIN_FILE) {
 			delete_option('Activated_Plugin');
 			exit(wp_redirect(admin_url('options-general.php?page=widgetopts_plugin_settings')));

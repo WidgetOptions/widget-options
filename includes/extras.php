@@ -609,23 +609,9 @@ function widgetopts_get_allowed_php_functions()
         'wordwrap',
 
         // Array Manipulation
-        'array_merge',
-        'array_diff',
-        'array_filter',
-        'array_map',
-        'array_keys',
-        'array_values',
         'in_array',
         'count',
         'sizeof',
-        'array_slice',
-        'array_push',
-        'array_pop',
-        'array_reduce',
-        'array_intersect',
-        'array_unique',
-        'array_column',
-        'array_reverse',
 
         // Math Functions
         'abs',
@@ -906,6 +892,16 @@ function widgetopts_is_widget_or_post_preview()
 
     // Check if it's a Customizer preview
     if (is_customize_preview()) {
+        return true;
+    }
+
+    // Check if Beaver Builder is in edit mode
+    if (class_exists('FLBuilderModel') && FLBuilderModel::is_builder_active()) {
+        return true;
+    }
+
+    // Check if Elementor is in edit mode
+    if (class_exists('\Elementor\Plugin') && \Elementor\Plugin::$instance->editor->is_edit_mode()) {
         return true;
     }
 

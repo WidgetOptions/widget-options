@@ -194,10 +194,18 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 
 == Changelog ==
 
+= 4.2 =
+
+* Improved: Added the new Display Logic Snippet System
+* Fix: Resolved issues where Widget Option settings on pages were not saving
+* Fix: Resolved Authenticated (Contributor+) Remote Code Execution vulnerability in the Display Logic feature
+* Fix: Resolved Remote Code Execution (RCE) vulnerability
+* Fix: Resolved Improper Neutralization of Directives in Dynamically Evaluated Code ('Eval Injection') vulnerability
+
 = 4.1.3 =
 
 * Update: Adjusted the plugin description to follow the latest WordPress directory guidelines.
-* Fix: Improved input validation and output handling to prevent possible security issues that could allow unwanted scripts to run on pages.
+* Fix: Improved input validation and output handling to prevent possible security issues that could allow unwanted scripts to run on pages
 
 = 4.1.2 =
 
