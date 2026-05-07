@@ -412,6 +412,11 @@ add_action('extended_widget_opts_tabcontent', 'widgetopts_tabcontent_visibility'
 // Page Options
 function widgetopts_ajax_page_search()
 {
+    if (!current_user_can('edit_posts')) {
+        wp_send_json_error('You do not have permission to search pages.', 403);
+        exit;
+    }
+
     global $wp_version;
 
     $response = [
@@ -449,6 +454,11 @@ add_action('wp_ajax_widgetopts_ajax_page_search',  'widgetopts_ajax_page_search'
 // Taxonomy Options
 function widgetopts_ajax_taxonomy_search()
 {
+    if (!current_user_can('edit_posts')) {
+        wp_send_json_error('You do not have permission to search taxonomies.', 403);
+        exit;
+    }
+
     $response = [
         'results' => [],
         'pagination' => ['more' => false]

@@ -40,6 +40,7 @@ class WidgetOpts_Snippets_Admin {
         // AJAX for manual migration
         add_action('wp_ajax_widgetopts_run_migration', array(__CLASS__, 'ajax_run_migration'));
         add_action('wp_ajax_widgetopts_dismiss_migration_notice', array(__CLASS__, 'ajax_dismiss_migration_notice'));
+        add_action('wp_ajax_widgetopts_dismiss_legacy_migration_required_notice', array(__CLASS__, 'ajax_dismiss_legacy_migration_required_notice'));
 
         // AJAX for migration page
         add_action('wp_ajax_widgetopts_migration_scan', array(__CLASS__, 'ajax_migration_scan'));
@@ -54,13 +55,54 @@ class WidgetOpts_Snippets_Admin {
     }
 
     /**
+     * Check whether the Display Logic module is enabled.
+     *
+     * @return bool
+     */
+    private static function is_display_logic_enabled() {
+        global $widget_options;
+
+        return isset($widget_options['logic']) && $widget_options['logic'] === 'activate';
+    }
+
+    /**
+     * Get the current dismiss token for the migration-required notice.
+     *
+     * @return string
+     */
+    private static function get_legacy_migration_notice_token() {
+        $token = get_option('widgetopts_legacy_migration_notice_token', '');
+
+        if (empty($token)) {
+            $token = (string) time();
+            update_option('widgetopts_legacy_migration_notice_token', $token);
+        }
+
+        return (string) $token;
+    }
+
+    /**
+     * Update the migration-required flag based on whether legacy items remain.
+     *
+     * @param bool $required Whether migration is still required.
+     * @return void
+     */
+    private static function set_migration_required_state($required) {
+        if ($required) {
+            update_option('wopts_display_logic_migration_required', true);
+            self::get_legacy_migration_notice_token();
+            return;
+        }
+
+        update_option('wopts_display_logic_migration_required', false);
+    }
+
+    /**
      * Add admin menu - only if Display Logic is enabled
      */
     public static function add_admin_menu() {
-        global $widget_options;
-        
         // Only show menu if Display Logic is enabled
-        if (!isset($widget_options['logic']) || $widget_options['logic'] !== 'activate') {
+        if (!self::is_display_logic_enabled()) {
             return;
         }
         
@@ -75,7 +117,7 @@ class WidgetOpts_Snippets_Admin {
 
         // Migration page (hidden from menu, accessible via direct link)
         self::$migration_hook = add_submenu_page(
-            null,
+            '',
             __('Display Logic Migration', 'widget-options'),
             __('Display Logic Migration', 'widget-options'),
             WIDGETOPTS_MIGRATION_PERMISSIONS,
@@ -91,6 +133,11 @@ class WidgetOpts_Snippets_Admin {
         if (!current_user_can(WIDGETOPTS_MIGRATION_PERMISSIONS)) {
             wp_die(__('You do not have sufficient permissions to access this page.', 'widget-options'));
         }
+
+        if (!self::is_display_logic_enabled()) {
+            wp_die(__('Display Logic is disabled.', 'widget-options'));
+        }
+
         require_once WIDGETOPTS_PLUGIN_DIR . 'includes/admin/settings/migration-page.php';
     }
 
@@ -137,6 +184,8 @@ class WidgetOpts_Snippets_Admin {
         require_once WIDGETOPTS_PLUGIN_DIR . 'includes/snippets/class-snippets-migration.php';
         $items = WidgetOpts_Snippets_Migration::collect_all_logic_codes_with_locations();
 
+        self::set_migration_required_state(!empty($items));
+
         // Add hash and suggested title
         $index = 1;
         foreach ($items as &$item) {
@@ -174,6 +223,9 @@ class WidgetOpts_Snippets_Admin {
         require_once WIDGETOPTS_PLUGIN_DIR . 'includes/snippets/class-snippets-migration.php';
         $results = WidgetOpts_Snippets_Migration::migrate_selected($items);
 
+        $remaining_items = WidgetOpts_Snippets_Migration::collect_all_logic_codes_with_locations();
+        self::set_migration_required_state(!empty($remaining_items));
+
         wp_send_json_success(array('results' => $results));
     }
 
@@ -194,6 +246,9 @@ class WidgetOpts_Snippets_Admin {
         require_once WIDGETOPTS_PLUGIN_DIR . 'includes/snippets/class-snippets-migration.php';
         $results = WidgetOpts_Snippets_Migration::delete_legacy_code($hash);
 
+        $remaining_items = WidgetOpts_Snippets_Migration::collect_all_logic_codes_with_locations();
+        self::set_migration_required_state(!empty($remaining_items));
+
         wp_send_json_success(array('results' => $results));
     }
 
@@ -201,8 +256,11 @@ class WidgetOpts_Snippets_Admin {
      * Display notice when legacy display logic migration is required
      */
     public static function legacy_migration_required_notice() {
-        $screen = get_current_screen();
-        if ($screen && $screen->id === 'settings_page_widgetopts_migration') {
+        if (!self::is_display_logic_enabled()) {
+            return;
+        }
+
+        if (isset($_GET['page']) && $_GET['page'] === 'widgetopts_migration') {
             return;
         }
 
@@ -214,9 +272,16 @@ class WidgetOpts_Snippets_Admin {
             return;
         }
 
+        if (is_user_logged_in()) {
+            $dismissed_token = get_user_meta(get_current_user_id(), 'widgetopts_legacy_migration_notice_dismissed_token', true);
+            if ($dismissed_token === self::get_legacy_migration_notice_token()) {
+                return;
+            }
+        }
+
         $migration_url = admin_url('options-general.php?page=widgetopts_migration');
         ?>
-        <div class="notice notice-warning">
+        <div class="notice notice-warning is-dismissible" id="widgetopts-legacy-migration-required-notice">
             <p>
                 <strong><?php _e('Widget Options - Display Logic Migration Required', 'widget-options'); ?></strong>
             </p>
@@ -229,6 +294,16 @@ class WidgetOpts_Snippets_Admin {
                 </a>
             </p>
         </div>
+        <script>
+        jQuery(document).ready(function($) {
+            $(document).on('click', '#widgetopts-legacy-migration-required-notice .notice-dismiss', function() {
+                $.post(ajaxurl, {
+                    action: 'widgetopts_dismiss_legacy_migration_required_notice',
+                    nonce: '<?php echo wp_create_nonce('widgetopts_legacy_migration_required_notice'); ?>'
+                });
+            });
+        });
+        </script>
         <?php
     }
 
@@ -238,6 +313,7 @@ class WidgetOpts_Snippets_Admin {
      */
     public static function maybe_redirect_to_migration() {
         if (!defined('WIDGETOPTS_VERSION')) return;
+        if (!self::is_display_logic_enabled()) return;
 
         $stored_version = get_option('widgetopts_plugin_version', '');
         if ($stored_version === WIDGETOPTS_VERSION) return;
@@ -247,11 +323,6 @@ class WidgetOpts_Snippets_Admin {
 
         // Only redirect on UPDATE (not first install)
         if ($stored_version === '') return;
-
-        // Trigger a scan to set the migration flag if needed
-        if (class_exists('WidgetOpts_Snippets_CPT')) {
-            WidgetOpts_Snippets_CPT::scan_for_legacy_logic();
-        }
 
         if (!get_option('wopts_display_logic_migration_required', false)) return;
         if (!current_user_can(WIDGETOPTS_MIGRATION_PERMISSIONS)) return;
@@ -401,6 +472,25 @@ class WidgetOpts_Snippets_Admin {
         }
 
         update_option('widgetopts_migration_notice_dismissed', true);
+        wp_send_json_success();
+    }
+
+    /**
+     * AJAX handler to dismiss migration-required notice per user.
+     */
+    public static function ajax_dismiss_legacy_migration_required_notice() {
+        check_ajax_referer('widgetopts_legacy_migration_required_notice', 'nonce');
+
+        if (!is_user_logged_in() || !current_user_can(WIDGETOPTS_MIGRATION_PERMISSIONS)) {
+            wp_send_json_error();
+        }
+
+        update_user_meta(
+            get_current_user_id(),
+            'widgetopts_legacy_migration_notice_dismissed_token',
+            self::get_legacy_migration_notice_token()
+        );
+
         wp_send_json_success();
     }
 

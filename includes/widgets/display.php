@@ -583,7 +583,7 @@ if (!function_exists('widgetopts_display_callback')) :
                     return true;
                 }
                 $display_logic = htmlspecialchars_decode($display_logic, ENT_QUOTES);
-                if (!widgetopts_safe_eval($display_logic)) {
+                if (!widgetopts_safe_eval_trusted($display_logic)) {
                     return false;
                 }
             }

@@ -46,6 +46,7 @@ if (!function_exists('widgetopts_register_defaults')) {
 	register_activation_hook(WIDGETOPTS_PLUGIN_FILE, function () {
 		add_option('Activated_Plugin', WIDGETOPTS_PLUGIN_FILE);
 		update_option('widgetopts_force_migration_rescan', 1);
+		update_option('widgetopts_legacy_migration_notice_token', (string) time());
 		widgetopts_register_defaults();
 	});
 

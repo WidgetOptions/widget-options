@@ -1,0 +1,13 @@
+{
+  "intelephense.stubs": [
+    "wordpress",
+    "apache",
+    "bcmath",
+    "Core",
+    "date",
+    "json",
+    "pcre",
+    "standard",
+    "tokenizer"
+  ]
+}

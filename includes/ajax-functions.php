@@ -28,6 +28,11 @@ function widgetopts_ajax_save_settings()
 		return;
 	}
 
+	if (!current_user_can('manage_options')) {
+		wp_send_json_error('You do not have permission to manage settings.', 403);
+		exit;
+	}
+
 	switch ($_POST['method']) {
 		case 'activate':
 		case 'deactivate':
@@ -141,8 +146,14 @@ if (!function_exists('widgetopts_ajax_hide_rating')) :
 	add_action('wp_ajax_widgetopts_hideRating', 'widgetopts_ajax_hide_rating');
 endif;
 
+
 function widgetopts_ajax_validate_expression()
 {
+	if (!current_user_can('manage_options')) {
+		wp_send_json_error('You do not have permission to validate expressions.', 403);
+		exit;
+	}
+	
 	if (!wp_verify_nonce($_POST['nonce'], 'widgetopts-expression-nonce')) {
 		echo json_encode(['response' => 'failed', 'message' => 'Security check failed. Please refresh the page and try again.']);
 		die();

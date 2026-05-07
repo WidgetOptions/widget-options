@@ -111,9 +111,6 @@ class WidgetOpts_Snippets_CPT {
 
         // Set version to prevent re-scanning
         update_option('wopts_display_logic_version', self::DISPLAY_LOGIC_VERSION);
-
-        // Scan all widgets for legacy logic that needs migration
-        self::scan_for_legacy_logic();
     }
 
     /**

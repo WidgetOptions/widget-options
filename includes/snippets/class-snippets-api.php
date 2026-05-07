@@ -149,7 +149,9 @@ class WidgetOpts_Snippets_API {
         // Decode and execute
         $code = htmlspecialchars_decode($code, ENT_QUOTES);
 
-        // Use the existing safe_eval function
+        if (function_exists('widgetopts_safe_eval_trusted')) {
+            return widgetopts_safe_eval_trusted($code);
+        }
         if (function_exists('widgetopts_safe_eval')) {
             return widgetopts_safe_eval($code);
         }
@@ -239,7 +241,10 @@ class WidgetOpts_Snippets_API {
             }
 
             $code = htmlspecialchars_decode($code, ENT_QUOTES);
-            
+
+            if (function_exists('widgetopts_safe_eval_trusted')) {
+                return widgetopts_safe_eval_trusted($code);
+            }
             if (function_exists('widgetopts_safe_eval')) {
                 return widgetopts_safe_eval($code);
             }

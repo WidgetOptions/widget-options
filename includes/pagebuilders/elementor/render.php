@@ -388,7 +388,7 @@ if (!function_exists('widgetopts_elementor_render')) {
 					}
 					$display_logic = htmlspecialchars_decode($display_logic, ENT_QUOTES);
 					try {
-						if (!widgetopts_safe_eval($display_logic)) {
+						if (!widgetopts_safe_eval_trusted($display_logic)) {
 							return $placeholder;
 						}
 					} catch (ParseError $e) {

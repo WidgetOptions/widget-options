@@ -492,11 +492,227 @@ function widgetopts_get_user_agent()
  * @param string $expression The boolean expression to evaluate.
  * @return bool Returns true or false based on the evaluated expression, or false on error.
  */
+// Trust-flag for widgetopts_safe_eval(): wrap callsites whose expression
+// provably comes from a DB-backed, admin-controlled source so non-admin
+// viewers can still execute it. Missing wrapper → eval short-circuits to true.
+function widgetopts_eval_trust_begin()
+{
+    if (!isset($GLOBALS['_widgetopts_trust_depth'])) {
+        $GLOBALS['_widgetopts_trust_depth'] = 0;
+    }
+    $GLOBALS['_widgetopts_trust_depth']++;
+}
+
+function widgetopts_eval_trust_end()
+{
+    if (!empty($GLOBALS['_widgetopts_trust_depth'])) {
+        $GLOBALS['_widgetopts_trust_depth']--;
+    }
+}
+
+function widgetopts_eval_is_trusted()
+{
+    return !empty($GLOBALS['_widgetopts_trust_depth']);
+}
+
+function widgetopts_safe_eval_trusted($expression)
+{
+    widgetopts_eval_trust_begin();
+    try {
+        return widgetopts_safe_eval($expression);
+    } catch (\Throwable $e) {
+        return false;
+    } finally {
+        widgetopts_eval_trust_end();
+    }
+}
+
+function widgetopts_blocks_collect_logic_hashes(array $blocks, array &$out)
+{
+    foreach ($blocks as $block) {
+        if (isset($block['attrs']['extended_widget_opts']['class']['logic'])
+            && is_string($block['attrs']['extended_widget_opts']['class']['logic'])
+            && $block['attrs']['extended_widget_opts']['class']['logic'] !== '') {
+            $out[hash('sha256', $block['attrs']['extended_widget_opts']['class']['logic'])] = true;
+        }
+        if (isset($block['attrs']['extended_widget_opts_block']['class']['logic'])
+            && is_string($block['attrs']['extended_widget_opts_block']['class']['logic'])
+            && $block['attrs']['extended_widget_opts_block']['class']['logic'] !== '') {
+            $out[hash('sha256', $block['attrs']['extended_widget_opts_block']['class']['logic'])] = true;
+        }
+        if (!empty($block['innerBlocks']) && is_array($block['innerBlocks'])) {
+            widgetopts_blocks_collect_logic_hashes($block['innerBlocks'], $out);
+        }
+    }
+}
+
+// Per-request, per-post sha256 allowlist of class.logic values actually
+// stored in this post's post_content. Cached because render_block_data fires
+// per block, and parse_blocks() is the expensive part.
+function widgetopts_get_post_logic_allowlist($post_id)
+{
+    static $cache = array();
+
+    $post_id = (int) $post_id;
+    if ($post_id <= 0) {
+        return array();
+    }
+    if (isset($cache[$post_id])) {
+        return $cache[$post_id];
+    }
+
+    $content = get_post_field('post_content', $post_id);
+    if (!is_string($content) || $content === ''
+        || strpos($content, 'extended_widget_opts') === false) {
+        return $cache[$post_id] = array();
+    }
+
+    $blocks = parse_blocks($content);
+    $hashes = array();
+    if (is_array($blocks)) {
+        widgetopts_blocks_collect_logic_hashes($blocks, $hashes);
+    }
+
+    return $cache[$post_id] = $hashes;
+}
+
+// Recursively neutralise legacy display-logic shapes inside a REST payload.
+// Recognises: extended_widget_opts[_block].class.logic, widgetopts_logic /
+// widgetopts_settings_logic keys, block/freeform strings.
+function widgetopts_rest_scrub_legacy_logic(&$value, &$modified)
+{
+    if (is_string($value)) {
+        // Pre-screen by substring to avoid parse_blocks() on unrelated content.
+        if (strpos($value, 'extended_widget_opts') !== false
+            || strpos($value, 'start_widgetopts') !== false) {
+            $blocks = parse_blocks($value);
+            if (is_array($blocks) && !empty($blocks)) {
+                $b_changed = false;
+                widgetopts_strip_logic_from_blocks($blocks, $b_changed);
+                if ($b_changed) {
+                    $value    = serialize_blocks($blocks);
+                    $modified = true;
+                }
+            }
+        }
+        return;
+    }
+
+    if (!is_array($value) && !is_object($value)) {
+        return;
+    }
+
+    $is_object = is_object($value);
+    $items     = $is_object ? get_object_vars($value) : $value;
+
+    foreach ($items as $k => $v) {
+        $key = (string) $k;
+
+        // Page-builder-specific inline keys. Both names are owned by this
+        // plugin's own UI — no third-party REST consumer would legitimately
+        // ship a setting under these exact identifiers.
+        if (is_string($v) && $v !== ''
+            && ($key === 'widgetopts_settings_logic' || $key === 'widgetopts_logic')) {
+            $v        = '';
+            $modified = true;
+        }
+
+        // Scoped to plugin-owned containers — never touch class.logic under
+        // unrelated parents (third-party REST shapes commonly use them).
+        if (($key === 'extended_widget_opts' || $key === 'extended_widget_opts_block')
+            && (is_array($v) || is_object($v))) {
+            widgetopts_rest_scrub_extended_widget_opts($v, $modified);
+        }
+
+        if (is_array($v) || is_object($v) || is_string($v)) {
+            widgetopts_rest_scrub_legacy_logic($v, $modified);
+        }
+
+        if ($is_object) {
+            $value->$k = $v;
+        } else {
+            $value[$k] = $v;
+        }
+    }
+}
+
+// Inside a plugin-owned container, find and clear class.logic at any depth.
+function widgetopts_rest_scrub_extended_widget_opts(&$container, &$modified)
+{
+    if (!is_array($container) && !is_object($container)) {
+        return;
+    }
+
+    $is_object = is_object($container);
+    $items     = $is_object ? get_object_vars($container) : $container;
+
+    foreach ($items as $k => $v) {
+        if ((string) $k === 'class' && (is_array($v) || is_object($v))) {
+            $cls_is_obj = is_object($v);
+            $cls_items  = $cls_is_obj ? get_object_vars($v) : $v;
+            if (isset($cls_items['logic'])
+                && is_string($cls_items['logic'])
+                && $cls_items['logic'] !== '') {
+                if ($cls_is_obj) {
+                    $v->logic = '';
+                } else {
+                    $v['logic'] = '';
+                }
+                $modified = true;
+            }
+        }
+
+        if (is_array($v) || is_object($v)) {
+            widgetopts_rest_scrub_extended_widget_opts($v, $modified);
+        }
+
+        if ($is_object) {
+            $container->$k = $v;
+        } else {
+            $container[$k] = $v;
+        }
+    }
+}
+
+// Belt-and-braces net for REST routes without their own save-time gate.
+// Non-admin write requests only; GET/HEAD/OPTIONS untouched.
+add_filter('rest_request_before_callbacks', function ($response, $handler, $request) {
+    if (!($request instanceof WP_REST_Request)) {
+        return $response;
+    }
+    if (current_user_can('manage_options')) {
+        return $response;
+    }
+    $method = strtoupper((string) $request->get_method());
+    if ($method === 'GET' || $method === 'HEAD' || $method === 'OPTIONS') {
+        return $response;
+    }
+
+    $params = $request->get_params();
+    if (!is_array($params) || empty($params)) {
+        return $response;
+    }
+
+    foreach ($params as $key => $value) {
+        $changed = false;
+        widgetopts_rest_scrub_legacy_logic($value, $changed);
+        if ($changed) {
+            $request->set_param($key, $value);
+        }
+    }
+
+    return $response;
+}, 10, 3);
+
 function widgetopts_safe_eval($expression)
 {
+    // Closed default: non-admin without trust flag → "show" without eval.
+    if (!current_user_can('manage_options') && !widgetopts_eval_is_trusted()) {
+        return true;
+    }
+
     if (widgetopts_is_widget_or_post_preview()) {
-        // Always return true for previews unless the user is an administrator
-        if (!current_user_can('administrator')) {
+        if (!current_user_can('manage_options')) {
             return true;
         }
     }
@@ -609,9 +825,20 @@ function widgetopts_get_allowed_php_functions()
         'wordwrap',
 
         // Array Manipulation
+        'array_merge',
+        'array_diff',
+        'array_keys',
+        'array_values',
         'in_array',
         'count',
         'sizeof',
+        'array_slice',
+        'array_push',
+        'array_pop',
+        'array_intersect',
+        'array_unique',
+        'array_column',
+        'array_reverse',
 
         // Math Functions
         'abs',
@@ -684,8 +911,7 @@ function widgetopts_get_allowed_php_functions()
         'pathinfo',
         'basename',
         'dirname',
-        'file_exists',
-        'readfile',
+        'file_exists'
     ];
 }
 
@@ -820,6 +1046,28 @@ function widgetopts_get_allowed_wp_functions()
 }
 
 /**
+ * Return the nearest significant token relative to $index, skipping whitespace and comments.
+ *
+ * @param array $tokens  Token array from token_get_all().
+ * @param int   $index   Starting position.
+ * @param int   $dir     1 = look forward (next), -1 = look backward (prev).
+ * @return array|string|null The token, or null if none found.
+ */
+function widgetopts_adjacent_significant_token(array $tokens, int $index, int $dir)
+{
+    $skip  = [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT];
+    $count = count($tokens);
+    for ($i = $index + $dir; $dir === 1 ? $i < $count : $i >= 0; $i += $dir) {
+        $t = $tokens[$i];
+        if (is_array($t) && in_array($t[0], $skip, true)) {
+            continue;
+        }
+        return $t;
+    }
+    return null;
+}
+
+/**
  * Validate PHP code against allowed functions and detect obfuscated calls.
  *
  * @param string $code The PHP code to validate.
@@ -836,19 +1084,44 @@ function widgetopts_validate_code_with_tokens($code, $allowed_functions)
 
     $tokens = token_get_all($code);
     $is_safe = true;
-    $last_token = null;
+
+    // Constructs that aren't T_STRING — allowlist loop would skip them.
+    // T_FUNCTION / T_FN block closure-define + immediate invoke.
+    $forbidden_constructs = [T_EVAL, T_INCLUDE, T_INCLUDE_ONCE, T_REQUIRE, T_REQUIRE_ONCE, T_EXIT, T_GOTO, T_FUNCTION];
+    if (defined('T_FN')) {
+        $forbidden_constructs[] = T_FN; // PHP 7.4+
+    }
 
     foreach ($tokens as $index => $token) {
         if (is_array($token)) {
-            $token_type = $token[0];
+            $token_type  = $token[0];
             $token_value = $token[1];
 
-            // **Fix: Properly detect function calls inside conditions**
-            if ($token_type === T_STRING) {
-                $function_name = strtolower($token_value);
-                $next_token = $tokens[$index + 1] ?? null;
+            // Block language constructs (eval, include, require, exit, goto).
+            // These produce dedicated token types, not T_STRING, so the allowlist
+            // check below would silently pass them.
+            if (in_array($token_type, $forbidden_constructs, true)) {
+                $is_safe = false;
+                break;
+            }
 
-                if ($next_token === '(' || (is_array($next_token) && $next_token[0] === T_WHITESPACE && ($tokens[$index + 2] ?? null) === '(')) {
+            // Detect function calls — skip non-significant tokens before '('
+            if ($token_type === T_STRING) {
+                $next = widgetopts_adjacent_significant_token($tokens, $index, 1);
+                if ($next === '(') {
+                    // Block method/static/nullsafe calls: $obj->func(), Class::func(), $obj?->func()
+                    // The identifier looks like an allowed function name but is actually a method —
+                    // the allowlist covers only direct (free) function calls.
+                    $prev = widgetopts_adjacent_significant_token($tokens, $index, -1);
+                    $method_ops = [T_OBJECT_OPERATOR, T_DOUBLE_COLON];
+                    if (defined('T_NULLSAFE_OBJECT_OPERATOR')) {
+                        $method_ops[] = T_NULLSAFE_OBJECT_OPERATOR; // PHP 8.0+ (?->)
+                    }
+                    if (is_array($prev) && in_array($prev[0], $method_ops, true)) {
+                        $is_safe = false;
+                        break;
+                    }
+                    $function_name = strtolower($token_value);
                     if (!in_array($function_name, array_map('strtolower', $allowed_functions))) {
                         $is_safe = false;
                         break;
@@ -856,22 +1129,28 @@ function widgetopts_validate_code_with_tokens($code, $allowed_functions)
                 }
             }
 
-            // **Fix: Detect if T_ENCAPSED_AND_WHITESPACE is being treated as code**
+            // Detect if T_ENCAPSED_AND_WHITESPACE is being treated as code
             if ($token_type === T_ENCAPSED_AND_WHITESPACE) {
                 $is_safe = false;
                 break;
             }
 
-            // **Fix: Dynamic Function Execution (`$func()` or `['test']()`)**
+            // Dynamic call via variable or string literal: `$fn()` / `'func'()`
+            // Skip non-significant tokens between the token and '('
             if ($token_type === T_VARIABLE || $token_type === T_CONSTANT_ENCAPSED_STRING) {
-                $next_token = $tokens[$index + 1] ?? null;
-                if ($next_token === '(') {
+                $next = widgetopts_adjacent_significant_token($tokens, $index, 1);
+                if ($next === '(') {
                     $is_safe = false;
                     break;
                 }
             }
-
-            $last_token = $token;
+        } elseif ($token === ']' || $token === ')' || $token === '}') {
+            // `$arr[k]()`, `(expr)()`, `${$fn}()` / `Foo::{'m'}()`.
+            $next = widgetopts_adjacent_significant_token($tokens, $index, 1);
+            if ($next === '(') {
+                $is_safe = false;
+                break;
+            }
         }
     }
 

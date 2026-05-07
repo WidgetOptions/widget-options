@@ -113,6 +113,7 @@ var widgetoptsSettingsModule = {
 			// Show Manage Snippets button for Display Logic module
 			if ( 'logic' === module ) {
 				$card.find( '.widgetopts-manage-snippets-btn' ).show();
+				$card.find( '.widgetopts-migrate-btn' ).show();
 			}
 			
 		} else {
@@ -131,6 +132,7 @@ var widgetoptsSettingsModule = {
 			// Hide Manage Snippets button for Display Logic module
 			if ( 'logic' === module ) {
 				$card.find( '.widgetopts-manage-snippets-btn' ).hide();
+				$card.find( '.widgetopts-migrate-btn' ).hide();
 			}
 		}
         

@@ -2,7 +2,7 @@
 Contributors: marketingfire
 Tags: widget control, blocks, blocks visibility rules, gutenberg widgets, classic widgets
 Requires at least: 5.6
-Tested up to: 6.7
+Tested up to: 6.9
 Requires PHP: 7.4
 Stable tag: 4.1.3
 License: GPLv2 or later
@@ -194,7 +194,23 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 
 == Changelog ==
 
-= 4.2 =
+= 4.2.3 =
+
+* Fixed: Resolved PHP deprecated issues within the plugin.
+* Fixed: Resolved authenticated (Contributor+) remote code execution vulnerability.
+* Fixed: Resolved additional security vulnerabilities in the Display Logic feature.
+* Fixed: Validation to block additional dangerous patterns in Display Logic expressions.
+* Improved: Validation of widgetopts-settings-nonce to unauthorized settings changes.
+
+= 4.2.2 =
+
+* Fix: Resolved plugin compatibility issues with non-native WP blocks, including ACF Pro, Kadence Blocks, and others.
+
+= 4.2.1 =
+
+* Fix: Added a Dismiss button and fixed the issue with hiding the Migration Notice.
+
+= 4.2.0 =
 
 * Improved: Added the new Display Logic Snippet System
 * Fix: Resolved issues where Widget Option settings on pages were not saving
@@ -205,7 +221,7 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 = 4.1.3 =
 
 * Update: Adjusted the plugin description to follow the latest WordPress directory guidelines.
-* Fix: Improved input validation and output handling to prevent possible security issues that could allow unwanted scripts to run on pages
+* Fix: Improved input validation and output handling to prevent possible security issues that could allow unwanted scripts to run on pages.
 
 = 4.1.2 =
 

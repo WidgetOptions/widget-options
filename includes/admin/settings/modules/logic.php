@@ -37,7 +37,7 @@ if( !function_exists( 'widgetopts_settings_logic' ) ):
 							</a>
 						<?php } ?>
 						<?php if( current_user_can( WIDGETOPTS_MIGRATION_PERMISSIONS ) ){ ?>
-							<a href="<?php echo admin_url('options-general.php?page=widgetopts_migration'); ?>" class="button button-secondary" style="margin-left: 5px;">
+							<a href="<?php echo admin_url('options-general.php?page=widgetopts_migration'); ?>" class="button button-secondary widgetopts-migrate-btn" style="margin-left: 5px;">
 								<?php _e( 'Migrate', 'widget-options' );?>
 							</a>
 						<?php } ?>
@@ -47,6 +47,11 @@ if( !function_exists( 'widgetopts_settings_logic' ) ):
 						<?php if( current_user_can( 'manage_options' ) ){ ?>
 							<a href="<?php echo admin_url('edit.php?post_type=widgetopts_snippet'); ?>" class="button button-secondary widgetopts-manage-snippets-btn" style="margin-left: 5px; display: none;">
 								<?php _e( 'Manage Snippets', 'widget-options' );?>
+							</a>
+						<?php } ?>
+						<?php if( current_user_can( WIDGETOPTS_MIGRATION_PERMISSIONS ) ){ ?>
+							<a href="<?php echo admin_url('options-general.php?page=widgetopts_migration'); ?>" class="button button-secondary widgetopts-migrate-btn" style="margin-left: 5px; display: none;">
+								<?php _e( 'Migrate', 'widget-options' );?>
 							</a>
 						<?php } ?>
 					<?php } ?>

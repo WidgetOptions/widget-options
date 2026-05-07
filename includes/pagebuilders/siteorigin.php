@@ -52,7 +52,7 @@ if (!function_exists('widgetopts_siteorigin_panels_data')) {
                                 }
                                 $display_logic = htmlspecialchars_decode($display_logic, ENT_QUOTES);
                                 try {
-                                    if (!widgetopts_safe_eval($display_logic)) {
+                                    if (!widgetopts_safe_eval_trusted($display_logic)) {
                                         unset($panels_data['widgets'][$key]);
                                     }
                                 } catch (ParseError $e) {
@@ -82,18 +82,18 @@ if (!function_exists('widgetopts_siteorigin_protect_logic_on_save')) {
         static $processing = false;
         if ($processing) return $check;
 
-        // Get old panels data from DB
-        $old_data = get_post_meta($object_id, 'panels_data', true);
-        if (!is_array($old_data) || empty($old_data['widgets'])) return $check;
-
-        // Collect known old logic values
+        // No early-return when old data / old logic set is empty: that would
+        // let a contributor smuggle class.logic through the first save.
+        $old_data      = get_post_meta($object_id, 'panels_data', true);
         $old_logic_set = array();
-        foreach ($old_data['widgets'] as $widget) {
-            if (isset($widget['extended_widget_opts']['class']['logic']) && $widget['extended_widget_opts']['class']['logic'] !== '') {
-                $old_logic_set[] = $widget['extended_widget_opts']['class']['logic'];
+        if (is_array($old_data) && !empty($old_data['widgets']) && is_array($old_data['widgets'])) {
+            foreach ($old_data['widgets'] as $widget) {
+                if (isset($widget['extended_widget_opts']['class']['logic'])
+                    && $widget['extended_widget_opts']['class']['logic'] !== '') {
+                    $old_logic_set[] = $widget['extended_widget_opts']['class']['logic'];
+                }
             }
         }
-        if (empty($old_logic_set)) return $check;
 
         // Check new data
         $new_data = is_array($meta_value) ? $meta_value : maybe_unserialize($meta_value);

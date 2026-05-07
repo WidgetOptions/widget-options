@@ -201,37 +201,11 @@ if (wp_use_widgets_block_editor()) {
 			$instance['extended_widget_opts-' . $obj->id] = widgetopts_sanitize_array($instance['extended_widget_opts-' . $obj->id]);
 		}
 
-		// Protect legacy display logic: always restore old DB value (prevents injection AND data loss)
+		// Legacy display logic: admins keep as-is, non-admins have it stripped
 		if (isset($instance['extended_widget_opts-' . $obj->id]['class'])) {
-			$cls = &$instance['extended_widget_opts-' . $obj->id]['class'];
-			$wopt_ver = isset($cls['wopt_version']) ? $cls['wopt_version'] : '';
-			$has_snippet = !empty($cls['logic_snippet_id']);
-			$has_legacy = !empty($cls['logic']);
-
-			// If wopt_version >= 4.2: legacy logic is obsolete — clear it
-			if ($wopt_ver !== '' && version_compare($wopt_ver, '4.2', '>=')) {
-				if ($has_legacy) {
-					$cls['logic'] = '';
-				}
+			if (!current_user_can('manage_options')) {
+				$instance['extended_widget_opts-' . $obj->id]['class']['logic'] = '';
 			}
-			// Auto-clear legacy logic if snippet_id is already set (migration done)
-			elseif ($has_snippet) {
-				$cls['logic'] = '';
-				$cls['wopt_version'] = WIDGETOPTS_VERSION;
-			}
-			// User intentionally cleared legacy logic via Clear button
-			elseif (!empty($cls['logic_cleared'])) {
-				$cls['logic'] = '';
-				unset($cls['logic_cleared']);
-				$cls['wopt_version'] = WIDGETOPTS_VERSION;
-			} else {
-				$old_logic = '';
-				if (isset($old_instance['extended_widget_opts-' . $obj->id]['class']['logic']) && $old_instance['extended_widget_opts-' . $obj->id]['class']['logic'] !== '') {
-					$old_logic = $old_instance['extended_widget_opts-' . $obj->id]['class']['logic'];
-				}
-				$cls['logic'] = $old_logic;
-			}
-			unset($cls);
 		}
 
 		return $instance;
@@ -244,55 +218,34 @@ add_filter('rest_pre_insert_page', 'widgetopts_rest_pre_insert', 10, 2);
 function widgetopts_rest_pre_insert($post, $request)
 {
 	if (!current_user_can('edit_posts')) {
-		return $post; // Security check: Only users with permission can edit
-	}
-
-	if (current_user_can('administrator')) {
-		// Admins can modify all attributes EXCEPT legacy display logic (security)
-		if (!empty($post->post_content) && !empty($post->ID)) {
-			$old_post = get_post($post->ID);
-			if ($old_post && !empty($old_post->post_content)) {
-				$old_blocks = parse_blocks($old_post->post_content);
-				$new_blocks = parse_blocks($post->post_content);
-				if (is_array($new_blocks) && !empty($new_blocks)) {
-					$old_blocks_lkp = [];
-					widgetopt_process_blocks_recursively($old_blocks, $old_blocks_lkp);
-					foreach ($new_blocks as &$nb) {
-						widgetopt_modify_block_attributes($nb, $old_blocks_lkp);
-					}
-					$post->post_content = serialize_blocks($new_blocks);
-				}
-			}
-		}
 		return $post;
 	}
 
-	if (empty($post->post_content) || empty($post->ID)) {
-		return $post; // Exit if no content or post ID
+	// Admins: don't touch legacy logic at all (no parse/serialize cycle)
+	if (current_user_can('manage_options')) {
+		return $post;
 	}
 
-	// Get the old post content before editing
-	$old_post = get_post($post->ID);
+	// Non-admins: strip legacy logic from all blocks
+	if (empty($post->post_content)) {
+		return $post;
+	}
 
-	// Parse blocks from the old post content (recursively)
-	$old_blocks = !$old_post ? [] : parse_blocks($old_post->post_content);
-	// Parse blocks from the new post content
+	if (strpos($post->post_content, 'extended_widget_opts') === false
+		&& strpos($post->post_content, 'start_widgetopts') === false) {
+		return $post;
+	}
+
 	$new_blocks = parse_blocks($post->post_content);
-
 	if (!is_array($new_blocks) || empty($new_blocks)) {
-		return $post; // Exit if no blocks found
+		return $post;
 	}
 
-	// Convert old blocks into a lookup table using anchor or unique ID (recursively process)
-	$old_blocks_lookup = [];
-	widgetopt_process_blocks_recursively($old_blocks, $old_blocks_lookup);
-
-	foreach ($new_blocks as &$new_block) {
-		widgetopt_modify_block_attributes($new_block, $old_blocks_lookup);
+	$changed = false;
+	widgetopts_strip_logic_from_blocks($new_blocks, $changed);
+	if ($changed) {
+		$post->post_content = serialize_blocks($new_blocks);
 	}
-
-	// Convert modified blocks back to post content
-	$post->post_content = serialize_blocks($new_blocks);
 
 	return $post;
 }
@@ -320,112 +273,208 @@ function widgetopt_process_blocks_recursively(&$blocks, &$old_blocks_lookup)
 	}
 }
 
-// Recursively modify block attributes (parent and inner blocks)
 function widgetopt_modify_block_attributes(&$block, $old_blocks_lookup)
 {
 	if (!isset($block['blockName'])) {
-		return; // Skip invalid blocks
+		return;
 	}
 
-	// Find the old block using the anchor (or generated unique ID)
-	$anchor = $block['attrs']['anchor'] ?? md5(json_encode($block['innerContent'])); // Generate unique ID if missing
-	$old_data = $old_blocks_lookup[$anchor] ?? [];
-	$old_attrs = $old_data['attrs'] ?? [];
-
-	//do the modification
-	if (isset($block['attrs']['extended_widget_opts'])) {
-		if (isset($block['attrs']['extended_widget_opts']['class'])) {
-			$cls = &$block['attrs']['extended_widget_opts']['class'];
-			$wopt_ver = isset($cls['wopt_version']) ? $cls['wopt_version'] : '';
-			$has_snippet = !empty($cls['logic_snippet_id']);
-			$has_legacy = !empty($cls['logic']);
-
-			// If wopt_version >= 4.2: legacy logic is obsolete — clear it
-			if ($wopt_ver !== '' && version_compare($wopt_ver, '4.2', '>=')) {
-				if ($has_legacy) {
-					$cls['logic'] = '';
-				}
-			}
-			// Auto-clear legacy logic if snippet_id is already set (migration done)
-			elseif ($has_snippet) {
-				$cls['logic'] = '';
-				$cls['wopt_version'] = WIDGETOPTS_VERSION;
-			}
-			// User intentionally cleared legacy logic via Clear button
-			elseif (!empty($cls['logic_cleared'])) {
-				$cls['logic'] = '';
-				unset($cls['logic_cleared']);
-				$cls['wopt_version'] = WIDGETOPTS_VERSION;
-			} elseif (isset($old_attrs['extended_widget_opts']) && isset($old_attrs['extended_widget_opts']['class']) && isset($old_attrs['extended_widget_opts']['class']['logic']) && !empty($old_attrs['extended_widget_opts']['class']['logic'])) {
-				$cls['logic'] = $old_attrs['extended_widget_opts']['class']['logic'];
-			} else {
-				$cls['logic'] = '';
-			}
-			unset($cls);
-		}
+	if (isset($block['attrs']['extended_widget_opts']['class']['logic'])
+		&& $block['attrs']['extended_widget_opts']['class']['logic'] !== '') {
+		$block['attrs']['extended_widget_opts']['class']['logic'] = '';
 	}
 
-	// If the block has inner blocks, recurse through them
+	if (isset($block['attrs']['extended_widget_opts_block']['class']['logic'])
+		&& $block['attrs']['extended_widget_opts_block']['class']['logic'] !== '') {
+		$block['attrs']['extended_widget_opts_block']['class']['logic'] = '';
+	}
+
 	if (isset($block['innerBlocks']) && !empty($block['innerBlocks'])) {
 		foreach ($block['innerBlocks'] as &$inner_block) {
-			widgetopt_modify_block_attributes($inner_block, $old_blocks_lookup); // Recursively modify inner blocks
+			widgetopt_modify_block_attributes($inner_block, $old_blocks_lookup);
 		}
 	}
 }
 
 /**
- * Protect legacy display logic from injection on ALL save paths
- * (classic editor, programmatic saves, direct DB manipulation via forms).
- * Covers cases that rest_pre_insert_post/page don't catch.
+ * Recursively strip legacy logic from parsed blocks.
+ * Used for non-admin users to prevent logic injection.
+ *
+ * @param array &$blocks Parsed blocks array.
+ * @param bool  &$changed Set to true if any logic was stripped.
+ */
+function widgetopts_strip_logic_from_blocks(&$blocks, &$changed) {
+	foreach ($blocks as &$block) {
+		// Standard Gutenberg block attributes
+		if (isset($block['attrs']['extended_widget_opts']['class']['logic'])
+			&& $block['attrs']['extended_widget_opts']['class']['logic'] !== '') {
+			$block['attrs']['extended_widget_opts']['class']['logic'] = '';
+			$changed = true;
+		}
+		if (isset($block['attrs']['extended_widget_opts_block']['class']['logic'])
+			&& $block['attrs']['extended_widget_opts_block']['class']['logic'] !== '') {
+			$block['attrs']['extended_widget_opts_block']['class']['logic'] = '';
+			$changed = true;
+		}
+
+		// Legacy freeform format: <!--start_widgetopts {"class":{"logic":"..."}} end_widgetopts-->
+		// parse_blocks() stores this raw in innerContent (blockName = null, attrs = []),
+		// so the attribute checks above never fire for it.
+		if (empty($block['blockName']) && !empty($block['innerContent'])) {
+			foreach ($block['innerContent'] as &$chunk) {
+				if (!is_string($chunk) || strpos($chunk, 'start_widgetopts') === false) {
+					continue;
+				}
+				// Permissive outer pattern so crafted payloads like
+				// {...} <!--start_widgetopts end_widgetopts--> (parsing-differential
+				// attack) are also matched.
+				$chunk = preg_replace_callback(
+					'/<!--start_widgetopts\s+([\s\S]*?)\s*end_widgetopts-->/U',
+					static function ($m) use (&$changed) {
+						$raw  = trim($m[1]);
+						$data = json_decode($raw, true);
+
+						if (!is_array($data)) {
+							// Trailing garbage after valid JSON (crafted payload).
+							// Find the last } and try decoding up to that point.
+							$pos = strrpos($raw, '}');
+							if ($pos !== false) {
+								$data = json_decode(substr($raw, 0, $pos + 1), true);
+							}
+						}
+
+						if (!is_array($data)) {
+							// Completely unrecoverable — remove entire marker.
+							$changed = true;
+							return '';
+						}
+
+						if (isset($data['class']['logic']) && $data['class']['logic'] !== '') {
+							$data['class']['logic'] = '';
+							$changed = true;
+						}
+						return '<!--start_widgetopts ' . wp_json_encode($data) . ' end_widgetopts-->';
+					},
+					$chunk
+				);
+			}
+			unset($chunk);
+		}
+
+		if (!empty($block['innerBlocks'])) {
+			widgetopts_strip_logic_from_blocks($block['innerBlocks'], $changed);
+		}
+	}
+}
+
+/**
+ * Strip legacy display logic for non-admin users on ALL save paths.
+ * Admins: no processing at all (no parse/serialize cycle).
+ * Non-admins: strip legacy logic fields to prevent injection.
  * 
  * @since 5.1
  */
 add_filter('wp_insert_post_data', function($data, $postarr) {
-	if (empty($data['post_content']) || empty($postarr['ID'])) {
+	if (current_user_can('manage_options')) {
 		return $data;
 	}
 
-	// Only process if content has blocks with extended_widget_opts
-	if (strpos($data['post_content'], 'extended_widget_opts') === false) {
+	if (empty($data['post_content'])) {
 		return $data;
 	}
 
-	$old_post = get_post($postarr['ID']);
-	if (!$old_post || empty($old_post->post_content)) {
-		// New post — strip any logic fields entirely (no old data to preserve)
-		$new_blocks = parse_blocks($data['post_content']);
-		if (!is_array($new_blocks) || empty($new_blocks)) return $data;
-		$changed = false;
-		$strip_logic = function(&$blocks) use (&$strip_logic, &$changed) {
-			foreach ($blocks as &$block) {
-				if (isset($block['attrs']['extended_widget_opts']['class']['logic']) && $block['attrs']['extended_widget_opts']['class']['logic'] !== '') {
-					$block['attrs']['extended_widget_opts']['class']['logic'] = '';
-					$changed = true;
-				}
-				if (!empty($block['innerBlocks'])) $strip_logic($block['innerBlocks']);
-			}
-		};
-		$strip_logic($new_blocks);
-		if ($changed) {
-			$data['post_content'] = serialize_blocks($new_blocks);
-		}
+	// wp_insert_post_data fires BEFORE wp_unslash() inside wp_insert_post(),
+	// so post_content still carries magic-quote backslashes (\" and \').
+	// Unslash before processing so parse_blocks sees clean JSON.
+	$content = wp_unslash($data['post_content']);
+
+	if (strpos($content, 'extended_widget_opts') === false
+		&& strpos($content, 'start_widgetopts') === false) {
 		return $data;
 	}
 
-	$old_blocks = parse_blocks($old_post->post_content);
-	$new_blocks = parse_blocks($data['post_content']);
-	if (!is_array($new_blocks) || empty($new_blocks)) return $data;
-
-	$old_blocks_lkp = [];
-	widgetopt_process_blocks_recursively($old_blocks, $old_blocks_lkp);
-
-	foreach ($new_blocks as &$nb) {
-		widgetopt_modify_block_attributes($nb, $old_blocks_lkp);
+	$new_blocks = parse_blocks($content);
+	if (!is_array($new_blocks) || empty($new_blocks)) {
+		return $data;
 	}
 
-	$data['post_content'] = serialize_blocks($new_blocks);
+	$changed = false;
+	widgetopts_strip_logic_from_blocks($new_blocks, $changed);
+	if ($changed) {
+		// Re-slash so WordPress's subsequent wp_unslash() inside wp_insert_post()
+		// produces the correct clean string when writing to the database.
+		$data['post_content'] = wp_slash(serialize_blocks($new_blocks));
+	}
 	return $data;
 }, 10, 2);
+
+// Flag the block-renderer REST dispatch so render_block_data below can
+// scope its sha256-allowlist work to that single route.
+add_filter('rest_pre_dispatch', function ($result, $server, $request) {
+	if ($request instanceof WP_REST_Request
+		&& strpos((string) $request->get_route(), '/wp/v2/block-renderer/') === 0) {
+		$GLOBALS['_widgetopts_in_block_renderer'] = true;
+	}
+	return $result;
+}, 1, 3);
+
+add_filter('rest_post_dispatch', function ($response, $server, $request) {
+	unset($GLOBALS['_widgetopts_in_block_renderer']);
+	return $response;
+}, 1, 3);
+
+// Block-renderer accepts user-supplied attributes without a save step.
+// For non-admins, allowlist class.logic against a sha256 of values stored in
+// the post's post_content; mismatched values are zeroed before render_callback.
+add_filter('render_block_data', function ($parsed_block) {
+	if (!defined('REST_REQUEST') || !REST_REQUEST) {
+		return $parsed_block;
+	}
+	if (empty($GLOBALS['_widgetopts_in_block_renderer'])) {
+		return $parsed_block;
+	}
+
+	if (!is_array($parsed_block) || empty($parsed_block['attrs'])) {
+		return $parsed_block;
+	}
+	if (current_user_can('manage_options')) {
+		return $parsed_block;
+	}
+
+	$has_inline = (
+		(isset($parsed_block['attrs']['extended_widget_opts']['class']['logic'])
+			&& $parsed_block['attrs']['extended_widget_opts']['class']['logic'] !== '')
+		|| (isset($parsed_block['attrs']['extended_widget_opts_block']['class']['logic'])
+			&& $parsed_block['attrs']['extended_widget_opts_block']['class']['logic'] !== '')
+	);
+	if (!$has_inline) {
+		return $parsed_block;
+	}
+
+	$post_id = 0;
+	$current = get_post();
+	if ($current instanceof WP_Post) {
+		$post_id = (int) $current->ID;
+	}
+	if (!$post_id && isset($_REQUEST['post_id'])) {
+		$post_id = absint($_REQUEST['post_id']);
+	}
+
+	$allow = $post_id ? widgetopts_get_post_logic_allowlist($post_id) : array();
+
+	foreach (array('extended_widget_opts', 'extended_widget_opts_block') as $key) {
+		if (isset($parsed_block['attrs'][$key]['class']['logic'])
+			&& is_string($parsed_block['attrs'][$key]['class']['logic'])
+			&& $parsed_block['attrs'][$key]['class']['logic'] !== '') {
+			$hash = hash('sha256', $parsed_block['attrs'][$key]['class']['logic']);
+			if (!isset($allow[$hash])) {
+				$parsed_block['attrs'][$key]['class']['logic'] = '';
+			}
+		}
+	}
+
+	return $parsed_block;
+}, 5);
 
 add_filter('render_block', function ($block_content, $parsed_block, $obj) {
 	if (!is_admin()) {
@@ -982,7 +1031,7 @@ function blockopts_filter_before_display($block_content, $parsed_block, $obj)
 				// 	$display_logic = "return (" . $display_logic . ");";
 				// }
 				$display_logic = htmlspecialchars_decode($display_logic, ENT_QUOTES);
-				if (!widgetopts_safe_eval($display_logic)) {
+				if (!widgetopts_safe_eval_trusted($display_logic)) {
 					return false;
 				}
 			}
@@ -1079,12 +1128,18 @@ function widgetopts_add_classes_post_block($block_content, $parsed_block, $obj)
 /**
  * Gutenberg ajax functions
  */
+function widgetopts_verify_gutenberg_ajax()
+{
+	if (!current_user_can('edit_posts')) {
+		wp_send_json_error('Permission denied.', 403);
+		exit;
+	}
+}
+
 function widgetopts_get_types()
 {
+	widgetopts_verify_gutenberg_ajax();
 	global $widgetopts_types;
-	if (!(current_user_can('edit_pages') || current_user_can('edit_posts') || current_user_can('edit_theme_options'))) {
-		die;
-	}
 
 	wp_send_json_success(((!empty($widgetopts_types)) ? $widgetopts_types : widgetopts_global_types()));
 	die;
@@ -1094,10 +1149,8 @@ add_action('wp_ajax_widgetopts_get_types', 'widgetopts_get_types');
 
 function widgetopts_get_taxonomies()
 {
+	widgetopts_verify_gutenberg_ajax();
 	global $widgetopts_taxonomies;
-	if (!(current_user_can('edit_pages') || current_user_can('edit_posts') || current_user_can('edit_theme_options'))) {
-		die;
-	}
 
 	wp_send_json_success(((!empty($widgetopts_taxonomies)) ? $widgetopts_taxonomies : widgetopts_global_taxonomies()));
 	die;
@@ -1106,9 +1159,7 @@ add_action('wp_ajax_widgetopts_get_taxonomies', 'widgetopts_get_taxonomies');
 
 function widgetopts_acf_get_field_groups()
 {
-	if (!(current_user_can('edit_pages') || current_user_can('edit_posts') || current_user_can('edit_theme_options'))) {
-		die;
-	}
+	widgetopts_verify_gutenberg_ajax();
 
 	$fields = array();
 	if (function_exists('acf_get_field_groups')) {
@@ -1134,9 +1185,7 @@ add_action('wp_ajax_widgetopts_acf_get_field_groups', 'widgetopts_acf_get_field_
 
 function widgetopts_get_legacy_data()
 {
-	if (!(current_user_can('edit_pages') || current_user_can('edit_posts') || current_user_can('edit_theme_options'))) {
-		die;
-	}
+	widgetopts_verify_gutenberg_ajax();
 
 	if (isset($_POST['id_base'])) {
 		wp_send_json_success(array());
@@ -1160,14 +1209,8 @@ add_action('wp_ajax_widgetopts_get_legacy_data', 'widgetopts_get_legacy_data');
 
 function widgetopts_get_settings_ajax()
 {
-	if (!(current_user_can('edit_pages') || current_user_can('edit_posts') || current_user_can('edit_theme_options'))) {
-		die;
-	}
+	widgetopts_verify_gutenberg_ajax();
 	$settings = widgetopts_get_settings();
-
-	if (!current_user_can('administrator')) {
-		$settings['logic'] = 'deactivate';
-	}
 
 	wp_send_json_success($settings);
 	die;
@@ -1176,9 +1219,7 @@ add_action('wp_ajax_widgetopts_get_settings_ajax', 'widgetopts_get_settings_ajax
 
 function widgetopts_get_snippets_ajax()
 {
-	if (!(current_user_can('edit_pages') || current_user_can('edit_posts') || current_user_can('edit_theme_options'))) {
-		die;
-	}
+	widgetopts_verify_gutenberg_ajax();
 
 	$search = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
 
@@ -1207,9 +1248,7 @@ add_action('wp_ajax_widgetopts_get_snippets_ajax', 'widgetopts_get_snippets_ajax
 
 function widgetopts_get_pages()
 {
-	if (!(current_user_can('edit_pages') || current_user_can('edit_posts') || current_user_can('edit_theme_options'))) {
-		die;
-	}
+	widgetopts_verify_gutenberg_ajax();
 
 	$pages = [];
 
@@ -1240,9 +1279,7 @@ add_action('wp_ajax_widgetopts_get_pages', 'widgetopts_get_pages');
 
 function widgetopts_get_terms()
 {
-	if (!(current_user_can('edit_pages') || current_user_can('edit_posts') || current_user_can('edit_theme_options'))) {
-		die;
-	}
+	widgetopts_verify_gutenberg_ajax();
 
 	$terms = array();
 
@@ -1262,11 +1299,8 @@ add_action('wp_ajax_widgetopts_get_terms', 'widgetopts_get_terms');
 
 function widgetopts_get_users()
 {
+	widgetopts_verify_gutenberg_ajax();
 	global $wp_version;
-
-	if (!(current_user_can('edit_pages') || current_user_can('edit_posts') || current_user_can('edit_theme_options'))) {
-		die;
-	}
 
 	$authors = array();
 
@@ -1296,9 +1330,7 @@ add_action('wp_ajax_widgetopts_get_users', 'widgetopts_get_users');
 
 function widgetopts_ajax_roles_search_block()
 {
-	if (!(current_user_can('edit_pages') || current_user_can('edit_posts') || current_user_can('edit_theme_options'))) {
-		die;
-	}
+	widgetopts_verify_gutenberg_ajax();
 	$response = [
 		'results' => [],
 		'pagination' => ['more' => false]
