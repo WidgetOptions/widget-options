@@ -612,7 +612,7 @@ if (!function_exists('widgetopts_remove_title')) :
                     $opts       = (isset($instance[$key])) ? (array)$instance[$key] : array();
 
                     if (isset($opts['class']) && isset($opts['class']['title']) && '1' == $opts['class']['title']) {
-                        return;
+                        return '';
                     }
 
                     break;
