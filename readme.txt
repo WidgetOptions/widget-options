@@ -4,7 +4,7 @@ Tags: widget control, blocks, blocks visibility rules, gutenberg widgets, classi
 Requires at least: 5.6
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 4.2.5
+Stable tag: 4.2.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -192,6 +192,10 @@ Widget Options is a featured pack fully lightweight plugin. Using Query Monitor 
 14. Elementor Pagebuilder Integration
 
 == Changelog ==
+
+= 4.2.6 =
+
+* Improved: Contributor stored XSS in block attribute writing
 
 = 4.2.5 =
 
