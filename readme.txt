@@ -174,6 +174,9 @@ All of them! Yes, we haven't come across any single non-working widgets yet.
 = How's the speed and loading time compare to other plugins? =
 Widget Options is a featured pack fully lightweight plugin. Using Query Monitor plugin you'll find that the plugin doesn't load too much queries and doesn't affect your website's loading time. You can check more information how optimized Widget Options is <a href="https://widget-options.com/new-improved-widget-options-wordpress/">here</a>.
 
+= Where do I report security bugs found in this plugin? =
+Please report security bugs found in the source code of the Widget Options plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/8219bb45-6786-40ef-9094-eb97b38773bf). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
+
 == Screenshots ==
 
 1. Widgets Visibility Options in WP Customizer
