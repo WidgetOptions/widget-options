@@ -704,6 +704,66 @@ add_filter('rest_request_before_callbacks', function ($response, $handler, $requ
     return $response;
 }, 10, 3);
 
+// Global metadata-level guard for panels_data: apply to both add and update.
+add_filter('add_post_metadata', 'widgetopts_protect_panels_data_meta', 10, 5);
+add_filter('update_post_metadata', 'widgetopts_protect_panels_data_meta', 10, 5);
+function widgetopts_protect_panels_data_meta($check, $object_id, $meta_key, $meta_value, $prev_value) {
+    if ($meta_key !== 'panels_data') return $check;
+
+    // Non-admin authors should not be able to inject legacy class.logic.
+    if (function_exists('current_user_can') && current_user_can('manage_options')) {
+        return $check;
+    }
+
+    $new_data = is_array($meta_value) ? $meta_value : maybe_unserialize($meta_value);
+    if (!is_array($new_data) || empty($new_data['widgets'])) return $check;
+
+    $modified = false;
+    // Recursively strip any legacy class.logic values from plugin-owned containers.
+    foreach ($new_data['widgets'] as &$widget) {
+        if (!isset($widget['extended_widget_opts'])) continue;
+        $changed = false;
+        widgetopts_rest_scrub_extended_widget_opts($widget['extended_widget_opts'], $changed);
+        if ($changed) {
+            $modified = true;
+        }
+    }
+
+    if ($modified) {
+        // Short-circuit metadata write: update with sanitized value and stop caller.
+        update_post_meta($object_id, 'panels_data', $new_data);
+        return true;
+    }
+
+    return $check;
+}
+
+// Sanitize panels_data after a post save as a belt-and-braces for importers that
+// may bypass metadata filters. Only applies to non-admins by default.
+add_action('save_post', function ($post_id, $post, $update) {
+    static $processing = false;
+    if ($processing) return;
+    if (function_exists('current_user_can') && current_user_can('manage_options')) return;
+
+    $data = get_post_meta($post_id, 'panels_data', true);
+    if (!is_array($data) || empty($data['widgets'])) return;
+
+    $modified = false;
+    foreach ($data['widgets'] as &$widget) {
+        if (!isset($widget['extended_widget_opts'])) continue;
+        $changed = false;
+        widgetopts_rest_scrub_extended_widget_opts($widget['extended_widget_opts'], $changed);
+        if ($changed) $modified = true;
+    }
+
+    if ($modified) {
+        $processing = true;
+        update_post_meta($post_id, 'panels_data', $data);
+        $processing = false;
+    }
+
+}, 10, 3);
+
 function widgetopts_safe_eval($expression)
 {
     // Closed default: non-admin without trust flag → "show" without eval.
@@ -768,6 +828,15 @@ function widgetopts_validate_expression($expression)
         '/\[\s*[\'"]?[a-zA-Z0-9_]+\s*\.\s*[\'"]?[a-zA-Z0-9_]+\s*\]/i' => 'Concatenated function execution is not allowed.',
         '/\b(str_replace|preg_replace|preg_replace_callback|preg_replace_callback_array)\s*\(\s*[\'"]\s*\.\s*[\'"]/' => 'Potential function name obfuscation detected.',
         '/\$\w+\s*\[\s*[\'"]?\d+[\'"]?\s*\]\s*\(/' => 'Dynamic function execution using arrays is not allowed.',
+        // Disallow use of superglobals and $GLOBALS
+        '/\$GLOBALS\b/i' => 'Access to $GLOBALS is not allowed.',
+        '/\$_(GET|POST|REQUEST|COOKIE|SERVER|ENV|FILES)\b/i' => 'Superglobals are not allowed.',
+        // Disallow object property access (->) which can be used to mutate or access internals
+        '/->/' => 'Object property access is not allowed in expressions.',
+        // Disallow simple assignment to prevent state mutation (e.g. $a = ...)
+        '/\$\w+\s*=\s*(?![=])/' => 'Assignments are not allowed in expressions.',
+        // Disallow string/variable concatenation using the dot operator
+        '/([\"\']\s*\.\s*[\"\']|\$\w+\s*\.\s*\$?\w+)/' => 'String concatenation is not allowed in expressions.',
     ];
 
     $is_valid = true;
@@ -1086,8 +1155,9 @@ function widgetopts_validate_code_with_tokens($code, $allowed_functions)
     $is_safe = true;
 
     // Constructs that aren't T_STRING — allowlist loop would skip them.
-    // T_FUNCTION / T_FN block closure-define + immediate invoke.
-    $forbidden_constructs = [T_EVAL, T_INCLUDE, T_INCLUDE_ONCE, T_REQUIRE, T_REQUIRE_ONCE, T_EXIT, T_GOTO, T_FUNCTION];
+    // T_FUNCTION / T_FN block closure-define + immediate invoke. Also disallow
+    // object operator and global declarations here at token level.
+    $forbidden_constructs = [T_EVAL, T_INCLUDE, T_INCLUDE_ONCE, T_REQUIRE, T_REQUIRE_ONCE, T_EXIT, T_GOTO, T_FUNCTION, T_GLOBAL, T_OBJECT_OPERATOR];
     if (defined('T_FN')) {
         $forbidden_constructs[] = T_FN; // PHP 7.4+
     }
@@ -1148,6 +1218,26 @@ function widgetopts_validate_code_with_tokens($code, $allowed_functions)
             // `$arr[k]()`, `(expr)()`, `${$fn}()` / `Foo::{'m'}()`.
             $next = widgetopts_adjacent_significant_token($tokens, $index, 1);
             if ($next === '(') {
+                $is_safe = false;
+                break;
+            }
+        } elseif ($token === '=') {
+            // Detect assignment operator. Allow '==', '===', and '=>'.
+            $next = widgetopts_adjacent_significant_token($tokens, $index, 1);
+            if (!($next === '=')) {
+                // Not a comparison; check for '=>' (array) which is allowed.
+                if (!($next === '>')) {
+                    $is_safe = false;
+                    break;
+                }
+            }
+        } elseif ($token === '.') {
+            // Concatenation operator is disallowed except when used in numeric literals.
+            $prev = widgetopts_adjacent_significant_token($tokens, $index, -1);
+            $next = widgetopts_adjacent_significant_token($tokens, $index, 1);
+            $prev_is_number = is_array($prev) && ($prev[0] === T_LNUMBER || $prev[0] === T_DNUMBER);
+            $next_is_number = is_array($next) && ($next[0] === T_LNUMBER || $next[0] === T_DNUMBER);
+            if (!($prev_is_number && $next_is_number)) {
                 $is_safe = false;
                 break;
             }

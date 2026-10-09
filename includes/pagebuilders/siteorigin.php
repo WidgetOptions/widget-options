@@ -71,11 +71,14 @@ if (!function_exists('widgetopts_siteorigin_panels_data')) {
 /**
  * Protect legacy display logic from modification/injection on SiteOrigin save.
  * Intercepts panels_data meta save, restores old logic values from DB.
- * 
+ * Applies to both updates and new metadata additions. Rejects attempts by
+ * non-administrators to inject class.logic instead of silently modifying it.
+ *
  * @since 5.1
  */
 if (!function_exists('widgetopts_siteorigin_protect_logic_on_save')) {
     add_filter('update_post_metadata', 'widgetopts_siteorigin_protect_logic_on_save', 10, 5);
+    add_filter('add_post_metadata', 'widgetopts_siteorigin_protect_logic_on_save', 10, 5);
     function widgetopts_siteorigin_protect_logic_on_save($check, $object_id, $meta_key, $meta_value, $prev_value) {
         if ($meta_key !== 'panels_data') return $check;
 
@@ -98,6 +101,10 @@ if (!function_exists('widgetopts_siteorigin_protect_logic_on_save')) {
         // Check new data
         $new_data = is_array($meta_value) ? $meta_value : maybe_unserialize($meta_value);
         if (!is_array($new_data) || empty($new_data['widgets'])) return $check;
+
+        // If the current user cannot manage options, treat them as non-administrator
+        // and reject any attempted injection of new class.logic values.
+        $is_admin = function_exists('current_user_can') && current_user_can('manage_options');
 
         $modified = false;
         foreach ($new_data['widgets'] as &$widget) {
@@ -143,7 +150,14 @@ if (!function_exists('widgetopts_siteorigin_protect_logic_on_save')) {
             }
             $val = $cls['logic'];
             if ($val !== '' && !in_array($val, $old_logic_set, true)) {
-                // Injected value not in old data — strip
+                // Injected value not in old data
+                if (! $is_admin) {
+                    // Reject save attempt from non-administrators: short-circuit
+                    // and do not persist the new panels_data.
+                    return true;
+                }
+
+                // Administrator: strip injected legacy logic (preserve DB integrity)
                 $cls['logic'] = '';
                 $modified = true;
             }
