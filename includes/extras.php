@@ -1042,6 +1042,7 @@ function widgetopts_get_allowed_wp_functions()
         'is_404',
         'is_multisite',
         'is_customize_preview',
+        'in_category',
     ];
 }
 
@@ -1186,3 +1187,4 @@ function widgetopts_is_widget_or_post_preview()
 
     return false;
 }
+
