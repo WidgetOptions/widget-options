@@ -662,13 +662,14 @@ if (!function_exists('widgetopts_add_classes')) :
 
         $custom_class   = isset($opts['class']) ? $opts['class'] : '';
         $widget_id_set  = $params[0]['widget_id'];
+        $id_to_add      = '';
 
         if ('activate' == $widget_options['classes'] && isset($widget_options['settings']['classes'])) {
             //don't add the IDs when the setting is set to NO
             if (isset($widget_options['settings']['classes']['id'])) {
                 if (is_array($custom_class) && isset($custom_class['id']) && !empty($custom_class['id'])) {
                     $custom_class['id'] = sanitize_html_class($custom_class['id']);
-                    $params[0]['before_widget'] = preg_replace('/id="[^"]*/', "id=\"{$custom_class['id']}", $params[0]['before_widget'], 1);
+                    $id_to_add     = $custom_class['id'];
                     $widget_id_set = $custom_class['id'];
                 }
             }
@@ -697,12 +698,14 @@ if (!function_exists('widgetopts_add_classes')) :
             }
         }
 
-        if (!empty($get_classes)) {
-            $classes        = 'class="' . (implode(' ', $get_classes)) . ' ';
-            $params[0]['before_widget'] = str_replace('class="', $classes, $params[0]['before_widget']);
-        }
-
-        // $params[0]['before_widget'] = str_replace('class="', ' data-animation="asdf" class="', $params[0]['before_widget']);
+        // Same HTML aware writer the block renderer uses, so `id="` / `class="`
+        // occurring inside another attribute's value can never break the
+        // quoting of the wrapper tag.
+        $params[0]['before_widget'] = widgetopts_apply_tag_attributes(
+            $params[0]['before_widget'],
+            $id_to_add,
+            implode(' ', $get_classes)
+        );
 
         return $params;
     }

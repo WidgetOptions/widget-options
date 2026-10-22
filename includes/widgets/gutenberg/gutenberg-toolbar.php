@@ -1059,7 +1059,6 @@ function widgetopts_add_classes_post_block($block_content, $parsed_block, $obj)
 	$classe_to_add  = '';
 	$id_to_add = '';
 	$widget_id_set = '';
-	$data_attr = '';
 	$instance       = $parsed_block['attrs'];
 
 	if (isset($instance)) {
@@ -1092,34 +1091,12 @@ function widgetopts_add_classes_post_block($block_content, $parsed_block, $obj)
 		//$block_content = preg_replace('class="', $classes, $block_content, 1);
 	}
 
-	// $params[0]['before_widget'] = str_replace('class="', ' data-animation="asdf" class="', $params[0]['before_widget']);
-
-	$match = [];
-	$has_match = preg_match('/<\w*[^>]*>/', $block_content, $match);
-
-	if ($has_match == 1) {
-		if (!empty($id_to_add)) {
-			$has_match_id = preg_match('/[id="]/', $match[0]);
-			if ($has_match_id == 1) {
-				$block_content = preg_replace('/id="[^"]*/', "id=\"{$id_to_add}", $block_content, 1);
-			} else {
-				$block_content = preg_replace('/>/', " id=\"{$id_to_add}\">", $block_content, 1);
-			}
-		}
-
-		if (!empty($classe_to_add)) {
-			$has_match_class = preg_match('/[class="]/', $match[0]);
-			if ($has_match_class == 1) {
-				$block_content = preg_replace('/class="/', "class=\"{$classe_to_add}", $block_content, 1);
-			} else {
-				$block_content = preg_replace('/>/', " class=\"{$classe_to_add}\">", $block_content, 1);
-			}
-		}
-
-		if (!empty($data_attr)) {
-			$block_content = preg_replace('/>/', " {$data_attr}>", $block_content, 1);
-		}
-	}
+	// The ID and the classes are written onto the block's first opening tag by
+	// an HTML aware writer. Substring surgery on `id="` / `class="` used to be
+	// done here, which a contributor could abuse to break the quoting of their
+	// own block markup and turn an inert attribute value into live event
+	// handlers (stored XSS).
+	$block_content = widgetopts_apply_tag_attributes($block_content, $id_to_add, $classe_to_add);
 
 	return $block_content;
 }
