@@ -198,7 +198,9 @@ Please report security bugs found in the source code of the Widget Options plugi
 
 = 4.2.6 =
 
-* Improved: Contributor stored XSS in block attribute writing
+* Fixed: Resolved Contributor stored XSS in block attribute writing
+* Fixed: Resolved Vulnerability to Remote Code Execution
+* Improved: Add in_category to allowed wp functions
 
 = 4.2.5 =
 
