@@ -4,7 +4,7 @@ Tags: widget control, blocks, blocks visibility rules, gutenberg widgets, classi
 Requires at least: 5.6
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 4.2.5
+Stable tag: 4.2.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -195,6 +195,12 @@ Please report security bugs found in the source code of the Widget Options plugi
 14. Elementor Pagebuilder Integration
 
 == Changelog ==
+
+= 4.2.6 =
+
+* Fixed: Resolved Contributor stored XSS in block attribute writing
+* Fixed: Resolved Vulnerability to Remote Code Execution
+* Improved: Add in_category to allowed wp functions
 
 = 4.2.5 =
 
