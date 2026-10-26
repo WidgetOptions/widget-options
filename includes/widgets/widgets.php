@@ -154,7 +154,7 @@ function widgetopts_ajax_update_callback($instance, $new_instance, $old_instance
             $name       = 'extended_widget_opts';
             $options    = widgetopts_sanitize_array($new_instance);
         } else {
-            $name         = strip_tags($_POST['extended_widget_opts_name']);
+            $name         = strip_tags($_POST['extended_widget_opts_name'] ?? '');
             $options     = $_POST[$name];
         }
         if (isset($options['extended_widget_opts'])) {
