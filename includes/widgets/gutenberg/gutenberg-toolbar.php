@@ -231,20 +231,10 @@ function widgetopts_rest_pre_insert($post, $request)
 		return $post;
 	}
 
-	if (strpos($post->post_content, 'extended_widget_opts') === false
-		&& strpos($post->post_content, 'start_widgetopts') === false) {
-		return $post;
-	}
-
-	$new_blocks = parse_blocks($post->post_content);
-	if (!is_array($new_blocks) || empty($new_blocks)) {
-		return $post;
-	}
-
 	$changed = false;
-	widgetopts_strip_logic_from_blocks($new_blocks, $changed);
+	$content = widgetopts_strip_logic_from_content($post->post_content, $changed);
 	if ($changed) {
-		$post->post_content = serialize_blocks($new_blocks);
+		$post->post_content = $content;
 	}
 
 	return $post;
@@ -297,6 +287,90 @@ function widgetopt_modify_block_attributes(&$block, $old_blocks_lookup)
 }
 
 /**
+ * Pattern for the legacy freeform marker:
+ * <!--start_widgetopts {...} end_widgetopts-->
+ * Shared by the save-time strip filter and the render-time parser so both
+ * sides always see the same payload.
+ *
+ * @return string
+ */
+function widgetopts_freeform_marker_pattern() {
+	return '/<!--start_widgetopts\s+([\s\S]*?)\s*end_widgetopts-->/';
+}
+
+/**
+ * Decode the payload captured by widgetopts_freeform_marker_pattern().
+ *
+ * @param string $payload Raw text between the marker delimiters.
+ * @return array|null Decoded options, or null if invalid or contains nested markers.
+ */
+function widgetopts_decode_freeform_marker($payload) {
+	$payload = trim((string) $payload);
+
+	// A nested marker opener is never legitimate (parsing-differential attack).
+	// "end_widgetopts-->" cannot occur here: the lazy pattern stops at the first one.
+	if (strpos($payload, '<!--start_widgetopts') !== false) {
+		return null;
+	}
+
+	$data = json_decode($payload, true);
+	return is_array($data) ? $data : null;
+}
+
+/**
+ * Strip legacy logic from raw post content until the result is stable.
+ *
+ * A single parse/strip/serialize pass is not enough: rewriting a marker
+ * changes the text, and the new text may parse into different blocks or
+ * markers. Re-parse until nothing changes.
+ *
+ * @param string $content  Raw (unslashed) post content.
+ * @param bool   &$changed Set to true if the content was modified.
+ * @return string
+ */
+function widgetopts_strip_logic_from_content($content, &$changed) {
+	$changed = false;
+	if (!is_string($content) || $content === '') {
+		return $content;
+	}
+
+	for ($i = 0; $i < 5; $i++) {
+		if (strpos($content, 'extended_widget_opts') === false
+			&& strpos($content, 'start_widgetopts') === false) {
+			return $content;
+		}
+
+		$blocks = parse_blocks($content);
+		if (!is_array($blocks) || empty($blocks)) {
+			return $content;
+		}
+
+		$round_changed = false;
+		widgetopts_strip_logic_from_blocks($blocks, $round_changed);
+		if (!$round_changed) {
+			return $content;
+		}
+
+		$content = serialize_blocks($blocks);
+		$changed = true;
+	}
+
+	// Did not converge (crafted content): disable every freeform marker and
+	// run a final attribute-only pass.
+	$content = str_replace('<!--start_widgetopts', '<!--widgetopts-disabled', $content);
+	$blocks  = parse_blocks($content);
+	if (is_array($blocks) && !empty($blocks)) {
+		$round_changed = false;
+		widgetopts_strip_logic_from_blocks($blocks, $round_changed);
+		if ($round_changed) {
+			$content = serialize_blocks($blocks);
+		}
+	}
+
+	return $content;
+}
+
+/**
  * Recursively strip legacy logic from parsed blocks.
  * Used for non-admin users to prevent logic injection.
  *
@@ -325,38 +399,40 @@ function widgetopts_strip_logic_from_blocks(&$blocks, &$changed) {
 				if (!is_string($chunk) || strpos($chunk, 'start_widgetopts') === false) {
 					continue;
 				}
-				// Permissive outer pattern so crafted payloads like
-				// {...} <!--start_widgetopts end_widgetopts--> (parsing-differential
-				// attack) are also matched.
-				$chunk = preg_replace_callback(
-					'/<!--start_widgetopts\s+([\s\S]*?)\s*end_widgetopts-->/U',
+				// Same pattern and decoder as blockopts_filter_before_display(),
+				// so the render side can never see a payload this filter skipped.
+				// Invalid markers are left untouched: the renderer ignores them,
+				// and removing them could splice the surrounding text into a new marker.
+				$stripped = preg_replace_callback(
+					widgetopts_freeform_marker_pattern(),
 					static function ($m) use (&$changed) {
-						$raw  = trim($m[1]);
-						$data = json_decode($raw, true);
+						$data = widgetopts_decode_freeform_marker($m[1]);
 
-						if (!is_array($data)) {
-							// Trailing garbage after valid JSON (crafted payload).
-							// Find the last } and try decoding up to that point.
-							$pos = strrpos($raw, '}');
-							if ($pos !== false) {
-								$data = json_decode(substr($raw, 0, $pos + 1), true);
-							}
+						if (!is_array($data)
+							|| !isset($data['class']['logic'])
+							|| $data['class']['logic'] === '') {
+							return $m[0];
 						}
 
-						if (!is_array($data)) {
-							// Completely unrecoverable — remove entire marker.
-							$changed = true;
-							return '';
-						}
+						$data['class']['logic'] = '';
+						$changed = true;
 
-						if (isset($data['class']['logic']) && $data['class']['logic'] !== '') {
-							$data['class']['logic'] = '';
-							$changed = true;
+						// JSON_HEX_TAG: re-encoded payload can never contain marker delimiters.
+						$json = wp_json_encode($data, JSON_HEX_TAG);
+						if ($json === false) {
+							return '<!--widgetopts-disabled-->';
 						}
-						return '<!--start_widgetopts ' . wp_json_encode($data) . ' end_widgetopts-->';
+						return '<!--start_widgetopts ' . $json . ' end_widgetopts-->';
 					},
 					$chunk
 				);
+
+				if ($stripped === null) {
+					// PCRE failure: keep the text, but disable every marker in it.
+					$stripped = str_replace('<!--start_widgetopts', '<!--widgetopts-disabled', $chunk);
+					$changed  = true;
+				}
+				$chunk = $stripped;
 			}
 			unset($chunk);
 		}
@@ -388,22 +464,12 @@ add_filter('wp_insert_post_data', function($data, $postarr) {
 	// Unslash before processing so parse_blocks sees clean JSON.
 	$content = wp_unslash($data['post_content']);
 
-	if (strpos($content, 'extended_widget_opts') === false
-		&& strpos($content, 'start_widgetopts') === false) {
-		return $data;
-	}
-
-	$new_blocks = parse_blocks($content);
-	if (!is_array($new_blocks) || empty($new_blocks)) {
-		return $data;
-	}
-
 	$changed = false;
-	widgetopts_strip_logic_from_blocks($new_blocks, $changed);
+	$content = widgetopts_strip_logic_from_content($content, $changed);
 	if ($changed) {
 		// Re-slash so WordPress's subsequent wp_unslash() inside wp_insert_post()
 		// produces the correct clean string when writing to the database.
-		$data['post_content'] = wp_slash(serialize_blocks($new_blocks));
+		$data['post_content'] = wp_slash($content);
 	}
 	return $data;
 }, 10, 2);
@@ -489,14 +555,13 @@ function blockopts_filter_before_display($block_content, $parsed_block, $obj)
 	if (is_null($parsed_block['blockName']) || empty($parsed_block['blockName'])) {
 		if (!isset($parsed_block['attrs']) || empty($parsed_block['attrs'])) {
 			$result = null;
-			if (isset($parsed_block['innerContent']) && !empty($parsed_block['innerContent'][0])) {
-				$is_okay = preg_match("/<!--start_widgetopts[\s]+[{\":,}\w\W]*[\s]+end_widgetopts-->/", $parsed_block['innerContent'][0], $result);
+			if (isset($parsed_block['innerContent']) && !empty($parsed_block['innerContent'][0])
+				&& is_string($parsed_block['innerContent'][0])) {
+				$is_okay = preg_match(widgetopts_freeform_marker_pattern(), $parsed_block['innerContent'][0], $result);
 				if ($is_okay === 1) {
-					if (!is_null($result) && is_array($result)) {
-						$content = str_replace('<!--start_widgetopts', '', $result[0]);
-						$content = str_replace('end_widgetopts-->', '', $content);
-						$content = trim($content);
-						$parsed_block['attrs']['extended_widget_opts'] = json_decode($content, true);
+					$data = widgetopts_decode_freeform_marker($result[1]);
+					if (is_array($data)) {
+						$parsed_block['attrs']['extended_widget_opts'] = $data;
 					}
 				}
 			}
