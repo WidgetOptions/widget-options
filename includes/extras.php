@@ -585,14 +585,11 @@ function widgetopts_rest_scrub_legacy_logic(&$value, &$modified)
         // Pre-screen by substring to avoid parse_blocks() on unrelated content.
         if (strpos($value, 'extended_widget_opts') !== false
             || strpos($value, 'start_widgetopts') !== false) {
-            $blocks = parse_blocks($value);
-            if (is_array($blocks) && !empty($blocks)) {
-                $b_changed = false;
-                widgetopts_strip_logic_from_blocks($blocks, $b_changed);
-                if ($b_changed) {
-                    $value    = serialize_blocks($blocks);
-                    $modified = true;
-                }
+            $b_changed = false;
+            $stripped  = widgetopts_strip_logic_from_content($value, $b_changed);
+            if ($b_changed) {
+                $value    = $stripped;
+                $modified = true;
             }
         }
         return;
