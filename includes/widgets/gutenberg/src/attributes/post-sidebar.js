@@ -17,6 +17,18 @@ const { PanelBody, SelectControl } = wp.components;
 import WidgetOptionsTab from "./components/widgetopts-tab";
 import { useDispatch, useSelect, subscribe } from "@wordpress/data";
 
+// Legacy freeform marker: <!--start_widgetopts {...} end_widgetopts-->
+// Must match widgetopts_freeform_marker_pattern() in gutenberg-toolbar.php
+// (first marker only, lazy).
+const WIDGETOPTS_MARKER_RE = /<!--start_widgetopts\s+([\s\S]*?)\s*end_widgetopts-->/;
+
+// Escape < and > (like PHP JSON_HEX_TAG) so option values can never
+// contain "-->" or marker delimiters.
+const widgetopts_build_marker = (value) =>
+  `<!--start_widgetopts ${JSON.stringify(value)
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")} end_widgetopts-->`;
+
 let initialize_click_event = false;
 let totalFetchData = 9;
 let saveCachedCounter = 0;
@@ -481,15 +493,16 @@ const withSidebarTabPost = (BlockEdit) => {
         props.attributes != undefined &&
         props.attributes.content != undefined
       ) {
-        if (props.attributes.content.includes("<!--start_widgetopts")) {
-          let start = props.attributes.content.indexOf("<!--start_widgetopts");
-          let end = props.attributes.content.indexOf("end_widgetopts-->");
-          let content = props.attributes.content.substring(start, end + 17);
-          content = content
-            .replace("<!--start_widgetopts ", "")
-            .replace(" end_widgetopts-->", "");
-
-          widget_opts = JSON.parse(content.trim());
+        const marker = props.attributes.content.match(WIDGETOPTS_MARKER_RE);
+        if (marker) {
+          try {
+            const parsed = JSON.parse(marker[1].trim());
+            if (parsed && typeof parsed === "object") {
+              widget_opts = parsed;
+            }
+          } catch (e) {
+            // Invalid marker payload: keep defaults (server ignores it too).
+          }
         }
       }
     }
@@ -652,12 +665,13 @@ const withSidebarTabPost = (BlockEdit) => {
       });
 
       if (props.name != undefined && props.name == "core/freeform") {
+        const marker = widgetopts_build_marker({ ...newValue });
         if (props.attributes.content.includes("<!--start_widgetopts")) {
-          let _props = props.attributes.content.replaceAll(
-            /<!--start_widgetopts[\s]+[{\":,}\w\W]*[\s]+end_widgetopts-->/gim,
-            `<!--start_widgetopts ${JSON.stringify({
-              ...newValue,
-            })} end_widgetopts-->`
+          // Replace only the first marker; function form so "$" in values
+          // is not treated as a replacement pattern.
+          let _props = props.attributes.content.replace(
+            WIDGETOPTS_MARKER_RE,
+            () => marker
           );
 
           props.setAttributes({
@@ -665,9 +679,7 @@ const withSidebarTabPost = (BlockEdit) => {
           });
         } else {
           props.setAttributes({
-            content: `<div><!--start_widgetopts ${JSON.stringify({
-              ...newValue,
-            })} end_widgetopts--> ${props.attributes.content} </div>`,
+            content: `<div>${marker} ${props.attributes.content} </div>`,
           });
         }
       }
