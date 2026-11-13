@@ -26,6 +26,38 @@ class WidgetOpts_Snippets_Migration {
     const MIGRATION_OPTION = 'widgetopts_snippets_migration';
 
     /**
+     * Unserialize a raw database value without instantiating arbitrary classes.
+     *
+     * Values that contain any other object are skipped (null), so they are never
+     * written back with incomplete objects.
+     *
+     * @param mixed      $value           Raw meta_value / option_value.
+     * @param array|bool $allowed_classes Classes that may be instantiated.
+     * @return mixed
+     */
+    private static function safe_unserialize($value, $allowed_classes = false) {
+        if (!is_string($value) || !is_serialized($value)) {
+            return $value;
+        }
+        $data = @unserialize(trim($value), array('allowed_classes' => $allowed_classes));
+        return self::has_incomplete_class($data) ? null : $data;
+    }
+
+    private static function has_incomplete_class($data) {
+        if ($data instanceof __PHP_Incomplete_Class) {
+            return true;
+        }
+        if (is_array($data) || is_object($data)) {
+            foreach ($data as $item) {
+                if (self::has_incomplete_class($item)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Run the complete migration process
      * 
      * @return bool True on success, false on failure
@@ -288,7 +320,7 @@ class WidgetOpts_Snippets_Migration {
         );
 
         foreach ($beaver_data as $data) {
-            $nodes = maybe_unserialize($data->meta_value);
+            $nodes = self::safe_unserialize($data->meta_value, array('stdClass'));
             if (is_array($nodes)) {
                 foreach ($nodes as $node) {
                     if (isset($node->settings->widgetopts_settings_logic) && !empty($node->settings->widgetopts_settings_logic)) {
@@ -318,7 +350,7 @@ class WidgetOpts_Snippets_Migration {
         );
 
         foreach ($siteorigin_data as $data) {
-            $panels = maybe_unserialize($data->meta_value);
+            $panels = self::safe_unserialize($data->meta_value);
             if (is_array($panels) && isset($panels['widgets'])) {
                 foreach ($panels['widgets'] as $widget) {
                     if (isset($widget['extended_widget_opts']['class']['logic']) && !empty($widget['extended_widget_opts']['class']['logic'])) {
@@ -415,7 +447,7 @@ class WidgetOpts_Snippets_Migration {
         );
 
         foreach ($widget_options as $option) {
-            $widgets = maybe_unserialize($option->option_value);
+            $widgets = self::safe_unserialize($option->option_value);
 
             if (!is_array($widgets)) {
                 continue;
@@ -637,7 +669,7 @@ class WidgetOpts_Snippets_Migration {
             ));
 
             foreach ($beaver_data as $data) {
-                $nodes = maybe_unserialize($data->meta_value);
+                $nodes = self::safe_unserialize($data->meta_value, array('stdClass'));
 
                 if (!is_array($nodes)) {
                     continue;
@@ -690,7 +722,7 @@ class WidgetOpts_Snippets_Migration {
         );
 
         foreach ($siteorigin_data as $data) {
-            $panels = maybe_unserialize($data->meta_value);
+            $panels = self::safe_unserialize($data->meta_value);
 
             if (!is_array($panels) || !isset($panels['widgets'])) {
                 continue;
@@ -814,7 +846,7 @@ class WidgetOpts_Snippets_Migration {
              AND pm.meta_value LIKE '%widgetopts_settings_logic%'"
         );
         foreach ($beaver_rows as $row) {
-            $nodes = maybe_unserialize($row->meta_value);
+            $nodes = self::safe_unserialize($row->meta_value, array('stdClass'));
             if (is_array($nodes)) {
                 foreach ($nodes as $node) {
                     if (isset($node->settings->widgetopts_settings_logic) && !empty($node->settings->widgetopts_settings_logic)) {
@@ -834,7 +866,7 @@ class WidgetOpts_Snippets_Migration {
              AND pm.meta_value LIKE '%extended_widget_opts%'"
         );
         foreach ($so_rows as $row) {
-            $panels = maybe_unserialize($row->meta_value);
+            $panels = self::safe_unserialize($row->meta_value);
             if (is_array($panels) && isset($panels['widgets'])) {
                 foreach ($panels['widgets'] as $widget) {
                     if (isset($widget['extended_widget_opts']['class']['logic']) && !empty($widget['extended_widget_opts']['class']['logic'])) {
@@ -991,7 +1023,7 @@ class WidgetOpts_Snippets_Migration {
             "SELECT option_name, option_value FROM {$wpdb->options} WHERE option_name LIKE 'widget_%'"
         );
         foreach ($widget_opts as $option) {
-            $widgets = maybe_unserialize($option->option_value);
+            $widgets = self::safe_unserialize($option->option_value);
             if (!is_array($widgets)) continue;
             $updated = false;
             foreach ($widgets as &$instance) {
@@ -1061,7 +1093,7 @@ class WidgetOpts_Snippets_Migration {
                 '%widgetopts_settings_logic%'
             ));
             foreach ($bb_rows as $row) {
-                $nodes = maybe_unserialize($row->meta_value);
+                $nodes = self::safe_unserialize($row->meta_value, array('stdClass'));
                 if (!is_array($nodes)) continue;
                 $changed = false;
                 foreach ($nodes as &$node) {
@@ -1086,7 +1118,7 @@ class WidgetOpts_Snippets_Migration {
              WHERE pm.meta_key = 'panels_data' AND pm.meta_value LIKE '%extended_widget_opts%'"
         );
         foreach ($so_rows as $row) {
-            $panels = maybe_unserialize($row->meta_value);
+            $panels = self::safe_unserialize($row->meta_value);
             if (!is_array($panels) || !isset($panels['widgets'])) continue;
             $changed = false;
             foreach ($panels['widgets'] as &$widget) {

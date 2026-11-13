@@ -712,8 +712,11 @@ function widgetopts_protect_panels_data_meta($check, $object_id, $meta_key, $met
         return $check;
     }
 
-    $new_data = is_array($meta_value) ? $meta_value : maybe_unserialize($meta_value);
-    if (!is_array($new_data) || empty($new_data['widgets'])) return $check;
+    // Never unserialize request data (PHP object injection). SiteOrigin passes an
+    // array; a string value is stored by core as a plain string and never read back
+    // as panels data.
+    if (!is_array($meta_value) || empty($meta_value['widgets'])) return $check;
+    $new_data = $meta_value;
 
     $modified = false;
     // Recursively strip any legacy class.logic values from plugin-owned containers.

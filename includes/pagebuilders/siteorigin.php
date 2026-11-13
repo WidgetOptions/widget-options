@@ -99,8 +99,10 @@ if (!function_exists('widgetopts_siteorigin_protect_logic_on_save')) {
         }
 
         // Check new data
-        $new_data = is_array($meta_value) ? $meta_value : maybe_unserialize($meta_value);
-        if (!is_array($new_data) || empty($new_data['widgets'])) return $check;
+        // Never unserialize request data (PHP object injection); see
+        // widgetopts_protect_panels_data_meta().
+        if (!is_array($meta_value) || empty($meta_value['widgets'])) return $check;
+        $new_data = $meta_value;
 
         // If the current user cannot manage options, treat them as non-administrator
         // and reject any attempted injection of new class.logic values.
