@@ -1,4 +1,5 @@
 # Ignore the Visual Studio local workspace folder
 .vs/
+.github/
 # JS build dependencies
 node_modules/

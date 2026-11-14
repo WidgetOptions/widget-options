@@ -112,7 +112,7 @@ add_filter('register_block_type_args', function ($args, $name) {
 				return call_user_func($orig_callback, $attributes);
 			};
 		}
-	} else if (stripos($name, 'jetpack') !== false) {
+	} else if (stripos($name, 'jetpack') !== false || stripos($name, 'feedzy') !== false) {
 		$args['attributes']['extended_widget_opts_block'] = array(
 			'type' => 'object',
 			// 'default' => (object)[]
@@ -122,8 +122,16 @@ add_filter('register_block_type_args', function ($args, $name) {
 			'type' => 'object',
 			// 'default' => (object)[]
 		);
+
+		if (stripos($name, 'feedzy') !== false && isset($args['render_callback']) && is_callable($args['render_callback'])) {
+			$feedzy_callback = $args['render_callback'];
+			$args['render_callback'] = function ($attributes) use ($feedzy_callback) {
+				unset($attributes['extended_widget_opts'], $attributes['extended_widget_opts_block']);
+				return call_user_func_array($feedzy_callback, func_get_args() ? array_merge([$attributes], array_slice(func_get_args(), 1)) : [$attributes]);
+			};
+		}
 	} else {
-		//if block type is not luckywp/tableofcontents use type object
+		//if block type
 		$args['attributes']['extended_widget_opts_block'] = array(
 			'type' => 'object',
 			'default' => (object)[]
