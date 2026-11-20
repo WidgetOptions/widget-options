@@ -592,17 +592,18 @@ function widgetopts_rest_scrub_legacy_logic(&$value, &$modified)
                 $modified = true;
             }
         }
-        return;
+        return true;
     }
 
     if (!is_array($value) && !is_object($value)) {
-        return;
+        return true;
     }
 
     $is_object = is_object($value);
     $items     = $is_object ? get_object_vars($value) : $value;
 
     foreach ($items as $k => $v) {
+        $field_changed = false;
         $key = (string) $k;
 
         // Page-builder-specific inline keys. Both names are owned by this
@@ -610,71 +611,100 @@ function widgetopts_rest_scrub_legacy_logic(&$value, &$modified)
         // ship a setting under these exact identifiers.
         if (is_string($v) && $v !== ''
             && ($key === 'widgetopts_settings_logic' || $key === 'widgetopts_logic')) {
-            $v        = '';
-            $modified = true;
+            $v = '';
+            $field_changed = true;
         }
 
         // Scoped to plugin-owned containers — never touch class.logic under
         // unrelated parents (third-party REST shapes commonly use them).
         if (($key === 'extended_widget_opts' || $key === 'extended_widget_opts_block')
             && (is_array($v) || is_object($v))) {
-            widgetopts_rest_scrub_extended_widget_opts($v, $modified);
+            if (!widgetopts_rest_scrub_extended_widget_opts($v, $field_changed)) {
+                return false;
+            }
         }
 
         if (is_array($v) || is_object($v) || is_string($v)) {
-            widgetopts_rest_scrub_legacy_logic($v, $modified);
+            if (!widgetopts_rest_scrub_legacy_logic($v, $field_changed)) {
+                return false;
+            }
         }
 
-        if ($is_object) {
-            $value->$k = $v;
-        } else {
-            $value[$k] = $v;
+        if (!$field_changed) {
+            continue;
+        }
+        $modified = true;
+        // A nested object may already have been scrubbed in place.
+        if ($v !== $items[$k] && !widgetopts_rest_set_scrubbed_value($value, $k, $v)) {
+            return false;
         }
     }
+    return true;
 }
 
 // Inside a plugin-owned container, find and clear class.logic at any depth.
 function widgetopts_rest_scrub_extended_widget_opts(&$container, &$modified)
 {
     if (!is_array($container) && !is_object($container)) {
-        return;
+        return true;
     }
 
     $is_object = is_object($container);
     $items     = $is_object ? get_object_vars($container) : $container;
 
     foreach ($items as $k => $v) {
+        $field_changed = false;
         if ((string) $k === 'class' && (is_array($v) || is_object($v))) {
             $cls_is_obj = is_object($v);
             $cls_items  = $cls_is_obj ? get_object_vars($v) : $v;
             if (isset($cls_items['logic'])
                 && is_string($cls_items['logic'])
                 && $cls_items['logic'] !== '') {
-                if ($cls_is_obj) {
-                    $v->logic = '';
-                } else {
-                    $v['logic'] = '';
+                if (!widgetopts_rest_set_scrubbed_value($v, 'logic', '')) {
+                    return false;
                 }
-                $modified = true;
+                $field_changed = true;
             }
         }
 
         if (is_array($v) || is_object($v)) {
-            widgetopts_rest_scrub_extended_widget_opts($v, $modified);
+            if (!widgetopts_rest_scrub_extended_widget_opts($v, $field_changed)) {
+                return false;
+            }
         }
 
-        if ($is_object) {
-            $container->$k = $v;
-        } else {
-            $container[$k] = $v;
+        if (!$field_changed) {
+            continue;
         }
+        $modified = true;
+        // A nested object may already have been scrubbed in place.
+        if ($v !== $items[$k] && !widgetopts_rest_set_scrubbed_value($container, $k, $v)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// REST sanitizers can supply typed objects. A required edit may be read-only.
+function widgetopts_rest_set_scrubbed_value(&$container, $key, $value)
+{
+    if (is_array($container)) {
+        $container[$key] = $value;
+        return true;
+    }
+    try {
+        $container->$key = $value;
+        // A property hook may normalize or decline the write without throwing.
+        return $container->$key === $value;
+    } catch (\Throwable $error) {
+        return false;
     }
 }
 
 // Belt-and-braces net for REST routes without their own save-time gate.
 // Non-admin write requests only; GET/HEAD/OPTIONS untouched.
 add_filter('rest_request_before_callbacks', function ($response, $handler, $request) {
-    if (!($request instanceof WP_REST_Request)) {
+    if (is_wp_error($response) || !($request instanceof WP_REST_Request)) {
         return $response;
     }
     if (current_user_can('manage_options')) {
@@ -692,7 +722,11 @@ add_filter('rest_request_before_callbacks', function ($response, $handler, $requ
 
     foreach ($params as $key => $value) {
         $changed = false;
-        widgetopts_rest_scrub_legacy_logic($value, $changed);
+        if (!widgetopts_rest_scrub_legacy_logic($value, $changed)) {
+            return new WP_Error('widgetopts_immutable_logic',
+                __('Cannot remove inline Display Logic from the request.', 'widget-options'),
+                array('status' => 400));
+        }
         if ($changed) {
             $request->set_param($key, $value);
         }
@@ -705,7 +739,7 @@ add_filter('rest_request_before_callbacks', function ($response, $handler, $requ
 add_filter('add_post_metadata', 'widgetopts_protect_panels_data_meta', 10, 5);
 add_filter('update_post_metadata', 'widgetopts_protect_panels_data_meta', 10, 5);
 function widgetopts_protect_panels_data_meta($check, $object_id, $meta_key, $meta_value, $prev_value) {
-    if ($meta_key !== 'panels_data') return $check;
+    if ($check !== null || $meta_key !== 'panels_data') return $check;
 
     // Non-admin authors should not be able to inject legacy class.logic.
     if (function_exists('current_user_can') && current_user_can('manage_options')) {
@@ -720,7 +754,9 @@ function widgetopts_protect_panels_data_meta($check, $object_id, $meta_key, $met
     foreach ($new_data['widgets'] as &$widget) {
         if (!isset($widget['extended_widget_opts'])) continue;
         $changed = false;
-        widgetopts_rest_scrub_extended_widget_opts($widget['extended_widget_opts'], $changed);
+        if (!widgetopts_rest_scrub_extended_widget_opts($widget['extended_widget_opts'], $changed)) {
+            return false;
+        }
         if ($changed) {
             $modified = true;
         }
@@ -749,7 +785,9 @@ add_action('save_post', function ($post_id, $post, $update) {
     foreach ($data['widgets'] as &$widget) {
         if (!isset($widget['extended_widget_opts'])) continue;
         $changed = false;
-        widgetopts_rest_scrub_extended_widget_opts($widget['extended_widget_opts'], $changed);
+        if (!widgetopts_rest_scrub_extended_widget_opts($widget['extended_widget_opts'], $changed)) {
+            return;
+        }
         if ($changed) $modified = true;
     }
 
