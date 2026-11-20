@@ -550,7 +550,7 @@ class WidgetOpts_Snippets_Admin {
             </p>
             <p class="description" style="margin: 10px 0 0; padding: 10px; background: #fbfcf0; border-left: 4px solid #af991d; border-radius: 2px; color: #1d2327;">
                 <strong style="color: #af991d;"><?php _e('Security Warning:', 'widget-options'); ?></strong><br>
-                <?php _e('Code is executed via eval(). Only administrators can create/edit snippets. The code is validated against a whitelist of allowed functions.', 'widget-options'); ?>
+                <?php _e('Snippets run as PHP on your site. Only administrators can create or edit them. Each snippet is checked against the list of allowed functions before it runs.', 'widget-options'); ?>
             </p>
         </div>
         
