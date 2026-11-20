@@ -474,28 +474,26 @@ add_filter('wp_insert_post_data', function($data, $postarr) {
 	return $data;
 }, 10, 2);
 
-// Flag the block-renderer REST dispatch so render_block_data below can
-// scope its sha256-allowlist work to that single route.
-add_filter('rest_pre_dispatch', function ($result, $server, $request) {
-	if ($request instanceof WP_REST_Request
-		&& strpos((string) $request->get_route(), '/wp/v2/block-renderer/') === 0) {
-		$GLOBALS['_widgetopts_in_block_renderer'] = true;
+// Use the matched controller so the guard follows WordPress route matching.
+add_filter('rest_request_before_callbacks', function ($response, $handler) {
+	if (widgetopts_is_rest_block_renderer_handler($handler)) {
+		$GLOBALS['_widgetopts_in_block_renderer'] = ($GLOBALS['_widgetopts_in_block_renderer'] ?? 0) + 1;
 	}
-	return $result;
-}, 1, 3);
-
-add_filter('rest_post_dispatch', function ($response, $server, $request) {
-	unset($GLOBALS['_widgetopts_in_block_renderer']);
 	return $response;
-}, 1, 3);
+}, 5, 2);
+
+add_filter('rest_request_after_callbacks', function ($response, $handler) {
+	if (widgetopts_is_rest_block_renderer_handler($handler)
+		&& --$GLOBALS['_widgetopts_in_block_renderer'] === 0) {
+		unset($GLOBALS['_widgetopts_in_block_renderer']);
+	}
+	return $response;
+}, 10, 2);
 
 // Block-renderer accepts user-supplied attributes without a save step.
 // For non-admins, allowlist class.logic against a sha256 of values stored in
 // the post's post_content; mismatched values are zeroed before render_callback.
 add_filter('render_block_data', function ($parsed_block) {
-	if (!defined('REST_REQUEST') || !REST_REQUEST) {
-		return $parsed_block;
-	}
 	if (empty($GLOBALS['_widgetopts_in_block_renderer'])) {
 		return $parsed_block;
 	}
@@ -1076,14 +1074,19 @@ function blockopts_filter_before_display($block_content, $parsed_block, $obj)
 					}
 				}
 			}
-			// Legacy support for old inline logic
-			elseif (isset($opts['class']) && isset($opts['class']['logic']) && !empty($opts['class']['logic'])) {
+			// Only admins can evaluate inline logic during a REST block preview.
+			elseif (!empty($opts['class']['logic'])
+				&& (empty($GLOBALS['_widgetopts_in_block_renderer']) || current_user_can('manage_options'))) {
 				// Flag that legacy migration is needed
 				if (!get_option('wopts_display_logic_migration_required', false)) {
 					update_option('wopts_display_logic_migration_required', true);
 				}
 
-				$display_logic = stripslashes(trim($opts['class']['logic']));
+				$display_logic = trim($opts['class']['logic']);
+				// WordPress has already decoded the REST block attributes.
+				if (empty($GLOBALS['_widgetopts_in_block_renderer'])) {
+					$display_logic = stripslashes($display_logic);
+				}
 				$display_logic = apply_filters('widget_options_logic_override_block', $display_logic);
 				$display_logic = apply_filters('extended_widget_options_logic_override_block', $display_logic);
 				if ($display_logic === false) {
