@@ -164,7 +164,7 @@ function widgetopts_ajax_validate_expression()
 		die();
 	}
 
-	$expression = sanitize_text_field($_POST['expression']);
+	$expression = sanitize_text_field(wp_unslash($_POST['expression']));
 	$result = widgetopts_validate_expression($expression);
 
 	echo json_encode(['response' => 'success', 'message' => $result['message'], 'valid' => $result['valid']]);

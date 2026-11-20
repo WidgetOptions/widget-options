@@ -671,8 +671,17 @@ function widgetopts_rest_scrub_extended_widget_opts(&$container, &$modified)
     }
 }
 
-// Belt-and-braces net for REST routes without their own save-time gate.
-// Non-admin write requests only; GET/HEAD/OPTIONS untouched.
+function widgetopts_is_rest_block_renderer_handler($handler)
+{
+    $callback = $handler['callback'] ?? null;
+
+    return is_array($callback)
+        && ($callback[0] ?? null) instanceof WP_REST_Block_Renderer_Controller
+        && ($callback[1] ?? null) === 'get_item';
+}
+
+// Read methods can pass JSON parameters to callbacks, and block rendering can
+// consume inline logic even when attributes come from the query string.
 add_filter('rest_request_before_callbacks', function ($response, $handler, $request) {
     if (!($request instanceof WP_REST_Request)) {
         return $response;
@@ -681,7 +690,9 @@ add_filter('rest_request_before_callbacks', function ($response, $handler, $requ
         return $response;
     }
     $method = strtoupper((string) $request->get_method());
-    if ($method === 'GET' || $method === 'HEAD' || $method === 'OPTIONS') {
+    if (in_array($method, array('GET', 'HEAD', 'OPTIONS'), true)
+        && !widgetopts_is_rest_block_renderer_handler($handler)
+        && !$request->is_json_content_type()) {
         return $response;
     }
 
@@ -774,14 +785,13 @@ function widgetopts_safe_eval($expression)
         }
     }
 
-    $validation_result = widgetopts_validate_expression($expression);
-
-    if ($validation_result['valid'] === false) {
-        return false;
-    }
-
     if (stristr($expression, "return") === false) {
         $expression = "return (" . $expression . ");";
+    }
+
+    $validation_result = widgetopts_validate_expression($expression);
+    if ($validation_result['valid'] === false) {
+        return false;
     }
 
     ob_start();
@@ -1143,8 +1153,7 @@ function widgetopts_adjacent_significant_token(array $tokens, int $index, int $d
  */
 function widgetopts_validate_code_with_tokens($code, $allowed_functions)
 {
-    $code = stripslashes($code);
-    // Ensure correct PHP opening tag before tokenizing
+    // Callers decode transport escaping before validation.
     if (strpos(trim($code), '<?php') !== 0) {
         $code = "<?php " . $code;
     }
