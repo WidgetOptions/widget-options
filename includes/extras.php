@@ -692,7 +692,17 @@ add_filter('rest_request_before_callbacks', function ($response, $handler, $requ
 
     foreach ($params as $key => $value) {
         $changed = false;
+        $builder_meta = array();
+        if ($key === 'meta' && is_array($value)
+            && isset($handler['callback']) && is_array($handler['callback'])
+            && ($handler['callback'][0] ?? null) instanceof WP_REST_Posts_Controller) {
+            $builder_meta = array_filter($value, 'widgetopts_is_builder_layout_meta', ARRAY_FILTER_USE_KEY);
+            $value = array_diff_key($value, $builder_meta);
+        }
         widgetopts_rest_scrub_legacy_logic($value, $changed);
+        if ($builder_meta) {
+            $value += $builder_meta;
+        }
         if ($changed) {
             $request->set_param($key, $value);
         }
@@ -701,65 +711,7 @@ add_filter('rest_request_before_callbacks', function ($response, $handler, $requ
     return $response;
 }, 10, 3);
 
-// Global metadata-level guard for panels_data: apply to both add and update.
-add_filter('add_post_metadata', 'widgetopts_protect_panels_data_meta', 10, 5);
-add_filter('update_post_metadata', 'widgetopts_protect_panels_data_meta', 10, 5);
-function widgetopts_protect_panels_data_meta($check, $object_id, $meta_key, $meta_value, $prev_value) {
-    if ($meta_key !== 'panels_data') return $check;
-
-    // Non-admin authors should not be able to inject legacy class.logic.
-    if (function_exists('current_user_can') && current_user_can('manage_options')) {
-        return $check;
-    }
-
-    $new_data = is_array($meta_value) ? $meta_value : maybe_unserialize($meta_value);
-    if (!is_array($new_data) || empty($new_data['widgets'])) return $check;
-
-    $modified = false;
-    // Recursively strip any legacy class.logic values from plugin-owned containers.
-    foreach ($new_data['widgets'] as &$widget) {
-        if (!isset($widget['extended_widget_opts'])) continue;
-        $changed = false;
-        widgetopts_rest_scrub_extended_widget_opts($widget['extended_widget_opts'], $changed);
-        if ($changed) {
-            $modified = true;
-        }
-    }
-
-    if ($modified) {
-        // Short-circuit metadata write: update with sanitized value and stop caller.
-        update_post_meta($object_id, 'panels_data', $new_data);
-        return true;
-    }
-
-    return $check;
-}
-
-// Sanitize panels_data after a post save as a belt-and-braces for importers that
-// may bypass metadata filters. Only applies to non-admins by default.
-add_action('save_post', function ($post_id, $post, $update) {
-    static $processing = false;
-    if ($processing) return;
-    if (function_exists('current_user_can') && current_user_can('manage_options')) return;
-
-    $data = get_post_meta($post_id, 'panels_data', true);
-    if (!is_array($data) || empty($data['widgets'])) return;
-
-    $modified = false;
-    foreach ($data['widgets'] as &$widget) {
-        if (!isset($widget['extended_widget_opts'])) continue;
-        $changed = false;
-        widgetopts_rest_scrub_extended_widget_opts($widget['extended_widget_opts'], $changed);
-        if ($changed) $modified = true;
-    }
-
-    if ($modified) {
-        $processing = true;
-        update_post_meta($post_id, 'panels_data', $data);
-        $processing = false;
-    }
-
-}, 10, 3);
+require_once __DIR__ . '/pagebuilders/inline-logic-meta.php';
 
 function widgetopts_safe_eval($expression)
 {

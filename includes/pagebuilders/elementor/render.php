@@ -11,6 +11,7 @@
 if (!defined('ABSPATH')) exit;
 
 if (!function_exists('widgetopts_elementor_render')) {
+	require_once __DIR__ . '/public-content.php';
 	add_action('elementor/widget/render_content', 'widgetopts_elementor_render', 10, 2);
 	function widgetopts_elementor_render($content, $widget)
 	{
@@ -153,7 +154,7 @@ if (!function_exists('widgetopts_elementor_render')) {
 				if ($hidden) {
 					return $placeholder;
 				}
-			} elseif (is_single() && !is_page()) {
+			} elseif ('activate' === $widget_options['visibility'] && is_single() && !is_page()) {
 				global $wp_query;
 				$post = $wp_query->post;
 
