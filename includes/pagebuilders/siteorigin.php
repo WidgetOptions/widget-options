@@ -80,7 +80,7 @@ if (!function_exists('widgetopts_siteorigin_protect_logic_on_save')) {
     add_filter('update_post_metadata', 'widgetopts_siteorigin_protect_logic_on_save', 10, 5);
     add_filter('add_post_metadata', 'widgetopts_siteorigin_protect_logic_on_save', 10, 5);
     function widgetopts_siteorigin_protect_logic_on_save($check, $object_id, $meta_key, $meta_value, $prev_value) {
-        if ($meta_key !== 'panels_data') return $check;
+        if ($check !== null || $meta_key !== 'panels_data') return $check;
 
         static $processing = false;
         if ($processing) return $check;
