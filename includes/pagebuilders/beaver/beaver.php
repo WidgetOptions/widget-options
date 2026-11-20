@@ -1020,7 +1020,7 @@ if (!class_exists('WP_Widget_Options_Beaver')) :
 			$old_val = isset($old_logic[$nid]) ? $old_logic[$nid] : '';
 			$new_val = isset($node->settings->widgetopts_settings_logic) ? $node->settings->widgetopts_settings_logic : '';
 
-			if ($new_val !== $old_val) {
+			if ($new_val !== $old_val && !current_user_can('manage_options')) {
 				if ($old_val !== '') {
 					$node->settings->widgetopts_settings_logic = $old_val;
 				} else {

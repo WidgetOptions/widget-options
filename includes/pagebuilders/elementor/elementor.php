@@ -435,7 +435,7 @@ if (!function_exists('widgetopts_elementor_tab_settings')) {
                         . __('This element uses legacy inline display logic that needs migration.', 'widget-options')
                         . $migration_link
                         . '</p>'
-                        . '<button type="button" class="elementor-button widgetopts-clear-legacy-logic" style="margin-top:8px;padding:5px 15px;background:#dc3545;color:#fff;border:none;border-radius:3px;cursor:pointer;font-size:12px;">' . __('Clear Legacy Logic', 'widget-options') . '</button>'
+                        . (current_user_can('manage_options') ? '<button type="button" class="elementor-button widgetopts-clear-legacy-logic" style="margin-top:8px;padding:5px 15px;background:#dc3545;color:#fff;border:none;border-radius:3px;cursor:pointer;font-size:12px;">' . __('Clear Legacy Logic', 'widget-options') . '</button>' : '')
                         . '</div>',
                     'condition'     => [
                         'widgetopts_logic!' => '',
@@ -623,12 +623,72 @@ if (!function_exists('widgetopts_is_elementor_edit_mode')) {
  * 
  * @since 5.1
  */
+// Elementor continues saving when update_metadata() returns false. Report a
+// forbidden edit to the editor before any document settings or content are saved.
+add_filter('elementor/document/save/data', function ($data, $document) {
+    if (!isset($data['elements']) || current_user_can('manage_options') || !$document->is_editable_by_current_user()) {
+        return $data;
+    }
+
+    $post_id = $document->get_post()->ID;
+    if (widgetopts_guard_builder_meta(null, $post_id, '_elementor_data', $data['elements']) === false) {
+        throw new \Exception(__('Only administrators can change inline Display Logic.', 'widget-options'), 403);
+    }
+
+    // Keep only the unchanged rules that Elementor's later KSES pass will alter.
+    if (!current_user_can('unfiltered_html')) {
+        $rules = widgetopts_builder_rules_by_node('_elementor_data', $data['elements']);
+        foreach ($rules as $id => $rule) {
+            if (isset($rule[0]) && is_string($rule[0]) && wp_kses_post($rule[0]) !== $rule[0]) {
+                $GLOBALS['_widgetopts_elementor_kses_rules'][$post_id][$id] = $rule[0];
+            }
+        }
+    }
+    return $data;
+}, 10, 2);
+
+// Restore only the protected field. All ordinary settings retain Elementor's sanitization.
+add_filter('update_post_metadata', function ($check, $post_id, $key, $json, $previous) {
+    if ($check !== null || $key !== '_elementor_data' || empty($GLOBALS['_widgetopts_elementor_kses_rules'][$post_id])) {
+        return $check;
+    }
+    $rules = $GLOBALS['_widgetopts_elementor_kses_rules'][$post_id];
+    unset($GLOBALS['_widgetopts_elementor_kses_rules'][$post_id]);
+    $elements = is_string($json) ? json_decode($json, true) : null;
+    if (!is_array($elements)) {
+        return $check;
+    }
+    $restore = static function (&$nodes) use (&$restore, $rules) {
+        foreach ($nodes as &$node) {
+            $id = $node['id'] ?? '';
+            if (isset($rules[$id])) {
+                $node['settings']['widgetopts_logic'] = $rules[$id];
+            }
+            if (!empty($node['elements'])) {
+                $restore($node['elements']);
+            }
+        }
+    };
+    $restore($elements);
+    $saved = wp_json_encode($elements);
+    // Re-enter the normal write path so the metadata guard checks the current DB rules.
+    if ($saved === false || widgetopts_guard_builder_meta(null, $post_id, $key, $saved) === false) {
+        throw new \Exception(__('Please reload the document before saving Display Logic.', 'widget-options'), 409);
+    }
+    $result = update_metadata('post', $post_id, $key, wp_slash($saved), $previous);
+    if (!$result && get_post_meta($post_id, $key, true) !== $saved) {
+        throw new \Exception(__('Could not save the Elementor layout.', 'widget-options'));
+    }
+    return $result;
+}, 4, 5);
+
 add_action('elementor/document/before_save', function($document) {
     $post_id = $document->get_main_id();
     $GLOBALS['_wopts_el_pre_save_' . $post_id] = get_post_meta($post_id, '_elementor_data', true);
 }, 5, 1);
 
 add_action('elementor/document/after_save', function($document) {
+    unset($GLOBALS['_widgetopts_elementor_kses_rules'][$document->get_post()->ID]);
     $post_id = $document->get_main_id();
     $key = '_wopts_el_pre_save_' . $post_id;
     $old_raw = isset($GLOBALS[$key]) ? $GLOBALS[$key] : '';
@@ -697,7 +757,7 @@ add_action('elementor/document/after_save', function($document) {
 
             $old_val = ($id && isset($old_logic[$id])) ? $old_logic[$id] : '';
             $new_val = isset($el['settings']['widgetopts_logic']) ? $el['settings']['widgetopts_logic'] : '';
-            if ($new_val !== $old_val) {
+            if ($new_val !== $old_val && !current_user_can('manage_options')) {
                 if ($old_val !== '') {
                     $el['settings']['widgetopts_logic'] = $old_val;
                 } else {
@@ -713,6 +773,14 @@ add_action('elementor/document/after_save', function($document) {
 
     if ($changed) {
         update_post_meta($post_id, '_elementor_data', wp_slash(json_encode($saved_els)));
+
+        // Elementor generated its plain content before legacy settings were restored.
+        if (function_exists('widgetopts_elementor_public_plain_content')) {
+            $content = widgetopts_elementor_public_plain_content($post_id);
+            if ($content !== null && get_post_field('post_content', $post_id, 'raw') !== $content) {
+                wp_update_post(array('ID' => $post_id, 'post_content' => wp_slash($content)));
+            }
+        }
     }
 }, 10, 1);
 
