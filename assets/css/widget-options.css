@@ -97,6 +97,16 @@ body .extendedwopts-md-justify {
     clear: both;
   }
 }
+@media screen and (max-width: 768px) {
+  body .widgetopts-mobile-only.widgetopts-mobile-only {
+    display: block !important;
+  }
+}
+@media screen and (min-width: 769px) {
+  body .widgetopts-mobile-only.widgetopts-mobile-only {
+    display: none !important;
+  }
+}
 .panel-cell-style:after {
   content: "";
   display: block;
