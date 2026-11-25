@@ -1,4 +1,9 @@
-# Ignore the Visual Studio local workspace folder
 .vs/
-# JS build dependencies
+.github/
 node_modules/
+vendor/
+docker
+svn
+wp
+.env
+.DS_Store

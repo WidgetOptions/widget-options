@@ -8,6 +8,30 @@
  * @since       4.0
  */
 
+ /**
+  * Whether the devices setting targets mobile only.
+  * Mobile only = "show" on mobile alone, or "hide" on both desktop and tablet.
+  */
+if( !function_exists( 'widgetopts_is_mobile_only_setting' ) ){
+    function widgetopts_is_mobile_only_setting( $opts ){
+        if( empty( $opts['devices'] ) || !is_array( $opts['devices'] ) ){
+            return false;
+        }
+
+        $d       = $opts['devices'];
+        $mode    = ( empty( $d['options'] ) ) ? 'hide' : $d['options'];
+        $mobile  = !empty( $d['mobile'] );
+        $tablet  = !empty( $d['tablet'] );
+        $desktop = !empty( $d['desktop'] );
+
+        if( 'show' === $mode ){
+            return $mobile && !$tablet && !$desktop;
+        }
+
+        return !$mobile && $tablet && $desktop;
+    }
+}
+
  //create separate function returning classes for reuse
 if( !function_exists( 'widgetopts_classes_generator' ) ){
     function widgetopts_classes_generator( $opts, $tabs, $settings, $so = false ){
@@ -35,6 +59,10 @@ if( !function_exists( 'widgetopts_classes_generator' ) ){
 
                     foreach ($devices as $key => $value) {
                         $classes[] = sanitize_html_class('extendedwopts-' . $key);
+                    }
+
+                    if( widgetopts_is_mobile_only_setting( $opts ) ){
+                        $classes[] = 'widgetopts-mobile-only';
                     }
                 }
             }

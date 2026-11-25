@@ -119,7 +119,9 @@ if (!function_exists('widgetopts_display_callback')) :
                 }
             } else {
                 //for desktop
-                if (empty($opts['devices']['options']) || $opts['devices']['options'] == 'hide') {
+                if (widgetopts_is_mobile_only_setting($opts)) {
+                    //keep mobile-only widgets in the HTML (cache safe); css hides them on desktop
+                } else if (empty($opts['devices']['options']) || $opts['devices']['options'] == 'hide') {
                     if (isset($opts['devices']['desktop']) && $opts['devices']['desktop'] == '1') {
                         $hidden = true;
                     }
