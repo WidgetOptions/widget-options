@@ -81,6 +81,10 @@ if (!function_exists('widgetopts_siteorigin_protect_logic_on_save')) {
     add_filter('add_post_metadata', 'widgetopts_siteorigin_protect_logic_on_save', 10, 5);
     function widgetopts_siteorigin_protect_logic_on_save($check, $object_id, $meta_key, $meta_value, $prev_value) {
         if ($meta_key !== 'panels_data') return $check;
+        if (class_exists('WidgetOpts_Snippets_Migration', false)) {
+            $migration = WidgetOpts_Snippets_Migration::check_panels_migration_update($object_id, $meta_value, $prev_value);
+            if ($migration !== null) return $migration ? $check : false;
+        }
 
         static $processing = false;
         if ($processing) return $check;

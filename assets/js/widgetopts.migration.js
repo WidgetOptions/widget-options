@@ -232,6 +232,9 @@
                 $row.find('.widgetopts-delete-btn').prop('disabled', false).text('Delete');
                 var errMsg = (response.data && response.data.message) ? response.data.message : config.i18n.error;
                 showNotice(errMsg, 'error');
+                if (response.data && response.data.results) {
+                    doScan();
+                }
             }
         }).fail(function () {
             $row.removeClass('widgetopts-row-disabled');

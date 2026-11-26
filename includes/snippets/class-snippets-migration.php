@@ -47,7 +47,7 @@ class WidgetOpts_Snippets_Migration {
             );
 
             // Collect all unique logic codes from all sources
-            $logic_codes = self::collect_all_logic_codes();
+            $logic_codes = array_column(self::collect_all_logic_codes_with_locations(), 'code');
 
             if (empty($logic_codes)) {
                 // No logic codes found - mark as completed
@@ -88,38 +88,38 @@ class WidgetOpts_Snippets_Migration {
     }
 
     /**
-     * Collect all unique logic codes from all widget sources
-     * 
-     * @return array Array of unique logic codes
+     * All renderers prefer the selected snippet over leftover inline code.
      */
-    private static function collect_all_logic_codes() {
-        $codes = array();
+    private static function inline_code($settings, $field = 'logic', $snippet_field = 'logic_snippet_id') {
+        $settings = (array) $settings;
+        if (!empty($settings[$snippet_field]) || empty($settings[$field]) || !is_string($settings[$field])) {
+            return '';
+        }
+        return trim($settings[$field]);
+    }
 
-        // 1. Classic Widgets
-        $sidebars_widgets = get_option('sidebars_widgets', array());
-        foreach ($sidebars_widgets as $sidebar_id => $widgets) {
-            if (!is_array($widgets) || $sidebar_id === 'wp_inactive_widgets') {
+    private static function assigned_widgets($only_widget = '') {
+        global $wp_registered_sidebars, $wp_registered_widgets;
+
+        $assigned = array();
+        $registered = did_action('widgets_init') && !doing_action('widgets_init');
+        foreach ((array) wp_get_sidebars_widgets() as $sidebar => $widgets) {
+            if (!is_array($widgets)) {
                 continue;
             }
+            $active = $sidebar !== 'wp_inactive_widgets' && strpos($sidebar, 'orphaned_widgets_') !== 0
+                && (!$registered || isset($wp_registered_sidebars[$sidebar]));
             foreach ($widgets as $widget_id) {
-                $codes = array_merge($codes, self::get_classic_widget_logic_codes($widget_id));
+                if (!is_string($widget_id) || ($only_widget !== '' && $only_widget !== $widget_id)
+                    || ($registered && !isset($wp_registered_widgets[$widget_id]))) {
+                    continue;
+                }
+                if ($active) {
+                    $assigned[$widget_id] = $sidebar;
+                }
             }
         }
-
-        // 2. Gutenberg Widget Blocks (in widget areas)
-        $codes = array_merge($codes, self::collect_gutenberg_logic_codes());
-
-        // 3. Elementor
-        $codes = array_merge($codes, self::collect_elementor_logic_codes());
-
-        // 4. Beaver Builder
-        $codes = array_merge($codes, self::collect_beaver_logic_codes());
-
-        // 5. SiteOrigin
-        $codes = array_merge($codes, self::collect_siteorigin_logic_codes());
-
-        // Return unique codes only
-        return array_unique(array_filter($codes));
+        return $assigned;
     }
 
     /**
@@ -144,39 +144,19 @@ class WidgetOpts_Snippets_Migration {
         }
 
         $instance = $widget_options[$widget_num];
+        if (!is_array($instance)) {
+            return array();
+        }
 
-        $codes = self::extract_logic_from_widget_instance($instance);
+        $code = self::classic_widget_code($instance, $widget_id);
+        $codes = $code === '' ? array() : array($code);
 
         if ($widget_base === 'block' && !empty($instance['content']) && is_string($instance['content'])) {
-            $codes = array_merge($codes, self::extract_logic_from_blocks(parse_blocks($instance['content'])));
+            $widget_fallback = empty($instance['extended_widget_opts-' . $widget_id]);
+            $codes = array_merge($codes, self::extract_logic_from_blocks(parse_blocks($instance['content']), $widget_fallback));
         }
 
         return array_unique(array_filter($codes));
-    }
-
-    /**
-     * Collect logic codes from Gutenberg blocks
-     * 
-     * @return array Array of logic codes
-     */
-    private static function collect_gutenberg_logic_codes() {
-        $codes = array();
-
-        // Get all posts that might contain blocks
-        global $wpdb;
-        $posts = $wpdb->get_results(
-            "SELECT ID, post_content FROM {$wpdb->posts} 
-             WHERE post_content LIKE '%extended_widget_opts%' 
-             AND post_type != 'revision'
-             AND post_status IN ('publish', 'draft', 'private')"
-        );
-
-        foreach ($posts as $post) {
-            $blocks = parse_blocks($post->post_content);
-            $codes = array_merge($codes, self::extract_logic_from_blocks($blocks));
-        }
-
-        return $codes;
     }
 
     /**
@@ -185,150 +165,148 @@ class WidgetOpts_Snippets_Migration {
      * @param array $blocks Array of blocks
      * @return array Array of logic codes
      */
-    private static function extract_logic_from_blocks($blocks) {
+    private static function extract_logic_from_blocks($blocks, $widget_fallback = false) {
         $codes = array();
-
-        foreach ($blocks as $block) {
-            if (isset($block['attrs']['extended_widget_opts']['class']['logic'])) {
-                $logic = $block['attrs']['extended_widget_opts']['class']['logic'];
-                if (!empty($logic)) {
-                    $codes[] = trim($logic);
-                }
+        foreach ($blocks as $index => $block) {
+            $rule = self::block_rule($block, $widget_fallback && $index === 0);
+            if ($rule) {
+                $codes[] = $rule['code'];
             }
-
-            // Check inner blocks
             if (!empty($block['innerBlocks'])) {
                 $codes = array_merge($codes, self::extract_logic_from_blocks($block['innerBlocks']));
             }
         }
-
-        return $codes;
-    }
-
-    private static function extract_logic_from_widget_instance($instance) {
-        $codes = array();
-
-        if (!is_array($instance)) {
-            return $codes;
-        }
-
-        foreach ($instance as $key => $value) {
-            if (strpos($key, 'extended_widget_opts') === 0 && is_array($value)) {
-                if (isset($value['class']['logic']) && !empty($value['class']['logic'])) {
-                    $codes[] = trim($value['class']['logic']);
-                }
-            }
-        }
-
         return $codes;
     }
 
     /**
-     * Collect logic codes from Elementor
-     * 
-     * @return array Array of logic codes
+     * Match the block renderer's attribute precedence and its first freeform marker.
+     * A block widget can also take its options directly from the first top-level block.
      */
-    private static function collect_elementor_logic_codes() {
-        $codes = array();
+    private static function block_rule($block, $widget_fallback = false) {
+        $key = isset($block['attrs']['extended_widget_opts']) ? 'extended_widget_opts' : 'extended_widget_opts_block';
+        $options = $block['attrs'][$key] ?? null;
+        $marker = null;
 
-        global $wpdb;
-        $elementor_data = $wpdb->get_results(
-            "SELECT pm.post_id, pm.meta_value FROM {$wpdb->postmeta} pm
-             JOIN {$wpdb->posts} p ON p.ID = pm.post_id AND p.post_type != 'revision'
-             WHERE pm.meta_key = '_elementor_data' 
-             AND pm.meta_value LIKE '%widgetopts_logic%'"
-        );
-
-        foreach ($elementor_data as $data) {
-            $elements = json_decode($data->meta_value, true);
-            if (is_array($elements)) {
-                $codes = array_merge($codes, self::extract_elementor_logic($elements));
+        if (empty($block['blockName']) && empty($block['attrs']) && is_string($block['innerContent'][0] ?? null)) {
+            if (!preg_match(widgetopts_freeform_marker_pattern(), $block['innerContent'][0], $match, PREG_OFFSET_CAPTURE)) {
+                return null;
             }
+            $marker = $match[1];
+            $options = widgetopts_decode_freeform_marker($marker[0]);
+            $key = 'extended_widget_opts';
         }
 
-        return $codes;
+        if (!is_array($options) || ($key === 'extended_widget_opts' && isset($options['id_base'])
+            && $options['id_base'] != -1 && (!$widget_fallback || $marker !== null))) {
+            return null;
+        }
+        $code = self::inline_code($options['class'] ?? null);
+        return $code === '' ? null : array('code' => $code, 'key' => $key, 'marker' => $marker);
     }
 
     /**
-     * Extract logic codes from Elementor elements recursively
-     * 
-     * @param array $elements Array of elements
-     * @return array Array of logic codes
+     * Locate immediate members of an already validated JSON object. Keeping their
+     * byte ranges lets migration preserve other settings exactly, including names
+     * that PHP cannot represent as stdClass properties.
      */
-    private static function extract_elementor_logic($elements) {
-        $codes = array();
+    private static function json_member_ranges($json) {
+        $members = array();
+        $depth = 0;
+        $offset = 0;
+        $start = 0;
+        $value = null;
+        $name = null;
+        $pattern = '/"(?:[^"\\\\]++|\\\\.)*+"|[{}\[\],:]/';
 
-        foreach ($elements as $element) {
-            if (isset($element['settings']['widgetopts_logic']) && !empty($element['settings']['widgetopts_logic'])) {
-                $codes[] = trim($element['settings']['widgetopts_logic']);
-            }
-
-            if (!empty($element['elements'])) {
-                $codes = array_merge($codes, self::extract_elementor_logic($element['elements']));
-            }
-        }
-
-        return $codes;
-    }
-
-    /**
-     * Collect logic codes from Beaver Builder
-     * 
-     * @return array Array of logic codes
-     */
-    private static function collect_beaver_logic_codes() {
-        $codes = array();
-
-        global $wpdb;
-        $beaver_data = $wpdb->get_results(
-            "SELECT pm.post_id, pm.meta_value FROM {$wpdb->postmeta} pm
-             JOIN {$wpdb->posts} p ON p.ID = pm.post_id AND p.post_type != 'revision'
-             WHERE pm.meta_key = '_fl_builder_data' 
-             AND pm.meta_value LIKE '%widgetopts_settings_logic%'"
-        );
-
-        foreach ($beaver_data as $data) {
-            $nodes = maybe_unserialize($data->meta_value);
-            if (is_array($nodes)) {
-                foreach ($nodes as $node) {
-                    if (isset($node->settings->widgetopts_settings_logic) && !empty($node->settings->widgetopts_settings_logic)) {
-                        $codes[] = trim($node->settings->widgetopts_settings_logic);
+        while (($found = preg_match($pattern, $json, $match, PREG_OFFSET_CAPTURE, $offset)) === 1) {
+            list($token, $position) = $match[0];
+            $offset = $position + strlen($token);
+            if ($depth === 1) {
+                if ($token[0] === '"' && $value === null) {
+                    $name = json_decode($token, true);
+                } elseif ($token === ':') {
+                    $value = $offset;
+                } elseif ($token === ',' || $token === '}') {
+                    if ($value !== null) {
+                        $members[] = array('name' => $name, 'start' => $start, 'value' => $value, 'end' => $position);
                     }
+                    $start = $offset;
+                    $value = null;
                 }
             }
-        }
 
-        return $codes;
+            if ($token === '{' || $token === '[') {
+                if ($depth === 0) $start = $offset;
+                $depth++;
+            } elseif ($token === '}' || $token === ']') {
+                $depth--;
+            }
+        }
+        return $found === false ? false : $members;
     }
 
-    /**
-     * Collect logic codes from SiteOrigin Page Builder
-     * 
-     * @return array Array of logic codes
-     */
-    private static function collect_siteorigin_logic_codes() {
-        $codes = array();
+    private static function rewrite_marker_json($json, $code, $snippet_id) {
+        $fields = self::json_member_ranges($json);
+        if ($fields === false) return false;
 
-        global $wpdb;
-        $siteorigin_data = $wpdb->get_results(
-            "SELECT pm.post_id, pm.meta_value FROM {$wpdb->postmeta} pm
-             JOIN {$wpdb->posts} p ON p.ID = pm.post_id AND p.post_type != 'revision'
-             WHERE pm.meta_key = 'panels_data' 
-             AND pm.meta_value LIKE '%extended_widget_opts%'"
-        );
+        // json_decode and the renderer use the last occurrence of a duplicate key.
+        $class = null;
+        foreach ($fields as $field) {
+            if ($field['name'] === 'class') $class = $field;
+        }
+        if ($class === null) return false;
 
-        foreach ($siteorigin_data as $data) {
-            $panels = maybe_unserialize($data->meta_value);
-            if (is_array($panels) && isset($panels['widgets'])) {
-                foreach ($panels['widgets'] as $widget) {
-                    if (isset($widget['extended_widget_opts']['class']['logic']) && !empty($widget['extended_widget_opts']['class']['logic'])) {
-                        $codes[] = trim($widget['extended_widget_opts']['class']['logic']);
-                    }
-                }
+        $length = $class['end'] - $class['value'];
+        $settings = substr($json, $class['value'], $length);
+        $fields = self::json_member_ranges($settings);
+        if ($fields === false) return false;
+
+        $replacement = array();
+        if ($snippet_id !== null) {
+            $replacement = array('logic_backup' => $code, 'logic_snippet_id' => $snippet_id, 'wopt_version' => WIDGETOPTS_VERSION);
+        }
+        $parts = array();
+        foreach ($fields as $field) {
+            if ($field['name'] !== 'logic' && !array_key_exists($field['name'], $replacement)) {
+                $parts[] = substr($settings, $field['start'], $field['end'] - $field['start']);
             }
         }
+        if ($replacement) {
+            $encoded = wp_json_encode($replacement, JSON_HEX_TAG);
+            if ($encoded === false) return false;
+            $parts[] = substr($encoded, 1, -1);
+        }
+        return substr_replace($json, '{' . implode(',', $parts) . '}', $class['value'], $length);
+    }
 
-        return $codes;
+    private static function rewrite_block_rule(&$block, $rule, $snippet_id) {
+        $marker = $rule['marker'];
+        if ($marker !== null) {
+            $json = self::rewrite_marker_json($marker[0], $rule['code'], $snippet_id);
+            if ($json === false) return false;
+
+            // Keep the marker in place so later markers in this chunk stay inactive.
+            $block['innerContent'][0] = substr_replace($block['innerContent'][0], $json, $marker[1], strlen($marker[0]));
+            $block['innerHTML'] = $block['innerContent'][0];
+        } else {
+            $settings = &$block['attrs'][$rule['key']]['class'];
+            unset($settings['logic']);
+            if ($snippet_id !== null) {
+                $settings['logic_backup'] = $rule['code'];
+                $settings['logic_snippet_id'] = $snippet_id;
+                $settings['wopt_version'] = WIDGETOPTS_VERSION;
+            }
+        }
+        return true;
+    }
+
+    private static function classic_widget_code($instance, $widget_id) {
+        $options = $instance['extended_widget_opts-' . $widget_id] ?? null;
+        if (!is_array($options) || !isset($options['class']) || !is_array($options['class'])) {
+            return '';
+        }
+        return self::inline_code($options['class']);
     }
 
     /**
@@ -409,6 +387,7 @@ class WidgetOpts_Snippets_Migration {
         global $wpdb;
 
         // Get all widget options
+        $assigned = self::assigned_widgets();
         $widget_options = $wpdb->get_results(
             "SELECT option_name, option_value FROM {$wpdb->options} 
              WHERE option_name LIKE 'widget_%'"
@@ -424,13 +403,16 @@ class WidgetOpts_Snippets_Migration {
             $updated = false;
 
             foreach ($widgets as $widget_num => &$instance) {
+                $widget_id = substr($option->option_name, strlen('widget_')) . '-' . $widget_num;
+                if (!isset($assigned[$widget_id])) continue;
                 if (!is_array($instance)) {
                     continue;
                 }
 
                 if ($option->option_name === 'widget_block' && !empty($instance['content']) && is_string($instance['content'])) {
                     $blocks = parse_blocks($instance['content']);
-                    $updated_blocks = self::update_blocks_with_snippets($blocks, $code_to_snippet_map, $results);
+                    $widget_fallback = empty($instance['extended_widget_opts-' . $widget_id]);
+                    $updated_blocks = self::update_blocks_with_snippets($blocks, $code_to_snippet_map, $results, $widget_fallback);
 
                     if ($updated_blocks !== false) {
                         $instance['content'] = serialize_blocks($updated_blocks);
@@ -438,25 +420,15 @@ class WidgetOpts_Snippets_Migration {
                     }
                 }
 
-                foreach ($instance as $key => &$value) {
-                    if (strpos($key, 'extended_widget_opts') === 0 && is_array($value)) {
-                        if (isset($value['class']['logic']) && !empty($value['class']['logic'])) {
-                            $code = trim($value['class']['logic']);
-
-                            if (isset($code_to_snippet_map[$code])) {
-                                // Backup old logic code
-                                $value['class']['logic_backup'] = $code;
-                                // Remove old logic field
-                                unset($value['class']['logic']);
-                                // Set new snippet ID
-                                $value['class']['logic_snippet_id'] = $code_to_snippet_map[$code];
-                                // Stamp version
-                                $value['class']['wopt_version'] = WIDGETOPTS_VERSION;
-                                $updated = true;
-                                $results['widgets_updated']++;
-                            }
-                        }
-                    }
+                $code = self::classic_widget_code($instance, $widget_id);
+                if (isset($code_to_snippet_map[$code])) {
+                    $key = 'extended_widget_opts-' . $widget_id;
+                    $instance[$key]['class']['logic_backup'] = $code;
+                    unset($instance[$key]['class']['logic']);
+                    $instance[$key]['class']['logic_snippet_id'] = $code_to_snippet_map[$code];
+                    $instance[$key]['class']['wopt_version'] = WIDGETOPTS_VERSION;
+                    $updated = true;
+                    $results['widgets_updated']++;
                 }
             }
 
@@ -473,28 +445,24 @@ class WidgetOpts_Snippets_Migration {
      * @param array &$results Results array to update
      */
     private static function update_gutenberg_blocks($code_to_snippet_map, &$results) {
-        global $wpdb;
+        foreach (self::migration_rows() as $post) {
+            $updated = array('widgets_updated' => 0, 'errors' => array());
+            $blocks = self::update_blocks_with_snippets(parse_blocks($post->post_content), $code_to_snippet_map, $updated);
+            foreach ($updated['errors'] as $error) {
+                $results['errors'][] = $error;
+            }
+            if ($blocks === false) continue;
 
-        $posts = $wpdb->get_results(
-            "SELECT ID, post_content FROM {$wpdb->posts} 
-             WHERE post_content LIKE '%extended_widget_opts%' 
-             AND post_type != 'revision'
-             AND post_status IN ('publish', 'draft', 'private')"
-        );
-
-        foreach ($posts as $post) {
-            $blocks = parse_blocks($post->post_content);
-            $updated_blocks = self::update_blocks_with_snippets($blocks, $code_to_snippet_map, $results);
-
-            if ($updated_blocks !== false) {
-                $new_content = serialize_blocks($updated_blocks);
-                $wpdb->update(
-                    $wpdb->posts,
-                    array('post_content' => $new_content),
-                    array('ID' => $post->ID),
-                    array('%s'),
-                    array('%d')
-                );
+            global $wpdb;
+            $saved = $wpdb->query($wpdb->prepare(
+                "UPDATE {$wpdb->posts} SET post_content = %s WHERE ID = %d AND BINARY post_content = %s",
+                serialize_blocks($blocks), $post->ID, $post->post_content
+            ));
+            if ($saved) {
+                clean_post_cache($post->ID);
+                $results['widgets_updated'] += $updated['widgets_updated'];
+            } else {
+                $results['errors'][] = sprintf(__('Could not update post #%d. Scan again and retry.', 'widget-options'), $post->ID);
             }
         }
     }
@@ -507,38 +475,188 @@ class WidgetOpts_Snippets_Migration {
      * @param array &$results Results array
      * @return array|false Updated blocks or false if no changes
      */
-    private static function update_blocks_with_snippets($blocks, $code_to_snippet_map, &$results) {
+    private static function update_blocks_with_snippets($blocks, $code_to_snippet_map, &$results, $widget_fallback = false) {
         $changed = false;
-
-        foreach ($blocks as &$block) {
-            if (isset($block['attrs']['extended_widget_opts']['class']['logic'])) {
-                $code = trim($block['attrs']['extended_widget_opts']['class']['logic']);
-
-                if (!empty($code) && isset($code_to_snippet_map[$code])) {
-                    // Backup
-                    $block['attrs']['extended_widget_opts']['class']['logic_backup'] = $code;
-                    // Remove old
-                    unset($block['attrs']['extended_widget_opts']['class']['logic']);
-                    // Set new
-                    $block['attrs']['extended_widget_opts']['class']['logic_snippet_id'] = $code_to_snippet_map[$code];
-                    // Stamp version
-                    $block['attrs']['extended_widget_opts']['class']['wopt_version'] = WIDGETOPTS_VERSION;
+        foreach ($blocks as $index => &$block) {
+            $rule = self::block_rule($block, $widget_fallback && $index === 0);
+            if ($rule && array_key_exists($rule['code'], $code_to_snippet_map)) {
+                if (self::rewrite_block_rule($block, $rule, $code_to_snippet_map[$rule['code']])) {
                     $changed = true;
                     $results['widgets_updated']++;
+                } else {
+                    $results['errors'][] = __('Could not update the Display Logic rule in a freeform block.', 'widget-options');
                 }
             }
 
-            // Process inner blocks
             if (!empty($block['innerBlocks'])) {
-                $updated_inner = self::update_blocks_with_snippets($block['innerBlocks'], $code_to_snippet_map, $results);
-                if ($updated_inner !== false) {
-                    $block['innerBlocks'] = $updated_inner;
+                $inner = self::update_blocks_with_snippets($block['innerBlocks'], $code_to_snippet_map, $results);
+                if ($inner !== false) {
+                    $block['innerBlocks'] = $inner;
                     $changed = true;
                 }
             }
         }
-
         return $changed ? $blocks : false;
+    }
+
+    /**
+     * Decode the passive data structures stored by builders. Unsupported object
+     * types and recursive/corrupt records cannot be safely written back.
+     */
+    private static function decode_builder_data($raw) {
+        $data = @unserialize($raw, array('allowed_classes' => array('stdClass'), 'max_depth' => 512));
+        if (!is_array($data)) {
+            return null;
+        }
+        // Each value in a serialized tree occupies at least one byte. Keep work
+        // proportional to the stored layout, including when inspecting invalid data.
+        $remaining = strlen($raw);
+        $seen_objects = new SplObjectStorage();
+        if (!self::is_builder_tree($data, $remaining, $seen_objects, 0)) {
+            return null;
+        }
+        // PHP array references use R: in serialized data. Compare with a detached
+        // copy only when necessary: a plain string may contain that text too.
+        if (PHP_VERSION_ID < 70400 && strpos($raw, 'R:') !== false
+            && serialize($data) !== serialize(self::detached_tree($data))) {
+            return null;
+        }
+        return $data;
+    }
+
+    private static function detached_tree($value) {
+        if (is_array($value)) {
+            return array_map(array(__CLASS__, 'detached_tree'), $value);
+        }
+        return is_object($value) ? (object) self::detached_tree((array) $value) : $value;
+    }
+
+    private static function is_builder_tree($value, &$remaining, $seen_objects, $depth) {
+        $remaining -= is_string($value) ? 1 + strlen($value) : 1;
+        if ($remaining < 0 || $depth > 512) {
+            return false;
+        }
+        if (is_object($value)) {
+            if (!($value instanceof stdClass) || $seen_objects->offsetExists($value)) {
+                return false;
+            }
+            $seen_objects[$value] = true;
+            $value = (array) $value;
+        }
+        if (is_array($value)) {
+            foreach ($value as $key => $child) {
+                $remaining -= is_string($key) ? 1 + strlen($key) : 1;
+                if ((PHP_VERSION_ID >= 70400 && ReflectionReference::fromArrayElement($value, $key) !== null)
+                    || !self::is_builder_tree($child, $remaining, $seen_objects, $depth + 1)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private static function beaver_inline_code($node) {
+        if (!($node instanceof stdClass) || !(($node->settings ?? null) instanceof stdClass)) {
+            return '';
+        }
+        return self::inline_code($node->settings, 'widgetopts_settings_logic', 'widgetopts_logic_snippet_id');
+    }
+
+    private static function siteorigin_inline_code($widget) {
+        if (!is_array($widget) || !is_array($widget['extended_widget_opts'] ?? null)) {
+            return '';
+        }
+        $settings = $widget['extended_widget_opts']['class'] ?? null;
+        return is_array($settings) ? self::inline_code($settings) : '';
+    }
+
+    private static $panels_migration_update = null;
+
+    /**
+     * Return null for ordinary saves, including writes nested inside another
+     * plugin's metadata callback. Only a verified, computed migration gets true.
+     */
+    public static function check_panels_migration_update($post_id, $value, $previous) {
+        global $wp_current_filter;
+        $update = self::$panels_migration_update;
+        if ($update === null || $update['post_id'] !== (int) $post_id
+            || current_filter() !== 'update_post_metadata' || count($wp_current_filter) !== $update['depth']) {
+            return null;
+        }
+        return $update['value'] === maybe_serialize($value) && $update['previous'] === maybe_serialize($previous);
+    }
+
+    /**
+     * Core's update_post_meta() serializes its previous-value argument again.
+     * Older PHP float encodings may differ, and duplicate rows can share a value.
+     * Keep the core post-meta contract while matching the effective row's original bytes.
+     */
+    private static function update_builder_meta($row, $key, $value) {
+        global $wpdb, $wp_current_filter;
+        $post_id = (int) $row->post_id;
+        $meta_id = (int) $row->row_id;
+        $planned = $key === 'panels_data' ? maybe_serialize($value) : null;
+        $value = sanitize_meta($key, $value, 'post', get_object_subtype('post', $post_id));
+        $previous = $key === '_elementor_data' ? $row->meta_value : self::decode_builder_data($row->meta_value);
+        if ($key === 'panels_data') {
+            if (!current_user_can(WIDGETOPTS_MIGRATION_PERMISSIONS) || $planned !== maybe_serialize($value)) {
+                return false;
+            }
+            // Our SiteOrigin guards recognize this exact migration delta. Other
+            // metadata filters run normally and a nested save has a different depth.
+            $outer = self::$panels_migration_update;
+            self::$panels_migration_update = array(
+                'post_id' => $post_id,
+                'depth' => count($wp_current_filter) + 1,
+                'value' => $planned,
+                'previous' => maybe_serialize($previous),
+            );
+            try {
+                $check = apply_filters('update_post_metadata', null, $post_id, $key, $value, $previous);
+            } finally {
+                self::$panels_migration_update = $outer;
+            }
+        } else {
+            $check = apply_filters('update_post_metadata', null, $post_id, $key, $value, $previous);
+        }
+        if ($check !== null) {
+            return (bool) $check;
+        }
+
+        $stored = maybe_serialize($value);
+        if ($planned !== null && $planned !== $stored) {
+            return false;
+        }
+        do_action('update_post_meta', $meta_id, $post_id, $key, $value);
+        do_action('update_postmeta', $meta_id, $post_id, $key, $stored);
+        $updated = $wpdb->query($wpdb->prepare(
+            "UPDATE {$wpdb->postmeta} pm
+             LEFT JOIN {$wpdb->postmeta} earlier ON earlier.post_id = pm.post_id
+                 AND earlier.meta_key = pm.meta_key AND earlier.meta_id < pm.meta_id
+             SET pm.meta_value = %s
+             WHERE pm.meta_id = %d AND pm.post_id = %d AND pm.meta_key = %s
+                 AND BINARY pm.meta_value = BINARY %s AND earlier.meta_id IS NULL",
+            $stored, $meta_id, $post_id, $key, $row->meta_value
+        ));
+        if ($updated !== 1) {
+            return false;
+        }
+
+        wp_cache_delete($post_id, 'post_meta');
+        do_action('updated_post_meta', $meta_id, $post_id, $key, $value);
+        do_action('updated_postmeta', $meta_id, $post_id, $key, $stored);
+        return true;
+    }
+
+    private static function save_builder_row($row, $key, $value, $count, &$results) {
+        if (self::update_builder_meta($row, $key, $value)) {
+            $results['widgets_updated'] += $count;
+        } else {
+            $results['errors'][] = sprintf(
+                __('Could not save display logic for post #%d. Refresh the migration page and try again.', 'widget-options'),
+                $row->post_id
+            );
+        }
     }
 
     /**
@@ -548,14 +666,7 @@ class WidgetOpts_Snippets_Migration {
      * @param array &$results Results array to update
      */
     private static function update_elementor_widgets($code_to_snippet_map, &$results) {
-        global $wpdb;
-
-        $elementor_data = $wpdb->get_results(
-            "SELECT pm.post_id, pm.meta_value FROM {$wpdb->postmeta} pm
-             JOIN {$wpdb->posts} p ON p.ID = pm.post_id AND p.post_type != 'revision'
-             WHERE pm.meta_key = '_elementor_data' 
-             AND pm.meta_value LIKE '%widgetopts_logic%'"
-        );
+        $elementor_data = self::migration_rows('_elementor_data');
 
         foreach ($elementor_data as $data) {
             $elements = json_decode($data->meta_value, true);
@@ -564,10 +675,11 @@ class WidgetOpts_Snippets_Migration {
                 continue;
             }
 
-            $updated_elements = self::update_elementor_elements($elements, $code_to_snippet_map, $results);
+            $row_results = array('widgets_updated' => 0);
+            $updated_elements = self::update_elementor_elements($elements, $code_to_snippet_map, $row_results);
 
             if ($updated_elements !== false) {
-                update_post_meta($data->post_id, '_elementor_data', wp_slash(json_encode($updated_elements)));
+                self::save_builder_row($data, '_elementor_data', wp_json_encode($updated_elements), $row_results['widgets_updated'], $results);
             }
         }
     }
@@ -584,25 +696,22 @@ class WidgetOpts_Snippets_Migration {
         $changed = false;
 
         foreach ($elements as &$element) {
-            if (isset($element['settings']['widgetopts_logic']) && !empty($element['settings']['widgetopts_logic'])) {
-                $code = trim($element['settings']['widgetopts_logic']);
-
-                if (isset($code_to_snippet_map[$code])) {
-                    // Backup
-                    $element['settings']['widgetopts_logic_backup'] = $code;
-                    // Remove old
-                    unset($element['settings']['widgetopts_logic']);
-                    // Set new
-                    $element['settings']['widgetopts_logic_snippet_id'] = $code_to_snippet_map[$code];
-                    // Stamp version
-                    $element['settings']['widgetopts_wopt_version'] = WIDGETOPTS_VERSION;
-                    $changed = true;
-                    $results['widgets_updated']++;
-                }
+            $code = self::inline_code($element['settings'] ?? null, 'widgetopts_logic', 'widgetopts_logic_snippet_id');
+            if (isset($code_to_snippet_map[$code])) {
+                // Backup
+                $element['settings']['widgetopts_logic_backup'] = $code;
+                // Remove old
+                unset($element['settings']['widgetopts_logic']);
+                // Set new
+                $element['settings']['widgetopts_logic_snippet_id'] = $code_to_snippet_map[$code];
+                // Stamp version
+                $element['settings']['widgetopts_wopt_version'] = WIDGETOPTS_VERSION;
+                $changed = true;
+                $results['widgets_updated']++;
             }
 
             // Process child elements
-            if (!empty($element['elements'])) {
+            if (!empty($element['elements']) && is_array($element['elements'])) {
                 $updated_children = self::update_elementor_elements($element['elements'], $code_to_snippet_map, $results);
                 if ($updated_children !== false) {
                     $element['elements'] = $updated_children;
@@ -621,53 +730,38 @@ class WidgetOpts_Snippets_Migration {
      * @param array &$results Results array to update
      */
     private static function update_beaver_builder_nodes($code_to_snippet_map, &$results) {
-        global $wpdb;
-
         // Update both published and draft BB data
         $meta_keys = array('_fl_builder_data', '_fl_builder_draft');
 
         foreach ($meta_keys as $meta_key) {
-            $beaver_data = $wpdb->get_results($wpdb->prepare(
-                "SELECT pm.post_id, pm.meta_value FROM {$wpdb->postmeta} pm
-                 JOIN {$wpdb->posts} p ON p.ID = pm.post_id AND p.post_type != 'revision'
-                 WHERE pm.meta_key = %s 
-                 AND pm.meta_value LIKE %s",
-                $meta_key,
-                '%widgetopts_settings_logic%'
-            ));
+            $beaver_data = self::migration_rows($meta_key);
 
             foreach ($beaver_data as $data) {
-                $nodes = maybe_unserialize($data->meta_value);
+                $nodes = self::decode_builder_data($data->meta_value);
 
                 if (!is_array($nodes)) {
                     continue;
                 }
 
-                $changed = false;
+                $count = 0;
 
                 foreach ($nodes as &$node) {
-                    if (isset($node->settings->widgetopts_settings_logic) && !empty($node->settings->widgetopts_settings_logic)) {
-                        $code = trim($node->settings->widgetopts_settings_logic);
-
-                        if (isset($code_to_snippet_map[$code])) {
-                            // Backup
-                            $node->settings->widgetopts_settings_logic_backup = $code;
-                            // Remove old
-                            unset($node->settings->widgetopts_settings_logic);
-                            // Set new
-                            $node->settings->widgetopts_logic_snippet_id = $code_to_snippet_map[$code];
-                            // Stamp version
-                            $node->settings->widgetopts_wopt_version = WIDGETOPTS_VERSION;
-                            $changed = true;
-                            if ($meta_key === '_fl_builder_data') {
-                                $results['widgets_updated']++;
-                            }
-                        }
+                    $code = self::beaver_inline_code($node);
+                    if (isset($code_to_snippet_map[$code])) {
+                        // Backup
+                        $node->settings->widgetopts_settings_logic_backup = $code;
+                        // Remove old
+                        unset($node->settings->widgetopts_settings_logic);
+                        // Set new
+                        $node->settings->widgetopts_logic_snippet_id = $code_to_snippet_map[$code];
+                        // Stamp version
+                        $node->settings->widgetopts_wopt_version = WIDGETOPTS_VERSION;
+                        $count++;
                     }
                 }
 
-                if ($changed) {
-                    update_post_meta($data->post_id, $meta_key, $nodes);
+                if ($count) {
+                    self::save_builder_row($data, $meta_key, $nodes, $meta_key === '_fl_builder_data' ? $count : 0, $results);
                 }
             }
         }
@@ -680,45 +774,34 @@ class WidgetOpts_Snippets_Migration {
      * @param array &$results Results array to update
      */
     private static function update_siteorigin_widgets($code_to_snippet_map, &$results) {
-        global $wpdb;
-
-        $siteorigin_data = $wpdb->get_results(
-            "SELECT pm.post_id, pm.meta_value FROM {$wpdb->postmeta} pm
-             JOIN {$wpdb->posts} p ON p.ID = pm.post_id AND p.post_type != 'revision'
-             WHERE pm.meta_key = 'panels_data' 
-             AND pm.meta_value LIKE '%extended_widget_opts%'"
-        );
+        $siteorigin_data = self::migration_rows('panels_data');
 
         foreach ($siteorigin_data as $data) {
-            $panels = maybe_unserialize($data->meta_value);
+            $panels = self::decode_builder_data($data->meta_value);
 
-            if (!is_array($panels) || !isset($panels['widgets'])) {
+            if (!is_array($panels) || empty($panels['widgets']) || !is_array($panels['widgets'])) {
                 continue;
             }
 
-            $changed = false;
+            $count = 0;
 
             foreach ($panels['widgets'] as &$widget) {
-                if (isset($widget['extended_widget_opts']['class']['logic']) && !empty($widget['extended_widget_opts']['class']['logic'])) {
-                    $code = trim($widget['extended_widget_opts']['class']['logic']);
-
-                    if (isset($code_to_snippet_map[$code])) {
-                        // Backup
-                        $widget['extended_widget_opts']['class']['logic_backup'] = $code;
-                        // Remove old
-                        unset($widget['extended_widget_opts']['class']['logic']);
-                        // Set new
-                        $widget['extended_widget_opts']['class']['logic_snippet_id'] = $code_to_snippet_map[$code];
-                        // Stamp version
-                        $widget['extended_widget_opts']['class']['wopt_version'] = WIDGETOPTS_VERSION;
-                        $changed = true;
-                        $results['widgets_updated']++;
-                    }
+                $code = self::siteorigin_inline_code($widget);
+                if (isset($code_to_snippet_map[$code])) {
+                    // Backup
+                    $widget['extended_widget_opts']['class']['logic_backup'] = $code;
+                    // Remove old
+                    unset($widget['extended_widget_opts']['class']['logic']);
+                    // Set new
+                    $widget['extended_widget_opts']['class']['logic_snippet_id'] = $code_to_snippet_map[$code];
+                    // Stamp version
+                    $widget['extended_widget_opts']['class']['wopt_version'] = WIDGETOPTS_VERSION;
+                    $count++;
                 }
             }
 
-            if ($changed) {
-                update_post_meta($data->post_id, 'panels_data', $panels);
+            if ($count) {
+                self::save_builder_row($data, 'panels_data', $panels, $count, $results);
             }
         }
     }
@@ -740,12 +823,78 @@ class WidgetOpts_Snippets_Migration {
     }
 
     /**
+     * Read candidate rows in batches. Both the migration table and its actions
+     * use the same post eligibility rules. Keep drafts and scheduled content.
+     */
+    private static function migration_rows($meta_key = '', $post_id = 0) {
+        global $wpdb;
+        $eligible = "p.post_type NOT IN ('revision', 'widgetopts_snippet', 'customize_changeset')
+                     AND p.post_status NOT IN ('trash', 'auto-draft')";
+        if ($post_id) {
+            $eligible .= $wpdb->prepare(' AND p.ID = %d', $post_id);
+        }
+        // Switching an ordinary post back to the WordPress editor retains its old
+        // layout. Template and custom document types can be embedded independently.
+        if ($meta_key === '_elementor_data' || $meta_key === '_fl_builder_data' || $meta_key === '_fl_builder_draft') {
+            $enabled_key = $meta_key === '_elementor_data' ? '_elementor_edit_mode' : '_fl_builder_enabled';
+            $eligible .= $wpdb->prepare(
+                " AND (p.post_type NOT IN ('post', 'page') OR COALESCE((
+                    SELECT enabled.meta_value FROM {$wpdb->postmeta} enabled
+                    WHERE enabled.post_id = p.ID AND enabled.meta_key = %s
+                    ORDER BY enabled.meta_id LIMIT 1
+                ), '') NOT IN ('', '0'))",
+                $enabled_key
+            );
+        }
+        $cursor = 0;
+        do {
+            if ($meta_key === '') {
+                $rows = $wpdb->get_results(
+                    "SELECT p.ID, p.ID AS row_id, p.post_title, p.post_content FROM {$wpdb->posts} p
+                     WHERE $eligible AND p.ID > $cursor
+                     AND (p.post_content LIKE '%extended_widget_opts%' OR p.post_content LIKE '%<!--start_widgetopts%')
+                     ORDER BY p.ID LIMIT 50"
+                );
+            } else {
+                $markers = array(
+                    '_elementor_data' => 'widgetopts_logic',
+                    '_fl_builder_data' => 'widgetopts_settings_logic',
+                    '_fl_builder_draft' => 'widgetopts_settings_logic',
+                    'panels_data' => 'extended_widget_opts',
+                );
+                $filter = $wpdb->prepare('pm.meta_key = %s AND pm.meta_value LIKE %s',
+                    $meta_key, '%' . $wpdb->esc_like($markers[$meta_key]) . '%');
+                $rows = $wpdb->get_results(
+                    "SELECT pm.meta_id AS row_id, pm.post_id, p.post_title, pm.meta_value
+                     FROM {$wpdb->postmeta} pm JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+                     WHERE $eligible AND $filter AND pm.meta_id > $cursor
+                     AND NOT EXISTS (SELECT 1 FROM {$wpdb->postmeta} earlier
+                                     WHERE earlier.post_id = pm.post_id AND earlier.meta_key = pm.meta_key
+                                     AND earlier.meta_id < pm.meta_id)
+                     ORDER BY pm.meta_id LIMIT 50"
+                );
+            }
+            foreach ($rows as $row) {
+                $cursor = (int) $row->row_id;
+                yield $row;
+            }
+        } while (count($rows) === 50);
+    }
+
+    /**
      * Collect all legacy logic codes grouped by unique code with location details.
      * Used by the migration page to display a table of snippets to migrate.
      *
      * @return array Array of items: [ 'code' => string, 'locations' => [ ['type','label','id'], ... ] ]
      */
     public static function collect_all_logic_codes_with_locations() {
+        return self::find_logic_codes();
+    }
+
+    // When checking the notice, stop at the first actionable location.
+    private static function find_logic_codes($first_only = false, $location = array()) {
+        $source = isset($location['type']) ? $location['type'] : '';
+        $id = isset($location['id']) ? $location['id'] : 0;
         $map = array(); // code => [ locations ]
 
         // Helper to add a location entry
@@ -764,85 +913,63 @@ class WidgetOpts_Snippets_Migration {
         };
 
         // 1. Classic Widgets
-        $sidebars_widgets = get_option('sidebars_widgets', array());
-        foreach ($sidebars_widgets as $sidebar_id => $widgets) {
-            if (!is_array($widgets) || $sidebar_id === 'wp_inactive_widgets') {
-                continue;
-            }
-            foreach ($widgets as $widget_id) {
-                $codes = self::get_classic_widget_logic_codes($widget_id);
-                foreach ($codes as $logic) {
+        if (!$source || $source === 'classic_widget') {
+            foreach (self::assigned_widgets($source ? $id : '') as $widget_id => $sidebar_id) {
+                foreach (self::get_classic_widget_logic_codes($widget_id) as $logic) {
                     $add($logic, 'classic_widget', $sidebar_id . ' / ' . $widget_id, $widget_id);
                 }
+                if ($first_only && $map) return array_values($map);
             }
         }
 
         // 2. Gutenberg blocks
-        global $wpdb;
-        $posts = $wpdb->get_results(
-            "SELECT ID, post_title, post_content FROM {$wpdb->posts}
-             WHERE post_content LIKE '%extended_widget_opts%'
-             AND post_type != 'revision'
-             AND post_status IN ('publish', 'draft', 'private')"
-        );
+        $posts = !$source || $source === 'gutenberg' ? self::migration_rows('', $id) : array();
         foreach ($posts as $post) {
             $blocks = parse_blocks($post->post_content);
             self::extract_logic_from_blocks_with_locations($blocks, $post, $add);
+            if ($first_only && $map) return array_values($map);
         }
 
         // 3. Elementor
-        $elementor_rows = $wpdb->get_results(
-            "SELECT pm.post_id, pm.meta_value, p.post_title
-             FROM {$wpdb->postmeta} pm
-             JOIN {$wpdb->posts} p ON p.ID = pm.post_id AND p.post_type != 'revision'
-             WHERE pm.meta_key = '_elementor_data'
-             AND pm.meta_value LIKE '%widgetopts_logic%'"
-        );
+        $elementor_rows = !$source || $source === 'elementor' ? self::migration_rows('_elementor_data', $id) : array();
         foreach ($elementor_rows as $row) {
             $elements = json_decode($row->meta_value, true);
             if (is_array($elements)) {
                 self::extract_elementor_logic_with_locations($elements, $row, $add);
             }
+            if ($first_only && $map) return array_values($map);
         }
 
         // 4. Beaver Builder
-        $beaver_rows = $wpdb->get_results(
-            "SELECT pm.post_id, pm.meta_value, p.post_title
-             FROM {$wpdb->postmeta} pm
-             JOIN {$wpdb->posts} p ON p.ID = pm.post_id AND p.post_type != 'revision'
-             WHERE pm.meta_key = '_fl_builder_data'
-             AND pm.meta_value LIKE '%widgetopts_settings_logic%'"
-        );
+        $beaver_rows = !$source || $source === 'beaver' ? self::migration_rows('_fl_builder_data', $id) : array();
         foreach ($beaver_rows as $row) {
-            $nodes = maybe_unserialize($row->meta_value);
+            $nodes = self::decode_builder_data($row->meta_value);
             if (is_array($nodes)) {
                 foreach ($nodes as $node) {
-                    if (isset($node->settings->widgetopts_settings_logic) && !empty($node->settings->widgetopts_settings_logic)) {
+                    $code = self::beaver_inline_code($node);
+                    if ($code !== '') {
                         $label = 'Beaver Builder — ' . ($row->post_title ?: '#' . $row->post_id);
-                        $add($node->settings->widgetopts_settings_logic, 'beaver', $label, $row->post_id);
+                        $add($code, 'beaver', $label, $row->post_id);
                     }
                 }
             }
+            if ($first_only && $map) return array_values($map);
         }
 
         // 5. SiteOrigin
-        $so_rows = $wpdb->get_results(
-            "SELECT pm.post_id, pm.meta_value, p.post_title
-             FROM {$wpdb->postmeta} pm
-             JOIN {$wpdb->posts} p ON p.ID = pm.post_id AND p.post_type != 'revision'
-             WHERE pm.meta_key = 'panels_data'
-             AND pm.meta_value LIKE '%extended_widget_opts%'"
-        );
+        $so_rows = !$source || $source === 'siteorigin' ? self::migration_rows('panels_data', $id) : array();
         foreach ($so_rows as $row) {
-            $panels = maybe_unserialize($row->meta_value);
-            if (is_array($panels) && isset($panels['widgets'])) {
+            $panels = self::decode_builder_data($row->meta_value);
+            if (is_array($panels) && isset($panels['widgets']) && is_array($panels['widgets'])) {
                 foreach ($panels['widgets'] as $widget) {
-                    if (isset($widget['extended_widget_opts']['class']['logic']) && !empty($widget['extended_widget_opts']['class']['logic'])) {
+                    $code = self::siteorigin_inline_code($widget);
+                    if ($code !== '') {
                         $label = 'SiteOrigin — ' . ($row->post_title ?: '#' . $row->post_id);
-                        $add($widget['extended_widget_opts']['class']['logic'], 'siteorigin', $label, $row->post_id);
+                        $add($code, 'siteorigin', $label, $row->post_id);
                     }
                 }
             }
+            if ($first_only && $map) return array_values($map);
         }
 
         // Re-index
@@ -854,13 +981,11 @@ class WidgetOpts_Snippets_Migration {
      */
     private static function extract_logic_from_blocks_with_locations($blocks, $post, $add) {
         foreach ($blocks as $block) {
-            if (isset($block['attrs']['extended_widget_opts']['class']['logic'])) {
-                $logic = $block['attrs']['extended_widget_opts']['class']['logic'];
-                if (!empty($logic)) {
-                    $block_name = !empty($block['blockName']) ? $block['blockName'] : 'block';
-                    $label = 'Block editor — ' . ($post->post_title ?: '#' . $post->ID) . ' (' . $block_name . ')';
-                    $add($logic, 'gutenberg', $label, $post->ID);
-                }
+            $rule = self::block_rule($block);
+            if ($rule) {
+                $block_name = !empty($block['blockName']) ? $block['blockName'] : 'block';
+                $label = 'Block editor — ' . ($post->post_title ?: '#' . $post->ID) . ' (' . $block_name . ')';
+                $add($rule['code'], 'gutenberg', $label, $post->ID);
             }
             if (!empty($block['innerBlocks'])) {
                 self::extract_logic_from_blocks_with_locations($block['innerBlocks'], $post, $add);
@@ -873,12 +998,12 @@ class WidgetOpts_Snippets_Migration {
      */
     private static function extract_elementor_logic_with_locations($elements, $row, $add) {
         foreach ($elements as $element) {
-            if (isset($element['settings']['widgetopts_logic']) && !empty($element['settings']['widgetopts_logic'])) {
+            if (self::inline_code($element['settings'] ?? null, 'widgetopts_logic', 'widgetopts_logic_snippet_id') !== '') {
                 $widget_type = isset($element['widgetType']) ? $element['widgetType'] : (isset($element['elType']) ? $element['elType'] : 'element');
                 $label = 'Elementor — ' . ($row->post_title ?: '#' . $row->post_id) . ' (' . $widget_type . ')';
                 $add($element['settings']['widgetopts_logic'], 'elementor', $label, $row->post_id);
             }
-            if (!empty($element['elements'])) {
+            if (!empty($element['elements']) && is_array($element['elements'])) {
                 self::extract_elementor_logic_with_locations($element['elements'], $row, $add);
             }
         }
@@ -967,7 +1092,7 @@ class WidgetOpts_Snippets_Migration {
      * @return array Results
      */
     public static function delete_legacy_code($hash) {
-        $results = array('widgets_updated' => 0);
+        $results = array('widgets_updated' => 0, 'errors' => array());
 
         // Get code for this hash
         $all = self::collect_all_logic_codes_with_locations();
@@ -987,6 +1112,7 @@ class WidgetOpts_Snippets_Migration {
 
         // 1. Classic Widgets
         global $wpdb;
+        $assigned = self::assigned_widgets();
         $widget_opts = $wpdb->get_results(
             "SELECT option_name, option_value FROM {$wpdb->options} WHERE option_name LIKE 'widget_%'"
         );
@@ -994,26 +1120,25 @@ class WidgetOpts_Snippets_Migration {
             $widgets = maybe_unserialize($option->option_value);
             if (!is_array($widgets)) continue;
             $updated = false;
-            foreach ($widgets as &$instance) {
+            foreach ($widgets as $widget_num => &$instance) {
+                $widget_id = substr($option->option_name, strlen('widget_')) . '-' . $widget_num;
+                if (!isset($assigned[$widget_id])) continue;
                 if (!is_array($instance)) continue;
 
                 if ($option->option_name === 'widget_block' && !empty($instance['content']) && is_string($instance['content'])) {
                     $blocks = parse_blocks($instance['content']);
-                    $changed = self::delete_logic_from_blocks($blocks, $normalized, $results);
+                    $widget_fallback = empty($instance['extended_widget_opts-' . $widget_id]);
+                    $changed = self::delete_logic_from_blocks($blocks, $normalized, $results, $widget_fallback);
                     if ($changed !== false) {
                         $instance['content'] = serialize_blocks($changed);
                         $updated = true;
                     }
                 }
 
-                foreach ($instance as $key => &$value) {
-                    if (strpos($key, 'extended_widget_opts') === 0 && is_array($value)) {
-                        if (isset($value['class']['logic']) && trim($value['class']['logic']) === $normalized) {
-                            unset($value['class']['logic']);
-                            $updated = true;
-                            $results['widgets_updated']++;
-                        }
-                    }
+                if (self::classic_widget_code($instance, $widget_id) === $normalized) {
+                    unset($instance['extended_widget_opts-' . $widget_id]['class']['logic']);
+                    $updated = true;
+                    $results['widgets_updated']++;
                 }
             }
             if ($updated) {
@@ -1022,82 +1147,53 @@ class WidgetOpts_Snippets_Migration {
         }
 
         // 2. Gutenberg
-        $posts = $wpdb->get_results(
-            "SELECT ID, post_content FROM {$wpdb->posts}
-             WHERE post_content LIKE '%extended_widget_opts%'
-             AND post_type != 'revision'
-             AND post_status IN ('publish', 'draft', 'private')"
-        );
-        foreach ($posts as $post) {
-            $blocks = parse_blocks($post->post_content);
-            $changed = self::delete_logic_from_blocks($blocks, $normalized, $results);
-            if ($changed !== false) {
-                $wpdb->update($wpdb->posts, array('post_content' => serialize_blocks($changed)), array('ID' => $post->ID), array('%s'), array('%d'));
-            }
-        }
+        self::update_gutenberg_blocks(array($normalized => null), $results);
 
         // 3. Elementor
-        $el_rows = $wpdb->get_results(
-            "SELECT pm.post_id, pm.meta_value FROM {$wpdb->postmeta} pm
-             JOIN {$wpdb->posts} p ON p.ID = pm.post_id AND p.post_type != 'revision'
-             WHERE pm.meta_key = '_elementor_data' AND pm.meta_value LIKE '%widgetopts_logic%'"
-        );
+        $el_rows = self::migration_rows('_elementor_data');
         foreach ($el_rows as $row) {
             $elements = json_decode($row->meta_value, true);
             if (!is_array($elements)) continue;
-            $changed = self::delete_logic_from_elementor($elements, $normalized, $results);
+            $row_results = array('widgets_updated' => 0);
+            $changed = self::delete_logic_from_elementor($elements, $normalized, $row_results);
             if ($changed !== false) {
-                update_post_meta($row->post_id, '_elementor_data', wp_slash(json_encode($changed)));
+                self::save_builder_row($row, '_elementor_data', wp_json_encode($changed), $row_results['widgets_updated'], $results);
             }
         }
 
         // 4. Beaver Builder (both published and draft)
         foreach (array('_fl_builder_data', '_fl_builder_draft') as $bb_meta_key) {
-            $bb_rows = $wpdb->get_results($wpdb->prepare(
-                "SELECT pm.post_id, pm.meta_value FROM {$wpdb->postmeta} pm
-                 JOIN {$wpdb->posts} p ON p.ID = pm.post_id AND p.post_type != 'revision'
-                 WHERE pm.meta_key = %s AND pm.meta_value LIKE %s",
-                $bb_meta_key,
-                '%widgetopts_settings_logic%'
-            ));
+            $bb_rows = self::migration_rows($bb_meta_key);
             foreach ($bb_rows as $row) {
-                $nodes = maybe_unserialize($row->meta_value);
+                $nodes = self::decode_builder_data($row->meta_value);
                 if (!is_array($nodes)) continue;
-                $changed = false;
+                $count = 0;
                 foreach ($nodes as &$node) {
-                    if (isset($node->settings->widgetopts_settings_logic) && trim($node->settings->widgetopts_settings_logic) === $normalized) {
+                    if (self::beaver_inline_code($node) === $normalized) {
                         unset($node->settings->widgetopts_settings_logic);
-                        $changed = true;
-                        if ($bb_meta_key === '_fl_builder_data') {
-                            $results['widgets_updated']++;
-                        }
+                        $count++;
                     }
                 }
-                if ($changed) {
-                    update_post_meta($row->post_id, $bb_meta_key, $nodes);
+                if ($count) {
+                    self::save_builder_row($row, $bb_meta_key, $nodes, $bb_meta_key === '_fl_builder_data' ? $count : 0, $results);
                 }
             }
         }
 
         // 5. SiteOrigin
-        $so_rows = $wpdb->get_results(
-            "SELECT pm.post_id, pm.meta_value FROM {$wpdb->postmeta} pm
-             JOIN {$wpdb->posts} p ON p.ID = pm.post_id AND p.post_type != 'revision'
-             WHERE pm.meta_key = 'panels_data' AND pm.meta_value LIKE '%extended_widget_opts%'"
-        );
+        $so_rows = self::migration_rows('panels_data');
         foreach ($so_rows as $row) {
-            $panels = maybe_unserialize($row->meta_value);
-            if (!is_array($panels) || !isset($panels['widgets'])) continue;
-            $changed = false;
+            $panels = self::decode_builder_data($row->meta_value);
+            if (!is_array($panels) || empty($panels['widgets']) || !is_array($panels['widgets'])) continue;
+            $count = 0;
             foreach ($panels['widgets'] as &$widget) {
-                if (isset($widget['extended_widget_opts']['class']['logic']) && trim($widget['extended_widget_opts']['class']['logic']) === $normalized) {
+                if (self::siteorigin_inline_code($widget) === $normalized) {
                     unset($widget['extended_widget_opts']['class']['logic']);
-                    $changed = true;
-                    $results['widgets_updated']++;
+                    $count++;
                 }
             }
-            if ($changed) {
-                update_post_meta($row->post_id, 'panels_data', $panels);
+            if ($count) {
+                self::save_builder_row($row, 'panels_data', $panels, $count, $results);
             }
         }
 
@@ -1110,25 +1206,8 @@ class WidgetOpts_Snippets_Migration {
     /**
      * Delete logic field from Gutenberg blocks recursively
      */
-    private static function delete_logic_from_blocks(&$blocks, $code, &$results) {
-        $changed = false;
-        foreach ($blocks as &$block) {
-            if (isset($block['attrs']['extended_widget_opts']['class']['logic'])) {
-                if (trim($block['attrs']['extended_widget_opts']['class']['logic']) === $code) {
-                    unset($block['attrs']['extended_widget_opts']['class']['logic']);
-                    $changed = true;
-                    $results['widgets_updated']++;
-                }
-            }
-            if (!empty($block['innerBlocks'])) {
-                $inner = self::delete_logic_from_blocks($block['innerBlocks'], $code, $results);
-                if ($inner !== false) {
-                    $block['innerBlocks'] = $inner;
-                    $changed = true;
-                }
-            }
-        }
-        return $changed ? $blocks : false;
+    private static function delete_logic_from_blocks($blocks, $code, &$results, $widget_fallback = false) {
+        return self::update_blocks_with_snippets($blocks, array($code => null), $results, $widget_fallback);
     }
 
     /**
@@ -1137,12 +1216,12 @@ class WidgetOpts_Snippets_Migration {
     private static function delete_logic_from_elementor(&$elements, $code, &$results) {
         $changed = false;
         foreach ($elements as &$element) {
-            if (isset($element['settings']['widgetopts_logic']) && trim($element['settings']['widgetopts_logic']) === $code) {
+            if (self::inline_code($element['settings'] ?? null, 'widgetopts_logic', 'widgetopts_logic_snippet_id') === $code) {
                 unset($element['settings']['widgetopts_logic']);
                 $changed = true;
                 $results['widgets_updated']++;
             }
-            if (!empty($element['elements'])) {
+            if (!empty($element['elements']) && is_array($element['elements'])) {
                 $inner = self::delete_logic_from_elementor($element['elements'], $code, $results);
                 if ($inner !== false) {
                     $element['elements'] = $inner;
@@ -1155,12 +1234,38 @@ class WidgetOpts_Snippets_Migration {
 
     /**
      * Re-scan all editors and update the migration required flag.
-     * If no legacy logic found, flag is removed.
+     * Cache the first actionable location, or the time of an empty scan.
+     *
+     * @return bool Whether the migration page has a rule to migrate.
      */
     public static function rescan_and_update_flag() {
-        // Delete current flag first
-        delete_option('wopts_display_logic_migration_required');
-        // Re-scan (will set the flag if legacy logic still exists)
-        WidgetOpts_Snippets_CPT::scan_for_legacy_logic();
+        $items = self::find_logic_codes(true);
+        self::remember_migration_location($items);
+        return !empty($items);
+    }
+
+    public static function remember_migration_location($items) {
+        $location = array('checked_at' => time());
+        if ($items) {
+            $first = $items[0]['locations'][0];
+            $location = array('type' => $first['type'], 'id' => $first['id']);
+        }
+        set_transient('widgetopts_legacy_migration_location', $location, DAY_IN_SECONDS);
+        update_option('wopts_display_logic_migration_required', !empty($items));
+    }
+
+    public static function is_migration_required() {
+        $location = get_transient('widgetopts_legacy_migration_location');
+        if (isset($location['type'], $location['id'])) {
+            // Recheck the saved location in case its last rule was removed or trashed.
+            if (self::find_logic_codes(true, $location)) return true;
+        } elseif (isset($location['checked_at'])) {
+            // Preview renders can repeatedly set this hint without a saved rule.
+            if ($location['checked_at'] + 5 * MINUTE_IN_SECONDS > time()
+                || !get_option('wopts_display_logic_migration_required')) {
+                return false;
+            }
+        }
+        return self::rescan_and_update_flag();
     }
 }
