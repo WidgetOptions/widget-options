@@ -706,6 +706,10 @@ add_filter('add_post_metadata', 'widgetopts_protect_panels_data_meta', 10, 5);
 add_filter('update_post_metadata', 'widgetopts_protect_panels_data_meta', 10, 5);
 function widgetopts_protect_panels_data_meta($check, $object_id, $meta_key, $meta_value, $prev_value) {
     if ($meta_key !== 'panels_data') return $check;
+    if (class_exists('WidgetOpts_Snippets_Migration', false)) {
+        $migration = WidgetOpts_Snippets_Migration::check_panels_migration_update($object_id, $meta_value, $prev_value);
+        if ($migration !== null) return $migration ? $check : false;
+    }
 
     // Non-admin authors should not be able to inject legacy class.logic.
     if (function_exists('current_user_can') && current_user_can('manage_options')) {
